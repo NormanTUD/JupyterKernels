@@ -11,11 +11,26 @@ MODULES="GCC/12.3.0 OpenMPI/4.1.5 Python/3.11.3"
 PIP_REQUIRE_VIRTUALENV=true
 PYTHONNOUSERSITE=true
 
-cname=$(basename -s .hpc.tu-dresden.de $(hostname -d))
+hostnamed=$(hostname -d)
+
+if ! echo "$hostnamed" | grep "hpc.tu-dresden.de" 2>/dev/null >/dev/null; then
+	echo "You must run this on the clusters of the HPC system of the TU Dresden."
+	exit 1
+fi
+
+if [[ -z $LMOD_CMD ]]; then
+	echo "\$LMOD_CMD is not defined. Cannot run this script without module/lmod"
+	exit 2
+fi
+
+if [[ ! -e $LMOD_CMD ]]; then
+	echo "\$LMOD_CMD ($LMOD_CMD) file cannot be found. Cannot run this script without module/lmod"
+	exit 2
+fi
+
+cname=$(basename -s .hpc.tu-dresden.de $hostnamed)
 echo "Cluster: $cname"
 #; sleep 1
-
-
 
 function module_load(){
 	local MODULES="$1"
@@ -25,28 +40,8 @@ function module_load(){
 	done
 }
 
-module reset
-case $cname in
-	barnard)
-		module load release/23.10
-		module_load "${MODULES}"
-		;;
-	alpha)
-		module load release/23.04
-		module_load "${MODULES}"
-		module load CUDA/12.0.0
-		;;
-	romeo)
-		module load release/23.04
-		module_load "${MODULES}"
-		;;
-	*)
-		echo unknown cluster
-		exit
-esac
-
 function check_libs(){
-cat > $wrkspace/share/check_libs.py <<EOF
+	cat > $wrkspace/share/check_libs.py <<EOF
 from importlib import import_module
 
 libnames = $1
@@ -201,6 +196,26 @@ function pytorch_kernel(){
 
 
 set -e
+
+module reset
+case $cname in
+	barnard)
+		module load release/23.10
+		module_load "${MODULES}"
+		;;
+	alpha)
+		module load release/23.04
+		module_load "${MODULES}"
+		module load CUDA/12.0.0
+		;;
+	romeo)
+		module load release/23.04
+		module_load "${MODULES}"
+		;;
+	*)
+		echo unknown cluster
+		exit
+esac
 
 cd $wrkspace
 
