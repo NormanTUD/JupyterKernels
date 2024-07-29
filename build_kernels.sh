@@ -145,13 +145,8 @@ EOF
 
 function check_torch(){
 	yellow_text "\nCheck torch...\n"
-	check_libs "['bs4', 'scrapy',
-		  'matplotlib', 'plotly', 'seaborn',
-		  'numpy', 'scipy', 'sympy',
-		  'pandarallel', 'dask', 'mpi4py', 'ipyparallel',
-		  'netCDF4', 'xarray']"
-	check_libs "['pybrain', 'ray', 'theano', 'sklearn', 'nltk',
-		    'torch', 'torchvision', 'torchaudio']"
+	check_libs "['bs4', 'scrapy', 'matplotlib', 'plotly', 'seaborn', 'numpy', 'scipy', 'sympy', 'pandarallel', 'dask', 'mpi4py', 'ipyparallel', 'netCDF4', 'xarray']"
+	check_libs "['pybrain', 'ray', 'theano', 'sklearn', 'nltk', 'torch', 'torchvision', 'torchaudio']"
 }
 
 
