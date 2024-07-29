@@ -143,14 +143,18 @@
 
 	function module_load(){
 		local MODULES="$1"
-		green_reset_line "➤Loading modules: $MODULES"
+		MAXMODNR=$(echo "$MODULES" | sed -e 's#\s#\n#g' | wc -l)
+		PBAR=$(generate_progress_bar $i $MAXMODNR)
 
+		green_reset_line "$PBAR➤Loading modules: $MODULES"
 		for module in $MODULES; do
-			green_reset_line "➤Loading module: $module"
+			PBAR=$(generate_progress_bar $i $MAXMODNR)
+			green_reset_line "$PBAR➤Loading module: $module ($(($i+1))/$MAXMODNR)"
 			module load $module >/dev/null 2>/dev/null || {
 				red_text "❌Failed to load $module"
 				exit 4
 			}
+			i=$((i+1))
 		done
 
 		green_reset_line "✅Loaded modules: $MODULES"
@@ -180,7 +184,7 @@
 
 		for ELEM in $(echo "$TO_INSTALL"); do
 			PBAR=$(generate_progress_bar $i $MAXMODNR)
-			green_reset_line "$PBAR➤Installing $ELEM ($i/$MAXMODNR)"
+			green_reset_line "$PBAR➤Installing $ELEM ($(($i+1))/$MAXMODNR)"
 			pip3 install $ELEM 2>/dev/null >/dev/null || {
 				red_text "\n❌Could not install $TO_INSTALL.\n"
 				exit 30
