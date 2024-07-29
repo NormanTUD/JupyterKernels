@@ -185,9 +185,10 @@ function ml_pkgs () {
 }
 
 function create_venv(){
-	yellow_text "\nCreating virtual environment\n"
 	local venv="$1"
 	local logfile="$2"
+
+	yellow_text "\nCreating virtual environment ($venv)\n"
 
 	green_reset_line "Trying to create virtualenv $venv"
 
