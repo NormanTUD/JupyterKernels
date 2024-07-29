@@ -140,7 +140,7 @@ def check_libs(libnames):
 
 check_libs(libnames)
 EOF
-	python3 share/check_libs.py #| tee $logfile
+	python3 $wrkspace/share/check_libs.py #| tee $logfile
 }
 
 function check_torch(){
