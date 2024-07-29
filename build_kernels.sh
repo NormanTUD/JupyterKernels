@@ -3,6 +3,7 @@
 
 #wrkspace=/software/util/JupyterLab
 wrkspace=/home/s3811141/test/randomtest_53262/JupyterKernels/JL
+mkdir -p $wrkspace
 
 generate_progress_bar() {
 	local current_progress=$1
