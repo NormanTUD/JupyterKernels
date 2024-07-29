@@ -5,7 +5,7 @@
 	wrkspace=/home/s3811141/test/randomtest_53262/JupyterKernels/JL
 	mkdir -p $wrkspace
 
-	MODULE_BY_CLUSTER=(
+	declare -A MODULE_BY_CLUSTER=(
 		["barnard"]="release/23.10 ${BASE_MODULES}"
 		["alpha"]="release/24.04 CUDA/12.2.0 ${BASE_MODULES}"
 		["romeo"]="release/23.04 ${BASE_MODULES}"
@@ -494,28 +494,9 @@ check_libs(libnames)
 	if [[ -z ${MODULE_BY_CLUSTER[$cluster_name]} ]]; then
 		red_text "Cannot find \${MODULE_BY_CLUSTER[$cluster_name]}"
 		exit 30
-	else
-		echo "OK"
-		exit 0
 	fi
 
-	'
-	case $cluster_name in
-		barnard)
-			module_load "release 23.10 ${BASE_MODULES}"
-			;;
-		alpha)
-			#module load release/23.04 # Old release, but fails with GCC/12.3.0
-			module_load "release/24.04 CUDA/12.2.0 ${BASE_MODULES}"
-			;;
-		romeo)
-			module_load "release/23.04 ${BASE_MODULES}"
-			;;
-		*)
-			echo unknown cluster
-			exit
-	esac
-	'
+	module_load "${MODULE_BY_CLUSTER[$cluster_name]}"
 
 	# install packages
 	#pandas pandarallel
