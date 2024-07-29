@@ -235,10 +235,7 @@ function install_tensorflow_kernel() {
 			ppip $this_ml_lib
 		done
 
-		module load TensorFlow/2.9.1 2>/dev/null >/dev/null || {
-			red_text "\nCould not load TensorFlow/2.9.1\n"
-			exit 20
-		}
+		module_load "TensorFlow/2.9.1-CUDA-11.7.0"
 		#ppip tensorflow==2.14.1 # machine learning
 		# MLpy # not working
 		# Keras
