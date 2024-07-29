@@ -159,7 +159,7 @@ function ppip {
 	TO_INSTALL="$1"
 
 	green_reset_line "➤Installing $TO_INSTALL"
-	for $ELEM in $(echo "$TO_INSTALL"); do
+	for ELEM in $(echo "$TO_INSTALL"); do
 		green_reset_line "➤Installing $ELEM"
 		pip3 install $ELEM 2>/dev/null >/dev/null || {
 			red_text "\n❌Could not install $TO_INSTALL.\n"
