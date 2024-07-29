@@ -231,7 +231,7 @@ function tensorflow_kernel() {
 
 	install_base_sci_ml_pkgs
 
-	green_reset_line "Installing ML libs into venv..."
+	green_reset_line "Installing tensorflow libs into venv..."
 	for key in "${!ML_LIBS[@]}"; do
 		this_ml_lib=${ML_LIBS[$key]}
 		green_reset_line "Installing tensorflow lib $this_ml_lib"
