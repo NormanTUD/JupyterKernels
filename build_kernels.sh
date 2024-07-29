@@ -218,38 +218,42 @@ function install_base_sci_ml_pkgs () {
 function tensorflow_kernel() {
 	name="$1"
 
-	yellow_text "\nInstall Tensorflow Kernel $name\n"
-	local logfile=~/install_$(basename $name)-kernel-$cname.log
+	if [[ -d $name ]]; then
+		yellow_text "\n$cname/share/tensorflow already exists\n"
+	else
+		yellow_text "\nInstall Tensorflow Kernel $name\n"
+		local logfile=~/install_$(basename $name)-kernel-$cname.log
 
-	create_venv "$name" "$logfile"
+		create_venv "$name" "$logfile"
 
-	install_base_sci_ml_pkgs
+		install_base_sci_ml_pkgs
 
-	green_reset_line "Installing tensorflow libs into venv..."
-	for key in "${!ML_LIBS[@]}"; do
-		this_ml_lib=${ML_LIBS[$key]}
-		green_reset_line "Installing tensorflow lib $this_ml_lib"
-		ppip $this_ml_lib
-	done
+		green_reset_line "Installing tensorflow libs into venv..."
+		for key in "${!ML_LIBS[@]}"; do
+			this_ml_lib=${ML_LIBS[$key]}
+			green_reset_line "Installing tensorflow lib $this_ml_lib"
+			ppip $this_ml_lib
+		done
 
-	module load TensorFlow/2.9.1 2>/dev/null >/dev/null || {
-		red_text "Could not load TensorFlow/2.9.1"
-		exit 20
-	}
-	#ppip tensorflow==2.14.1 # machine learning
-	# MLpy # not working
-	# Keras
-	# Pytorch
+		module load TensorFlow/2.9.1 2>/dev/null >/dev/null || {
+			red_text "Could not load TensorFlow/2.9.1"
+			exit 20
+		}
+		#ppip tensorflow==2.14.1 # machine learning
+		# MLpy # not working
+		# Keras
+		# Pytorch
 
-	if [ "$cname" == "alpha" ]; then
-		ppip nvidia-cudnn-cu12
-		# tensorflow-gpu is not used anymore
+		if [ "$cname" == "alpha" ]; then
+			ppip nvidia-cudnn-cu12
+			# tensorflow-gpu is not used anymore
+		fi
+
+		check_libs "['bs4', 'scrapy', 'matplotlib', 'plotly', 'seaborn', 'numpy', 'scipy', 'sympy', 'pandarallel', 'dask', 'mpi4py', 'ipyparallel', 'netCDF4', 'xarray']"
+		check_libs "['pybrain', 'ray', 'theano', 'sklearn', 'nltk', 'tensorflow']"
+
+		deactivate
 	fi
-
-	check_libs "['bs4', 'scrapy', 'matplotlib', 'plotly', 'seaborn', 'numpy', 'scipy', 'sympy', 'pandarallel', 'dask', 'mpi4py', 'ipyparallel', 'netCDF4', 'xarray']"
-	check_libs "['pybrain', 'ray', 'theano', 'sklearn', 'nltk', 'tensorflow']"
-
-	deactivate
 }
 
 function pytorchv1_kernel(){
@@ -308,12 +312,16 @@ function pytorchv2_kernel(){
 }
 
 function pytorch_kernel(){
-	_path="$1"
-	yellow_text "\nInstalling pytorch kernel to $path\n"
-	local logfile=~/install_$(basename $1)-kernel-$cname.log
+	name="$1"
+	if [[ -d $name ]]; then
+		yellow_text "\nInstalling pytorch kernel to $name\n"
+		local logfile=~/install_$(basename $1)-kernel-$cname.log
 
-	#pytorchv1_kernel $1 # TODO! V1 Kernel für Alpha
-	pytorchv2_kernel $path
+		#pytorchv1_kernel $1 # TODO! V1 Kernel für Alpha
+		pytorchv2_kernel $name
+	else
+		yellow_text "\n$cname/share/pytorch already exists\n"
+	fi
 }
 
 
@@ -408,17 +416,9 @@ esac
 ###########################
 # Machine Learning kernel #
 ###########################
-if [ ! -d "$cname/share/tensorflow" ]; then
-	tensorflow_kernel "$cname/share/tensorflow"
-else
-	yellow_text "\n$cname/share/tensorflow already exists\n"
-fi
 
-if [ ! -d "$cname/share/pytorch" ]; then
-	pytorch_kernel "$cname/share/pytorch"
-else
-	yellow_text "\n$cname/share/pytorch already exists\n"
-fi
+tensorflow_kernel "$cname/share/tensorflow"
+pytorch_kernel "$cname/share/pytorch"
 
 # creating kernel inside workspaces
 #pytorch_kernel /beegfs/ws/1/$(whoami)-pytorch2_alpha_test
