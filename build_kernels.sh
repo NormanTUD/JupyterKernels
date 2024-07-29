@@ -136,9 +136,9 @@ function red_reset_line {
 function module_load(){
 	local MODULES="$1"
 	for module in $MODULES; do
-		green_reset_line "Loading module: $module"
+		green_reset_line "➤Loading module: $module"
 		module load $module >/dev/null 2>/dev/null || {
-			red_text "Failed to load $module"
+			red_text "❌Failed to load $module"
 		exit 4
 	}
 done
@@ -222,32 +222,32 @@ function create_venv {
 	local venv="$1"
 	local logfile="$2"
 
-	yellow_text "\nCreating virtual environment ($venv)\n"
+	yellow_text "\n➤Creating virtual environment ($venv)\n"
 
 	if [[ ! -e "$venv/bin/activate" ]]; then
-		green_reset_line "Trying to create virtualenv $venv"
+		green_reset_line "➤Trying to create virtualenv $venv"
 
 		python3 -m venv --system-site-packages $venv || {
-			red_text "\npython3 -m venv --system-site-packages $venv failed\n"
+			red_text "\n➤python3 -m venv --system-site-packages $venv failed\n"
 			exit 10
 		}
 
-		green_reset_line "Using logfile $logfile"
+		green_reset_line "➤Using logfile $logfile"
 
-		green_reset_line "Upgrading pip..."
+		green_reset_line "➤Upgrading pip..."
 		pip3 --upgrade pip 2>/dev/null >/dev/null
 	else
 		green_text "\n\n$venv already exists. Not re-creating it.\n"
 	fi
 
 
-	green_reset_line "Loading the previously created virtual environment"
+	green_reset_line "➤Loading the previously created virtual environment"
 	source $venv/bin/activate || {
 		red_text "\nSourcing $venv/bin/activate failed\n"
 		exit 11
 	}
 
-	echo -e "\nPython version: $(python --version)"
+	echo -e "\n➤Python version: $(python --version)"
 }
 
 function install_base_sci_ml_pkgs {
@@ -415,29 +415,17 @@ green_reset_line "Loading modules..."
 
 case $cname in
 	barnard)
-		module load release/23.10 >/dev/null 2>/dev/null || {
-			red_text "Failed to load release/23.10\n"
-			exit 4
-		}
+		module_load release/23.10
 		module_load "${MODULES}"
 		;;
 	alpha)
 		#module load release/23.04 || { # Old release, but fails with GCC/12.3.0
-		module load release/24.04 >/dev/null 2>/dev/null || {
-			red_text "Failed to load release/23.04\n"
-			exit 4
-		}
-		module load CUDA/12.2.0 >/dev/null 2>/dev/null || {
-			red_text "Failed to load CUDA/12.2.0\n"
-			exit 4
-		}
+		module_load release/24.04
+		module_load CUDA/12.2.0
 		module_load "${MODULES}"
 		;;
 	romeo)
-		module load release/23.04 >/dev/null 2>/dev/null || {
-			red_text "Failed to load release/23.04\n"
-			exit 4
-		}
+		module_load release/23.04
 		module_load "${MODULES}"
 		;;
 	*)
