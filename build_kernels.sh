@@ -165,10 +165,7 @@ function sci_pkgs(){
 
 	for key in "${!SCI_PKGS[@]}"; do
 		this_sci_lib=${SCI_PKGS[$key]}
-		ppip $this_sci_lib 2>/dev/null >/dev/null || {
-			red_text "\nFailed to install $this_sci_lib\n"
-			exit 13
-		}
+		ppip $this_sci_lib
 	done
 }
 
@@ -176,10 +173,7 @@ function ml_pkgs () {
 	green_reset_line "Installing ML libs into venv..."
 	for key in "${!ML_LIBS[@]}"; do
 		this_ml_lib=${ML_LIBS[$key]}
-		ppip $this_ml_lib >> $logfile || {
-			red_text "\nFailed to install $this_ml_lib\n"
-			exit 13
-		}
+		ppip $this_ml_lib
 	done
 }
 
@@ -235,10 +229,7 @@ function tensorflow_kernel() {
 	for key in "${!ML_LIBS[@]}"; do
 		this_ml_lib=${ML_LIBS[$key]}
 		green_reset_line "Installing tensorflow lib $this_ml_lib"
-		ppip $this_ml_lib >> $logfile || {
-			red_text "\nFailed to install $this_ml_lib\n"
-			exit 13
-		}
+		ppip $this_ml_lib
 	done
 
 	module load TensorFlow/2.9.1 2>/dev/null >/dev/null || {
