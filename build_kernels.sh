@@ -270,7 +270,7 @@ case $cname in
 			red_text "Failed to load release/23.04\n"
 			exit 4
 		}
-		module  load CUDA/12.2.0 >/dev/null || {
+		module load CUDA/12.2.0 >/dev/null || {
 			red_text "Failed to load CUDA/12.2.0\n"
 			exit 4
 		}
