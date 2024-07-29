@@ -143,7 +143,10 @@
 
 	function module_load(){
 		local MODULES="$1"
+
 		MAXMODNR=$(echo "$MODULES" | sed -e 's#\s#\n#g' | wc -l)
+
+		i=0
 		PBAR=$(generate_progress_bar $i $MAXMODNR)
 
 		green_reset_line "$PBAR➤Loading modules: $MODULES"
