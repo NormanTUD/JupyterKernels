@@ -213,16 +213,22 @@ EOF
 	python3 $cluster_name/share/check_libs.py #| tee $logfile
 }
 
+function check_base_libs {
+	check_libs "bs4 scrapy matplotlib plotly seaborn numpy scipy sympy pandarallel dask mpi4py ipyparallel netCDF4 xarray pybrain ray theano sklearn nltk"
+}
+
 function check_tensorflow {
 	yellow_text "\nCheck tensorflow...\n"
 
-	check_libs "bs4 scrapy matplotlib plotly seaborn numpy scipy sympy pandarallel dask mpi4py ipyparallel netCDF4 xarray pybrain ray theano sklearn nltk tensorflow"
+	check_base_libs
+	check_libs "tensorflow"
 }
 
 function check_torch(){
 	yellow_text "\nCheck torch...\n"
 
-	check_libs "bs4 scrapy matplotlib plotly seaborn numpy scipy sympy pandarallel dask mpi4py ipyparallel netCDF4 xarray pybrain ray theano sklearn nltk torch torchvision torchaudio"
+	check_base_libs
+	check_libs "torch torchvision torchaudio"
 }
 
 
@@ -300,7 +306,7 @@ function install_tensorflow_kernel {
 
 		install_base_sci_ml_pkgs
 
-		green_reset_line "➤Installing tensorflow libs into venv..."
+		yellow_text "\n➤Installing tensorflow libs into venv...\n"
 		for key in "${!ML_LIBS[@]}"; do
 			this_ml_lib=${ML_LIBS[$key]}
 			green_reset_line "➤Installing tensorflow lib $this_ml_lib"
