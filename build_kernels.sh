@@ -36,16 +36,20 @@ Color_Off='\033[0m'
 Green='\033[0;32m'
 Red='\033[0;31m'
 
+function echoerr {
+	echo -ne "$@" 1>&2
+}
+
 function red_text {
-	echo -ne "${Red}$1${Color_Off}"
+	echoerr "${Red}$1${Color_Off}"
 }
 
 function green_text {
-	echo -ne "${Green}$1${Color_Off}"
+	echoerr "${Green}$1${Color_Off}"
 }
 
 function yellow_text {
-	echo -ne "\e\033[0;33m$1\e[0m"
+	echoerr "\e\033[0;33m$1\e[0m"
 }
 
 function _tput {
