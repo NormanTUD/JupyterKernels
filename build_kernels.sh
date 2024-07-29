@@ -1,6 +1,31 @@
 #!/bin/bash
 # install python virtual environment
 
+
+Color_Off='\033[0m'
+Green='\033[0;32m'
+Red='\033[0;31m'
+
+function red_text {
+	echo -ne "${Red}$1${Color_Off}\n"
+}
+
+function green {
+	echo -ne "${Green}$1${Color_Off}\n"
+}
+
+function green_reset_line {
+	_tput cr
+	_tput el
+	green "$1"
+}
+
+function red_reset_line {
+	_tput cr
+	_tput el
+	red_text "$1"
+}
+
 wrkspace=/software/util/JupyterLab
 
 ML_LIBS="pybrain ray theano scikit-learn nltk"
@@ -14,18 +39,18 @@ PYTHONNOUSERSITE=true
 hostnamed=$(hostname -d)
 
 if ! echo "$hostnamed" | grep "hpc.tu-dresden.de" 2>/dev/null >/dev/null; then
-	echo "You must run this on the clusters of the HPC system of the TU Dresden."
+	red_text "You must run this on the clusters of the HPC system of the TU Dresden."
 	exit 1
 fi
 
 if [[ -z $LMOD_CMD ]]; then
-	echo "\$LMOD_CMD is not defined. Cannot run this script without module/lmod"
+	red_text "\$LMOD_CMD is not defined. Cannot run this script without module/lmod"
 	exit 2
 fi
 
 if [[ ! -e $LMOD_CMD ]]; then
-	echo "\$LMOD_CMD ($LMOD_CMD) file cannot be found. Cannot run this script without module/lmod"
-	exit 2
+	red_text "\$LMOD_CMD ($LMOD_CMD) file cannot be found. Cannot run this script without module/lmod"
+	exit 3
 fi
 
 cname=$(basename -s .hpc.tu-dresden.de $hostnamed)
