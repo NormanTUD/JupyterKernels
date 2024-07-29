@@ -5,12 +5,12 @@
 	wrkspace=/home/s3811141/test/randomtest_53262/JupyterKernels/JL
 	mkdir -p $wrkspace
 
-	BASE_MODULES="GCC/12.3.0 OpenMPI/4.1.5 Python/3.11.3"
+	MODULES_THAT_ARE_THE_SAME_EVERYWHERE="GCC/12.3.0 OpenMPI/4.1.5 Python/3.11.3"
 
 	declare -A MODULE_BY_CLUSTER=(
-		["barnard"]="release/23.10 ${BASE_MODULES}"
-		["alpha"]="release/24.04 CUDA/12.2.0 ${BASE_MODULES}"
-		["romeo"]="release/23.04 ${BASE_MODULES}"
+		["barnard"]="release/23.10 ${MODULES_THAT_ARE_THE_SAME_EVERYWHERE}"
+		["alpha"]="release/24.04 CUDA/12.2.0 ${MODULES_THAT_ARE_THE_SAME_EVERYWHERE}"
+		["romeo"]="release/23.04 ${MODULES_THAT_ARE_THE_SAME_EVERYWHERE}"
 	)
 
 	function join_by {
