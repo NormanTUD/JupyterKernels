@@ -202,7 +202,7 @@
 		MODS="$1"
 		MODS=$(echo "$MODS" | sed -e 's#\s\s*# #g' -e 's#\s#, #g' -e "s#^#'#" -e "s#\$#'#")
 		yellow_text "\nChecking libs ($MODS)...\n"
-		cat > $cluster_name/share/check_libs.py <<EOF
+		echo "
 from importlib import import_module
 
 libnames = [$MODS]
@@ -212,13 +212,14 @@ def check_libs(libnames):
         try:
             import_module(libnames[x])
         except:
-            print(libnames[x] + " - failed")
+            print(libnames[x] + ' - failed')
         else:
-            print(libnames[x] + " - ok")
+            print(libnames[x] + ' - ok')
 
 check_libs(libnames)
-EOF
-		python3 $cluster_name/share/check_libs.py #| tee $logfile
+" | python3
+		exit_code=$?
+		echo "Exit-Code for check lib: $exit_code"
 	}
 
 	function check_base_libs {
