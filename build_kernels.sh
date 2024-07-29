@@ -290,11 +290,13 @@ case $cname in
 esac
 
 if [[ ! -d "$wrkspace" ]]; then
+	echo ""
 	red_text "workspace $wrkspace cannot be found. Cannot continue."
 	exit 6
 fi
 
 if [[ ! -w "$wrkspace" ]]; then
+	echo ""
 	red_text "workspace $wrkspace is not writable. Cannot continue."
 	exit 7
 fi
