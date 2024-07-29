@@ -11,6 +11,17 @@ ML_LIBS=(
 	"scikit-learn nltk"
 )
 
+BASE_PKGS=(
+	"ipykernel"
+	"ipywidgets"
+	"beautifulsoup4"
+	"scrapy"
+	"nbformat==5.0.2"
+	"matplotlib"
+	"plotly"
+	"seaborn"
+)
+
 SCI_PKGS=(
 	"ipykernel"
 	"numpy"
@@ -22,17 +33,6 @@ SCI_PKGS=(
 	"ipyparallel"
 	"netcdf4"
 	"xarray[complete]"
-)
-
-BASE_PKGS=(
-	"ipykernel"
-	"ipywidgets"
-	"beautifulsoup4"
-	"scrapy"
-	"nbformat==5.0.2"
-	"matplotlib"
-	"plotly"
-	"seaborn"
 )
 
 MODULES="GCC/12.3.0 OpenMPI/4.1.5 Python/3.11.3"
@@ -191,7 +191,7 @@ function ml_pkgs () {
 	done
 }
 
-function create_venv(){
+function create_venv() {
 	local venv="$1"
 	local logfile="$2"
 
@@ -217,7 +217,13 @@ function create_venv(){
 	echo -e "\nPython version: $(python --version)"
 }
 
-function tensorflow_kernel(){
+function install_base_sci_ml_pkgs () {
+	base_pkgs
+	sci_pkgs
+	ml_pkgs
+}
+
+function tensorflow_kernel() {
 	name="$1"
 
 	yellow_text "\nInstall Tensorflow Kernel $name\n"
@@ -225,9 +231,7 @@ function tensorflow_kernel(){
 
 	create_venv "$name" "$logfile"
 
-	base_pkgs
-	sci_pkgs
-	ml_pkgs
+	install_base_sci_ml_pkgs
 
 	green_reset_line "Installing ML libs into venv..."
 	for key in "${!ML_LIBS[@]}"; do
@@ -249,7 +253,7 @@ function tensorflow_kernel(){
 	# Pytorch
 
 	if [ "$cname" == "alpha" ]; then
-		pp nvidia-cudnn-cu12
+		ppip nvidia-cudnn-cu12
 		# tensorflow-gpu is not used anymore
 	fi
 
@@ -269,9 +273,7 @@ function pytorchv1_kernel(){
 
 	create_venv "$1_v1" $logfile
 
-	base_pkgs
-	sci_pkgs
-	ml_pkgs
+	install_base_sci_ml_pkgs
 
 	if [ "$cname" == "alpha" ]; then
 		#ppip nvidia-cudnn-cu12
@@ -299,9 +301,7 @@ function pytorchv2_kernel(){
 
 	create_venv "$1_v2" "$logfile"
 
-	base_pkgs
-	sci_pkgs
-	ml_pkgs
+	install_base_sci_ml_pkgs
 
 
 	if [ "$cname" == "alpha" ]; then
