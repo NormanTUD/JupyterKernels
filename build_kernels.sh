@@ -18,27 +18,31 @@ echo "Cluster: $cname"
 
 
 function module_load(){
-  local MODULES="$1"
-  for module in $MODULES; do
-    echo "Loading module: $module"
-    module load $module
-  done
+	local MODULES="$1"
+	for module in $MODULES; do
+		echo "Loading module: $module"
+		module load $module
+	done
 }
 
 module reset
 case $cname in
 	barnard)
-	module load release/23.10
-	module_load "${MODULES}";;
+		module load release/23.10
+		module_load "${MODULES}"
+		;;
 	alpha)
-	module load release/23.04
-	module_load "${MODULES}"
-        module load CUDA/12.0.0;;
+		module load release/23.04
+		module_load "${MODULES}"
+		module load CUDA/12.0.0
+		;;
 	romeo)
-	module load release/23.04
-	module_load "${MODULES}";;
+		module load release/23.04
+		module_load "${MODULES}"
+		;;
 	*)
-	echo unknown cluster; exit
+		echo unknown cluster
+		exit
 esac
 
 function check_libs(){
@@ -58,7 +62,7 @@ def check_libs(libnames):
 
 check_libs(libnames)
 EOF
-  python3 share/check_libs.py #| tee $logfile
+	python3 share/check_libs.py #| tee $logfile
 }
 
 function check_torch(){
@@ -74,133 +78,131 @@ check_libs "['pybrain', 'ray', 'theano', 'sklearn', 'nltk',
 
 # install base packages
 function base_pkgs(){
-  pip install ipykernel ipywidgets
-  pip install beautifulsoup4 scrapy     # web scrape tools
-  pip install nbformat==5.0.2 # for plotly
-  pip install matplotlib plotly seaborn # plot/data visualization tools
+	pip install ipykernel ipywidgets
+	pip install beautifulsoup4 scrapy     # web scrape tools
+	pip install nbformat==5.0.2 # for plotly
+	pip install matplotlib plotly seaborn # plot/data visualization tools
 }
 
 function sci_pkgs(){
-  pip install ipykernel
-  pip install numpy scipy sympy # math libs
-  pip install pandarallel dask mpi4py ipyparallel
-  pip install netcdf4
-  pip install "xarray[complete]"
+	pip install ipykernel
+	pip install numpy scipy sympy # math libs
+	pip install pandarallel dask mpi4py ipyparallel
+	pip install netcdf4
+	pip install "xarray[complete]"
 }
 
 
 function create_venv(){
-  local venv="$1"
-  local logfile=~/install_$(basename $1)-kernel-$cname.log
-  python3 -m venv --system-site-packages $venv
-  source $venv/bin/activate
-  echo $logfile
+	local venv="$1"
+	local logfile=~/install_$(basename $1)-kernel-$cname.log
+	python3 -m venv --system-site-packages $venv
+	source $venv/bin/activate
+	echo $logfile
 
-  pip install --upgrade pip > $logfile
+	pip install --upgrade pip > $logfile
 
-  python --version
+	python --version
 }
 
 function tensor_kernel(){
-  local logfile=~/install_$(basename $1)-kernel-$cname.log
+	local logfile=~/install_$(basename $1)-kernel-$cname.log
 
-  create_venv "$1"
+	create_venv "$1"
 
-  base_pkgs >> $logfile
-  sci_pkgs >> $logfile
+	base_pkgs >> $logfile
+	sci_pkgs >> $logfile
 
 
-  pip install $ML_LIBS
-  module load TensorFlow/2.9.1
-  #pip install tensorflow==2.14.1 # machine learning
-  # MLpy # not working
-  # Keras
-  # Pytorch
+	pip install $ML_LIBS
+	module load TensorFlow/2.9.1
+	#pip install tensorflow==2.14.1 # machine learning
+	# MLpy # not working
+	# Keras
+	# Pytorch
 
-  if [ "$cname" == "alpha" ]; then
-    pip install nvidia-cudnn-cu12
-    # tensorflow-gpu is not used anymore
-  fi
+	if [ "$cname" == "alpha" ]; then
+		pip install nvidia-cudnn-cu12
+		# tensorflow-gpu is not used anymore
+	fi
 
-  check_libs "['bs4', 'scrapy',
-            'matplotlib', 'plotly', 'seaborn',
-            'numpy', 'scipy', 'sympy',
-            'pandarallel', 'dask', 'mpi4py', 'ipyparallel',
-            'netCDF4', 'xarray']"
-  check_libs "['pybrain', 'ray', 'theano', 'sklearn', 'nltk',
-            'tensorflow']"
+	check_libs "['bs4', 'scrapy',
+	    'matplotlib', 'plotly', 'seaborn',
+	    'numpy', 'scipy', 'sympy',
+	    'pandarallel', 'dask', 'mpi4py', 'ipyparallel',
+	    'netCDF4', 'xarray']"
+	check_libs "['pybrain', 'ray', 'theano', 'sklearn', 'nltk',
+	    'tensorflow']"
 
-  deactivate
+	deactivate
 }
 
 function pytorchv1_kernel(){
-  local logfile=~/install_$(basename $1)_v1-kernel-$cname.log
-  #local torch_ver=1.11.0 # from pip
-  local torch_ver=1.13.1 # from module system
+	local logfile=~/install_$(basename $1)_v1-kernel-$cname.log
+	#local torch_ver=1.11.0 # from pip
+	local torch_ver=1.13.1 # from module system
 
-  module load PyTorch/$torch_ver
+	module load PyTorch/$torch_ver
 
-  create_venv "$1_v1"
+	create_venv "$1_v1"
 
-  base_pkgs >> $logfile
-  sci_pkgs >> $logfile
+	base_pkgs >> $logfile
+	sci_pkgs >> $logfile
 
-  pip install $ML_LIBS
+	pip install $ML_LIBS
 
-  if [ "$cname" == "alpha" ]; then
-    #pip install nvidia-cudnn-cu12
-    module load cuDNN/8.6.0.163-CUDA-11.8.0
-    pip3 install torchvision torchaudio
-  else
-    #pip3 install torch==$torch_ver torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
-    pip3 install torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
-  fi
+	if [ "$cname" == "alpha" ]; then
+		#pip install nvidia-cudnn-cu12
+		module load cuDNN/8.6.0.163-CUDA-11.8.0
+		pip3 install torchvision torchaudio
+	else
+		#pip3 install torch==$torch_ver torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+		pip3 install torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+	fi
 
-  check_torch
+	check_torch
 
-  deactivate
-
+	deactivate
 }
+
 function pytorchv2_kernel(){
-  local logfile=~/install_$(basename $1_v2)-kernel-$cname.log
-  local torch_ver=2.1.2-CUDA-12.1.1
+	local logfile=~/install_$(basename $1_v2)-kernel-$cname.log
+	local torch_ver=2.1.2-CUDA-12.1.1
 
-  module load PyTorch/$torch_ver
+	module load PyTorch/$torch_ver
 
-  create_venv "$1_v2"
+	create_venv "$1_v2"
 
-  base_pkgs >> $logfile
-  sci_pkgs >> $logfile
+	base_pkgs >> $logfile
+	sci_pkgs >> $logfile
 
-  pip install $ML_LIBS
+	pip install $ML_LIBS
 
-  if [ "$cname" == "alpha" ]; then
-    #pip install nvidia-cudnn-cu12
-    #module load cuDNN/8.6.0.163-CUDA-11.8.0
-    # tensorflow-gpu is not used anymore
-    pip3 install torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-  else
-    pip3 install torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
-  fi
+	if [ "$cname" == "alpha" ]; then
+		#pip install nvidia-cudnn-cu12
+		#module load cuDNN/8.6.0.163-CUDA-11.8.0
+		# tensorflow-gpu is not used anymore
+		pip3 install torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+	else
+		pip3 install torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+	fi
 
-  check_torch
+	check_torch
 
-  deactivate
-
+	deactivate
 }
 
 function pytorch_kernel(){
-  local logfile=~/install_$(basename $1)-kernel-$cname.log
+	local logfile=~/install_$(basename $1)-kernel-$cname.log
 
-  pytorchv1_kernel $1
-  pytorchv2_kernel $1
+	pytorchv1_kernel $1
+	pytorchv2_kernel $1
 }
 
 
 set -e
 
 cd $wrkspace
-
 
 # install packages
 #pandas pandarallel
@@ -216,11 +218,10 @@ cd $wrkspace
 # Machine Learning kernel #
 ###########################
 if [ ! -d "$cname/share/tensorflow" ]; then
-  tensor_kernel "$cname/share/tensorflow"
+	tensor_kernel "$cname/share/tensorflow"
 fi
 
 pytorch_kernel "$cname/share/pytorch"
 
 # creating kernel inside workspaces
 #pytorch_kernel /beegfs/ws/1/$(whoami)-pytorch2_alpha_test
-
