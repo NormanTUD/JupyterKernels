@@ -107,9 +107,9 @@ function module_load(){
 		green_reset_line "Loading module: $module"
 		module load $module >/dev/null 2>/dev/null || {
 			red_text "Failed to load $module"
-			exit 4
-		}
-	done
+		exit 4
+	}
+done
 }
 
 function ppip {
@@ -118,8 +118,8 @@ function ppip {
 	green_reset_line "Installing $TO_INSTALL"
 	pip3 install $TO_INSTALL 2>/dev/null >/dev/null || {
 		red_text "Could not install $TO_INSTALL."
-		exit 30
-	}
+	exit 30
+}
 }
 
 function check_libs(){
@@ -131,16 +131,16 @@ libnames = $1
 
 def check_libs(libnames):
     for x in range(len(libnames)):
-        try:
-            import_module(libnames[x])
-        except:
-            print(libnames[x] + " - failed")
-        else:
-            print(libnames[x] + " - ok")
+	try:
+	    import_module(libnames[x])
+	except:
+	    print(libnames[x] + " - failed")
+    else:
+	    print(libnames[x] + " - ok")
 
 check_libs(libnames)
 EOF
-	python3 $wrkspace/share/check_libs.py #| tee $logfile
+python3 $wrkspace/share/check_libs.py #| tee $logfile
 }
 
 function check_torch(){
@@ -192,22 +192,28 @@ function create_venv() {
 
 	yellow_text "\nCreating virtual environment ($venv)\n"
 
-	green_reset_line "Trying to create virtualenv $venv"
+	if [[ ! -e "$venv/bin/activate" ]]
+		green_reset_line "Trying to create virtualenv $venv"
 
-	python3 -m venv --system-site-packages $venv || {
-		red_text "\npython3 -m venv --system-site-packages $venv failed\n"
-		exit 10
-	}
+		python3 -m venv --system-site-packages $venv || {
+			red_text "\npython3 -m venv --system-site-packages $venv failed\n"
+			exit 10
+		}
+
+		green_reset_line "Using logfile $logfile"
+
+		green_reset_line "Upgrading pip..."
+		pip3 --upgrade pip 2>/dev/null >/dev/null
+	else
+		green_text "\n$venv already exists. Not re-creating it.\n"
+	fi
+
 
 	green_reset_line "Loading the previously created virtual environment"
 	source $venv/bin/activate || {
 		red_text "\nSourcing $venv/bin/activate failed\n"
 		exit 11
 	}
-	green_reset_line "Using logfile $logfile"
-
-	green_reset_line "Upgrading pip..."
-	pip3 --upgrade pip 2>/dev/null >/dev/null
 
 	echo -e "\nPython version: $(python --version)"
 }
