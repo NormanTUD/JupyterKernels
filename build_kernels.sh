@@ -431,7 +431,7 @@ check_libs(libnames)
 
 	function install_pytorch_kernel {
 		_path="$1"
-		if [[ -d "$_path" ]]; then
+		if [[ ! -d "$_path" ]]; then
 			yellow_text "\n➤Installing pytorch kernel to $_path\n"
 			local logfile=~/install_$(basename $1)-kernel-$cluster_name.log
 
