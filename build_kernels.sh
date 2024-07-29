@@ -60,7 +60,7 @@ echo "Cluster: $cname"
 function module_load(){
 	local MODULES="$1"
 	for module in $MODULES; do
-		echo "Loading module: $module"
+		green_reset_line "Loading module: $module"
 		module load $module
 	done
 }
