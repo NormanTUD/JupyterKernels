@@ -430,7 +430,7 @@ check_libs(libnames)
 
 	function install_pytorch_kernel(){
 		name="$1"
-		if [[ -d $name ]]; then
+		if [[ -d "$wrkspace/$cluster_name/share/pytorch" ]]; then
 			yellow_text "\n➤Installing pytorch kernel to $name\n"
 			local logfile=~/install_$(basename $1)-kernel-$cluster_name.log
 
