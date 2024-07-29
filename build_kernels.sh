@@ -13,6 +13,13 @@
 		["romeo"]="release/23.04 ${MODULES_THAT_ARE_THE_SAME_EVERYWHERE}"
 	)
 
+	declare -A MODULES=(
+		["ml_libs"]="pybrain ray theano scikit-learn nltk"
+		["base_pks"]="ipykernel ipywidgets beautifulsoup4 scrapy nbformat==5.0.2 matplotlib plotly seaborn"
+		["sci_pks"]="ipykernel numpy scipy sympy pandaralleldask mpi4py ipyparallel netcdf4 xarray[complete]"
+
+	)
+
 	function join_by {
 		local d=${1-} f=${2-}
 		if shift 2; then
@@ -53,7 +60,8 @@
 		"pybrain"
 		"ray"
 		"theano"
-		"scikit-learn nltk"
+		"scikit-learn"
+		"nltk"
 	)
 
 	BASE_PKGS_LIST=(
