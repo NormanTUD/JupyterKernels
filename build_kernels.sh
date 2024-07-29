@@ -292,13 +292,13 @@ esac
 
 if [[ ! -d "$wrkspace" ]]; then
 	echo ""
-	red_text "workspace $wrkspace cannot be found. Cannot continue."
+	red_text "workspace $wrkspace cannot be found. Cannot continue.\n"
 	exit 6
 fi
 
 if [[ ! -w "$wrkspace" ]]; then
 	echo ""
-	red_text "workspace $wrkspace is not writable. Cannot continue."
+	red_text "workspace $wrkspace is not writable. Cannot continue.\n"
 	exit 7
 fi
 
