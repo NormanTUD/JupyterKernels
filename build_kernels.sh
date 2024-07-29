@@ -215,7 +215,7 @@ function install_base_sci_ml_pkgs () {
 	ml_pkgs
 }
 
-function tensorflow_kernel() {
+function install_tensorflow_kernel() {
 	name="$1"
 
 	if [[ -d $name ]]; then
@@ -311,7 +311,7 @@ function pytorchv2_kernel(){
 	deactivate
 }
 
-function pytorch_kernel(){
+function install_pytorch_kernel(){
 	name="$1"
 	if [[ -d $name ]]; then
 		yellow_text "\nInstalling pytorch kernel to $name\n"
@@ -417,8 +417,8 @@ esac
 # Machine Learning kernel #
 ###########################
 
-tensorflow_kernel "$cname/share/tensorflow"
-pytorch_kernel "$cname/share/pytorch"
+install_tensorflow_kernel "$cname/share/tensorflow"
+install_pytorch_kernel "$cname/share/pytorch"
 
 # creating kernel inside workspaces
-#pytorch_kernel /beegfs/ws/1/$(whoami)-pytorch2_alpha_test
+#install_pytorch_kernel /beegfs/ws/1/$(whoami)-pytorch2_alpha_test
