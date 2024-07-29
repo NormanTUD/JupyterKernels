@@ -43,7 +43,7 @@ function _tput {
 function green_reset_line {
 	_tput cr
 	_tput el
-	green "$1"
+	green_text "$1"
 }
 
 function red_reset_line {
