@@ -357,8 +357,10 @@ module reset >/dev/null 2>/dev/null || {
 	red_text "Failed to reset modules\n"
 	exit 4
 }
+
 green_reset_line "Modules resetted"
 
+green_reset_line "Loading modules..."
 case $cname in
 	barnard)
 		module load release/23.10 >/dev/null 2>/dev/null || {
