@@ -131,12 +131,12 @@ libnames = $1
 
 def check_libs(libnames):
     for x in range(len(libnames)):
-	try:
-	    import_module(libnames[x])
-	except:
-	    print(libnames[x] + " - failed")
+        try:
+            import_module(libnames[x])
+        except:
+            print(libnames[x] + " - failed")
     else:
-	    print(libnames[x] + " - ok")
+        print(libnames[x] + " - ok")
 
 check_libs(libnames)
 EOF
