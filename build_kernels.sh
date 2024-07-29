@@ -253,13 +253,8 @@ function tensorflow_kernel(){
 		# tensorflow-gpu is not used anymore
 	fi
 
-	check_libs "['bs4', 'scrapy',
-	    'matplotlib', 'plotly', 'seaborn',
-	    'numpy', 'scipy', 'sympy',
-	    'pandarallel', 'dask', 'mpi4py', 'ipyparallel',
-	    'netCDF4', 'xarray']"
-	check_libs "['pybrain', 'ray', 'theano', 'sklearn', 'nltk',
-	    'tensorflow']"
+	check_libs "['bs4', 'scrapy', 'matplotlib', 'plotly', 'seaborn', 'numpy', 'scipy', 'sympy', 'pandarallel', 'dask', 'mpi4py', 'ipyparallel', 'netCDF4', 'xarray']"
+	check_libs "['pybrain', 'ray', 'theano', 'sklearn', 'nltk', 'tensorflow']"
 
 	deactivate
 }
