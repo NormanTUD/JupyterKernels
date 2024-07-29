@@ -308,11 +308,12 @@ function pytorchv2_kernel(){
 }
 
 function pytorch_kernel(){
-	yellow_text "\nInstalling pytorch kernel\n"
+	_path="$1"
+	yellow_text "\nInstalling pytorch kernel to $path\n"
 	local logfile=~/install_$(basename $1)-kernel-$cname.log
 
 	#pytorchv1_kernel $1 # TODO! V1 Kernel für Alpha
-	pytorchv2_kernel $1
+	pytorchv2_kernel $path
 }
 
 
@@ -361,6 +362,7 @@ module reset >/dev/null 2>/dev/null || {
 green_reset_line "Modules resetted"
 
 green_reset_line "Loading modules..."
+
 case $cname in
 	barnard)
 		module load release/23.10 >/dev/null 2>/dev/null || {
