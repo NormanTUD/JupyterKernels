@@ -210,7 +210,7 @@ function base_pkgs(){
 	BASE_PKGS_STR=$(join_by ", " $BASE_PKGS)
 	yellow_text "\n\n➤Installing base packages $BASE_PKGS_STR\n"
 
-	ppip $BASE_PKGS_STR
+	ppip "$BASE_PKGS_STR"
 }
 
 function sci_pkgs(){
