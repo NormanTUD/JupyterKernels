@@ -196,21 +196,21 @@
 		MODS=$(echo "$MODS" | sed -e 's#\s\s*# #g' -e 's#\s#, #g' -e "s#^#'#" -e "s#\$#'#")
 		yellow_text "\nChecking libs ($MODS)...\n"
 		cat > $cluster_name/share/check_libs.py <<EOF
-	from importlib import import_module
+from importlib import import_module
 
-	libnames = [$MODS]
+libnames = [$MODS]
 
-	def check_libs(libnames):
-	    for x in range(len(libnames)):
-		try:
-		    import_module(libnames[x])
-		except:
-		    print(libnames[x] + " - failed")
-	    else:
-		print(libnames[x] + " - ok")
+def check_libs(libnames):
+    for x in range(len(libnames)):
+	try:
+	    import_module(libnames[x])
+	except:
+	    print(libnames[x] + " - failed")
+    else:
+	print(libnames[x] + " - ok")
 
-	check_libs(libnames)
-	EOF
+check_libs(libnames)
+EOF
 		python3 $cluster_name/share/check_libs.py #| tee $logfile
 	}
 
