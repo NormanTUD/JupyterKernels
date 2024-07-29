@@ -155,18 +155,39 @@ function module_load(){
 	green_reset_line "✅Loaded modules: $MODULES"
 }
 
-function ppip {
+function ppip_complex {
 	TO_INSTALL="$1"
 
 	green_reset_line "➤Installing $TO_INSTALL"
+	green_reset_line "➤Installing $ELEM"
+
+	pip3 install $TO_INSTALL 2>/dev/null >/dev/null || {
+		red_text "\n❌Could not install $TO_INSTALL.\n"
+		exit 30
+	}
+
+	green_reset_line "✅Module $TO_INSTALL installed."
+}
+
+function ppip {
+	TO_INSTALL="$1"
+
+	i=0
+	PBAR=$(generate_progress_bar $i $(echo "$TO_INSTALL" | sed -e 's#\s#\n#g' | wc -l))
+	green_reset_line "$PBAR➤Installing $TO_INSTALL"
+
 	for ELEM in $(echo "$TO_INSTALL"); do
-		green_reset_line "➤Installing $ELEM"
+		PBAR=$(generate_progress_bar $i $(echo "$TO_INSTALL" | sed -e 's#\s#\n#g' | wc -l))
+		green_reset_line "$PBAR➤Installing $ELEM"
 		pip3 install $ELEM 2>/dev/null >/dev/null || {
 			red_text "\n❌Could not install $TO_INSTALL.\n"
 			exit 30
 		}
+		i=$(($i+1))
 	done
-	green_reset_line "✅Modules $TO_INSTALL installed."
+
+	PBAR=$(generate_progress_bar $i $(echo "$TO_INSTALL" | sed -e 's#\s#\n#g' | wc -l))
+	green_reset_line "$PBAR✅Modules $TO_INSTALL installed."
 }
 
 function check_libs(){
@@ -322,11 +343,11 @@ function pytorchv1_kernel(){
 
 	if [ "$cluster_name" == "alpha" ]; then
 		#ppip nvidia-cudnn-cu12
-		module load cuDNN/8.6.0.163-CUDA-11.8.0
+		module_load cuDNN/8.6.0.163-CUDA-11.8.0
 		ppip torchvision torchaudio
 	else
 		#ppip torch==$torch_ver torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
-		ppip torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+		ppip_complex torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 	fi
 
 	check_torch
@@ -353,9 +374,9 @@ function pytorchv2_kernel(){
 		#ppip nvidia-cudnn-cu12
 		#module load cuDNN/8.6.0.163-CUDA-11.8.0
 		# tensorflow-gpu is not used anymore
-		ppip torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+		ppip_complex torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 	else
-		ppip torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+		ppip_complex torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 	fi
 
 	check_torch
@@ -395,7 +416,7 @@ if [[ ! -e $LMOD_CMD ]]; then
 fi
 
 cluster_name=$(basename -s .hpc.tu-dresden.de $hostnamed)
-green_text "Cluster: $cluster_name\n"
+green_text "Detected cluster: $cluster_name\n"
 #; sleep 1
 
 
@@ -414,6 +435,7 @@ fi
 cd $wrkspace
 
 green_reset_line "Resetting modules..."
+
 module reset >/dev/null 2>/dev/null || {
 	red_text "Failed to reset modules\n"
 	exit 4
@@ -421,7 +443,7 @@ module reset >/dev/null 2>/dev/null || {
 
 green_reset_line "Modules resetted"
 
-green_text "\n➤Loading modules for $cluster_name...\n"
+green_reset_line "➤Loading modules for $cluster_name..."
 
 case $cluster_name in
 	barnard)
