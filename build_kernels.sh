@@ -112,6 +112,16 @@ function module_load(){
 	done
 }
 
+function ppip {
+	TO_INSTALL="$1"
+
+	green_reset_line "Installing $TO_INSTALL"
+	pip3 install $TO_INSTALL 2>/dev/null 2>/dev/null || {
+		red_text "Could not install $TO_INSTALL."
+		exit 30
+	}
+}
+
 function check_libs(){
 	yellow_text "\nCheck libs...\n"
 	cat > $wrkspace/share/check_libs.py <<EOF
@@ -152,10 +162,7 @@ function base_pkgs(){
 	for key in "${!BASE_PKGS[@]}"; do
 		this_base_lib=$BASE_PKGS[$key]
 		green_reset_line "Installing $this_base_lib"
-		pip install $this_base_lib 2>/dev/null >/dev/null || {
-			red_text "\nFailed to install $this_base_lib\n"
-			exit 13
-		}
+		ppip $this_base_lib
 	done
 }
 
@@ -165,7 +172,7 @@ function sci_pkgs(){
 	for key in "${!SCI_PKGS[@]}"; do
 		this_sci_lib=$SCI_PKGS[$key]
 		green_reset_line "Installing $this_sci_lib"
-		pip install $this_sci_lib 2>/dev/null >/dev/null || {
+		ppip $this_sci_lib 2>/dev/null >/dev/null || {
 			red_text "\nFailed to install $this_sci_lib\n"
 			exit 13
 		}
@@ -177,7 +184,7 @@ function ml_pkgs () {
 	for key in "${!ML_LIBS[@]}"; do
 		this_ml_lib=$ML_LIBS[$key]
 		green_reset_line "Installing $this_ml_lib"
-		pip install $this_ml_lib >> $logfile || {
+		ppip $this_ml_lib >> $logfile || {
 			red_text "\nFailed to install $this_ml_lib\n"
 			exit 13
 		}
@@ -205,7 +212,7 @@ function create_venv(){
 	green_reset_line "Using logfile $logfile"
 
 	green_reset_line "Upgrading pip..."
-	pip install --upgrade pip >> $logfile
+	ppip --upgrade pip >> $logfile
 
 	echo -e "\nPython version: $(python --version)"
 }
@@ -226,7 +233,7 @@ function tensorflow_kernel(){
 	for key in "${!ML_LIBS[@]}"; do
 		this_ml_lib=$ML_LIBS[$key]
 		green_reset_line "Installing $this_ml_lib"
-		pip install $this_ml_lib >> $logfile || {
+		ppip $this_ml_lib >> $logfile || {
 			red_text "\nFailed to install $this_ml_lib\n"
 			exit 13
 		}
@@ -236,13 +243,13 @@ function tensorflow_kernel(){
 		red_text "Could not load TensorFlow/2.9.1"
 		exit 20
 	}
-	#pip install tensorflow==2.14.1 # machine learning
+	#ppip tensorflow==2.14.1 # machine learning
 	# MLpy # not working
 	# Keras
 	# Pytorch
 
 	if [ "$cname" == "alpha" ]; then
-		pip install nvidia-cudnn-cu12
+		pp nvidia-cudnn-cu12
 		# tensorflow-gpu is not used anymore
 	fi
 
@@ -272,12 +279,12 @@ function pytorchv1_kernel(){
 	ml_pkgs
 
 	if [ "$cname" == "alpha" ]; then
-		#pip install nvidia-cudnn-cu12
+		#ppip nvidia-cudnn-cu12
 		module load cuDNN/8.6.0.163-CUDA-11.8.0
-		pip3 install torchvision torchaudio
+		ppip torchvision torchaudio
 	else
-		#pip3 install torch==$torch_ver torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
-		pip3 install torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+		#ppip torch==$torch_ver torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+		ppip torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 	fi
 
 	check_torch
@@ -303,12 +310,12 @@ function pytorchv2_kernel(){
 
 
 	if [ "$cname" == "alpha" ]; then
-		#pip install nvidia-cudnn-cu12
+		#ppip nvidia-cudnn-cu12
 		#module load cuDNN/8.6.0.163-CUDA-11.8.0
 		# tensorflow-gpu is not used anymore
-		pip3 install torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+		ppip torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 	else
-		pip3 install torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+		ppip torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 	fi
 
 	check_torch
