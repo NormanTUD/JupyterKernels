@@ -7,11 +7,11 @@ Green='\033[0;32m'
 Red='\033[0;31m'
 
 function red_text {
-	echo -ne "${Red}$1${Color_Off}\n"
+	echo -ne "${Red}$1${Color_Off}"
 }
 
 function green_text {
-	echo -ne "${Green}$1${Color_Off}\n"
+	echo -ne "${Green}$1${Color_Off}"
 }
 
 function _tput {
@@ -65,22 +65,22 @@ PYTHONNOUSERSITE=true
 hostnamed=$(hostname -d)
 
 if ! echo "$hostnamed" | grep "hpc.tu-dresden.de" 2>/dev/null >/dev/null; then
-	red_text "You must run this on the clusters of the HPC system of the TU Dresden."
+	red_text "You must run this on the clusters of the HPC system of the TU Dresden.\n"
 	exit 1
 fi
 
 if [[ -z $LMOD_CMD ]]; then
-	red_text "\$LMOD_CMD is not defined. Cannot run this script without module/lmod"
+	red_text "\$LMOD_CMD is not defined. Cannot run this script without module/lmod\n"
 	exit 2
 fi
 
 if [[ ! -e $LMOD_CMD ]]; then
-	red_text "\$LMOD_CMD ($LMOD_CMD) file cannot be found. Cannot run this script without module/lmod"
+	red_text "\$LMOD_CMD ($LMOD_CMD) file cannot be found. Cannot run this script without module/lmod\n"
 	exit 3
 fi
 
 cname=$(basename -s .hpc.tu-dresden.de $hostnamed)
-green_text "Cluster: $cname"
+green_text "Cluster: $cname\n"
 #; sleep 1
 
 function module_load(){
