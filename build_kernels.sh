@@ -118,8 +118,8 @@ function ppip {
 	green_reset_line "Installing $TO_INSTALL"
 	pip3 install $TO_INSTALL 2>/dev/null >/dev/null || {
 		red_text "Could not install $TO_INSTALL."
-	exit 30
-}
+		exit 30
+	}
 }
 
 function check_libs(){
