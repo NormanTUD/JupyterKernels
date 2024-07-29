@@ -67,7 +67,7 @@ function module_load(){
 	local MODULES="$1"
 	for module in $MODULES; do
 		green_reset_line "Loading module: $module"
-		module load $module || {
+		module load $module >/dev/null || {
 			red_text "Failed to load $module"
 			exit 4
 		}
@@ -251,14 +251,14 @@ green_text "Cluster: $cname\n"
 #; sleep 1
 
 
-module reset || {
+module reset  >/dev/null || {
 	red_text "Failed to reset modules\n"
 	exit 4
 }
 
 case $cname in
 	barnard)
-		module load release/23.10 || {
+		module load release/23.10 >/dev/null || {
 			red_text "Failed to load release/23.10\n"
 			exit 4
 		}
@@ -266,15 +266,18 @@ case $cname in
 		;;
 	alpha)
 		#module load release/23.04 || { # Old release, but fails with GCC/12.3.0
-		module load release/24.04 || {
+		module load release/24.04 >/dev/null || {
 			red_text "Failed to load release/23.04\n"
 			exit 4
 		}
+		module  load CUDA/12.0.0 >/dev/null || {
+			red_text "Failed to load CUDA/12.0.0\n"
+			exit 4
+		}
 		module_load "${MODULES}"
-		module load CUDA/12.0.0
 		;;
 	romeo)
-		module load release/23.04 || {
+		module load release/23.04 >/dev/null || {
 			red_text "Failed to load release/23.04\n"
 			exit 4
 		}
