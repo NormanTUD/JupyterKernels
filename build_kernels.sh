@@ -5,6 +5,8 @@
 	wrkspace=/home/s3811141/test/randomtest_53262/JupyterKernels/JL
 	mkdir -p $wrkspace
 
+	BASE_MODULES="GCC/12.3.0 OpenMPI/4.1.5 Python/3.11.3"
+
 	declare -A MODULE_BY_CLUSTER=(
 		["barnard"]="release/23.10 ${BASE_MODULES}"
 		["alpha"]="release/24.04 CUDA/12.2.0 ${BASE_MODULES}"
@@ -79,8 +81,6 @@
 		"netcdf4"
 		"xarray[complete]"
 	)
-
-	BASE_MODULES="GCC/12.3.0 OpenMPI/4.1.5 Python/3.11.3"
 
 
 	PIP_REQUIRE_VIRTUALENV=true
