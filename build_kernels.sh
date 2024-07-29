@@ -235,7 +235,7 @@ function install_tensorflow_kernel() {
 			ppip $this_ml_lib
 		done
 
-		tf_with_version="tensorflow==2.9.1"
+		tf_with_version="tensorflow==2.12.0"
 
 		green_reset_line "Installing $tf_with_version"
 		ppip $tf_with_version
