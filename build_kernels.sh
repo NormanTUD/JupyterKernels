@@ -5,6 +5,12 @@
 	wrkspace=/home/s3811141/test/randomtest_53262/JupyterKernels/JL
 	mkdir -p $wrkspace
 
+	MODULE_BY_CLUSTER=(
+		["barnard"]="release/23.10 ${BASE_MODULES}"
+		["alpha"]="release/24.04 CUDA/12.2.0 ${BASE_MODULES}"
+		["romeo"]="release/23.04 ${BASE_MODULES}"
+	)
+
 	function join_by {
 		local d=${1-} f=${2-}
 		if shift 2; then
@@ -485,6 +491,15 @@ check_libs(libnames)
 
 	green_reset_line "➤Loading modules for $cluster_name..."
 
+	if [[ -z ${MODULE_BY_CLUSTER[$cluster_name]} ]]; then
+		red_text "Cannot find \${MODULE_BY_CLUSTER[$cluster_name]}"
+		exit 30
+	else
+		echo "OK"
+		exit 0
+	fi
+
+	'
 	case $cluster_name in
 		barnard)
 			module_load "release 23.10 ${BASE_MODULES}"
@@ -500,6 +515,7 @@ check_libs(libnames)
 			echo unknown cluster
 			exit
 	esac
+	'
 
 	# install packages
 	#pandas pandarallel
