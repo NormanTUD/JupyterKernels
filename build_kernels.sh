@@ -373,6 +373,7 @@ green_reset_line "Loading modules..."
 
 case $cname in
 	barnard)
+		green_text "Detected system barnard.\n"
 		module load release/23.10 >/dev/null 2>/dev/null || {
 			red_text "Failed to load release/23.10\n"
 			exit 4
@@ -381,6 +382,7 @@ case $cname in
 		;;
 	alpha)
 		#module load release/23.04 || { # Old release, but fails with GCC/12.3.0
+		green_text "Detected system alpha.\n"
 		module load release/24.04 >/dev/null 2>/dev/null || {
 			red_text "Failed to load release/23.04\n"
 			exit 4
@@ -392,6 +394,7 @@ case $cname in
 		module_load "${MODULES}"
 		;;
 	romeo)
+		green_text "Detected system romeo.\n"
 		module load release/23.04 >/dev/null 2>/dev/null || {
 			red_text "Failed to load release/23.04\n"
 			exit 4
