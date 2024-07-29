@@ -149,7 +149,7 @@ function create_venv(){
 	green_reset_line "Upgrading pip..."
 	pip install --upgrade pip >> $logfile
 
-	echo "Showing python version:\n"
+	echo -e "\nShowing python version:\n"
 
 	python --version
 }
