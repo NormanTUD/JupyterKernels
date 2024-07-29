@@ -50,7 +50,7 @@ ML_LIBS=(
 	"scikit-learn nltk"
 )
 
-BASE_PKGS=(
+BASE_PKGS_LIST=(
 	"ipykernel"
 	"ipywidgets"
 	"beautifulsoup4"
@@ -61,7 +61,7 @@ BASE_PKGS=(
 	"seaborn"
 )
 
-SCI_PKGS=(
+BASE_SCI_PKGS=(
 	"ipykernel"
 	"numpy"
 	"scipy"
@@ -207,15 +207,16 @@ function check_torch(){
 
 # install base packages
 function base_pkgs(){
-	BASE_PKGS_STR=$(join_by ", " "$BASE_PKGS")
+	BASE_PKGS_STR=$(join_by ", " "$BASE_PKGS_LIST")
 	echo "BASE_PKGS_STR: $BASE_PKGS_STR"
+exit 0
 	yellow_text "\n\n➤Installing base packages $BASE_PKGS_STR\n"
 
 	ppip "$BASE_PKGS_STR"
 }
 
 function sci_pkgs(){
-	SCI_PKGS_STR=$(join_by ", " "$SCI_PKGS")
+	SCI_PKGS_STR=$(join_by ", " "$BASE_SCI_PKGS")
 	echo "SCI_PKGS_STR: $SCI_PKGS_STR"
 	yellow_text "\n\n➤Installing scientific packages $SCI_PKGS_STR\n"
 
