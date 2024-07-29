@@ -145,7 +145,7 @@ function module_load(){
 		}
 	done
 
-	green_reset_line "➤Loaded modules: $MODULES"
+	green_reset_line "✅Loaded modules: $MODULES"
 }
 
 function ppip {
@@ -163,7 +163,7 @@ function check_libs(){
 	MODS="$1"
 	MODS=$(echo "$MODS" | sed -e 's#\s\s*# #g' -e 's#\s#, #g' -e "s#^#'#" -e "s#\$#'#")
 	yellow_text "\nChecking libs ($MODS)...\n"
-	cat > $cname/share/check_libs.py <<EOF
+	cat > $cluster_name/share/check_libs.py <<EOF
 from importlib import import_module
 
 libnames = [$MODS]
@@ -179,7 +179,7 @@ def check_libs(libnames):
 
 check_libs(libnames)
 EOF
-	python3 $cname/share/check_libs.py #| tee $logfile
+	python3 $cluster_name/share/check_libs.py #| tee $logfile
 }
 
 function check_tensorflow {
@@ -264,10 +264,10 @@ function install_tensorflow_kernel {
 	name="$1"
 
 	if [[ -d $name ]]; then
-		yellow_text "\n$cname/share/tensorflow already exists\n"
+		yellow_text "\n$cluster_name/share/tensorflow already exists\n"
 	else
 		yellow_text "\nInstall Tensorflow Kernel $name\n"
-		local logfile=~/install_$(basename $name)-kernel-$cname.log
+		local logfile=~/install_$(basename $name)-kernel-$cluster_name.log
 
 		create_venv "$name" "$logfile"
 
@@ -291,7 +291,7 @@ function install_tensorflow_kernel {
 		# Keras
 		# Pytorch
 
-		if [ "$cname" == "alpha" ]; then
+		if [ "$cluster_name" == "alpha" ]; then
 			ppip nvidia-cudnn-cu12
 			# tensorflow-gpu is not used anymore
 		fi
@@ -304,7 +304,7 @@ function install_tensorflow_kernel {
 
 function pytorchv1_kernel(){
 	yellow_text "\nInstall PyTorchv1 Kernel\n"
-	local logfile=~/install_$(basename $1)_v1-kernel-$cname.log
+	local logfile=~/install_$(basename $1)_v1-kernel-$cluster_name.log
 	#local torch_ver=1.11.0 # from pip
 	local torch_ver=1.13.1 # from module system
 
@@ -314,7 +314,7 @@ function pytorchv1_kernel(){
 
 	install_base_sci_ml_pkgs
 
-	if [ "$cname" == "alpha" ]; then
+	if [ "$cluster_name" == "alpha" ]; then
 		#ppip nvidia-cudnn-cu12
 		module load cuDNN/8.6.0.163-CUDA-11.8.0
 		ppip torchvision torchaudio
@@ -330,7 +330,7 @@ function pytorchv1_kernel(){
 
 function pytorchv2_kernel(){
 	yellow_text "\nInstall PyTorchv2 Kernel\n"
-	local logfile=~/install_$(basename $1_v2)-kernel-$cname.log
+	local logfile=~/install_$(basename $1_v2)-kernel-$cluster_name.log
 	local torch_ver=2.1.2-CUDA-12.1.1
 
 	module load PyTorch/$torch_ver 2>/dev/null >/dev/null || {
@@ -343,7 +343,7 @@ function pytorchv2_kernel(){
 	install_base_sci_ml_pkgs
 
 
-	if [ "$cname" == "alpha" ]; then
+	if [ "$cluster_name" == "alpha" ]; then
 		#ppip nvidia-cudnn-cu12
 		#module load cuDNN/8.6.0.163-CUDA-11.8.0
 		# tensorflow-gpu is not used anymore
@@ -361,12 +361,12 @@ function install_pytorch_kernel(){
 	name="$1"
 	if [[ -d $name ]]; then
 		yellow_text "\n➤Installing pytorch kernel to $name\n"
-		local logfile=~/install_$(basename $1)-kernel-$cname.log
+		local logfile=~/install_$(basename $1)-kernel-$cluster_name.log
 
 		#pytorchv1_kernel $1 # TODO! V1 Kernel für Alpha
 		pytorchv2_kernel $name
 	else
-		yellow_text "\n$cname/share/pytorch already exists\n"
+		yellow_text "\n$cluster_name/share/pytorch already exists\n"
 	fi
 }
 
@@ -388,8 +388,8 @@ if [[ ! -e $LMOD_CMD ]]; then
 	exit 3
 fi
 
-cname=$(basename -s .hpc.tu-dresden.de $hostnamed)
-green_text "Cluster: $cname\n"
+cluster_name=$(basename -s .hpc.tu-dresden.de $hostnamed)
+green_text "Cluster: $cluster_name\n"
 #; sleep 1
 
 
@@ -415,9 +415,9 @@ module reset >/dev/null 2>/dev/null || {
 
 green_reset_line "Modules resetted"
 
-green_reset_line "Loading modules..."
+green_text "\n➤Loading modules for $cluster_name...\n"
 
-case $cname in
+case $cluster_name in
 	barnard)
 		module_load "release 23.10 ${BASE_MODULES}"
 		;;
@@ -447,8 +447,8 @@ esac
 # Machine Learning kernel #
 ###########################
 
-install_tensorflow_kernel "$cname/share/tensorflow"
-install_pytorch_kernel "$cname/share/pytorch"
+install_tensorflow_kernel "$cluster_name/share/tensorflow"
+install_pytorch_kernel "$cluster_name/share/pytorch"
 
 # creating kernel inside workspaces
 #install_pytorch_kernel /beegfs/ws/1/$(whoami)-pytorch2_alpha_test
