@@ -124,7 +124,7 @@ function ppip {
 
 function check_libs(){
 	yellow_text "\nCheck libs...\n"
-	cat > $wrkspace/share/check_libs.py <<EOF
+	cat > $name/share/check_libs.py <<EOF
 from importlib import import_module
 
 libnames = $1
@@ -140,7 +140,7 @@ def check_libs(libnames):
 
 check_libs(libnames)
 EOF
-python3 $wrkspace/share/check_libs.py #| tee $logfile
+	python3 $cname/share/check_libs.py #| tee $logfile
 }
 
 function check_torch(){
@@ -416,13 +416,13 @@ esac
 if [ ! -d "$cname/share/tensorflow" ]; then
 	tensorflow_kernel "$cname/share/tensorflow"
 else
-	yellow_text "$cname/share/tensorflow already exists"
+	yellow_text "\n$cname/share/tensorflow already exists\n"
 fi
 
 if [ ! -d "$cname/share/pytorch" ]; then
 	pytorch_kernel "$cname/share/pytorch"
 else
-	yellow_text "$cname/share/pytorch already exists"
+	yellow_text "\n$cname/share/pytorch already exists\n"
 fi
 
 # creating kernel inside workspaces
