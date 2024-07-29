@@ -24,6 +24,17 @@ SCI_PKGS=(
 	"xarray[complete]"
 )
 
+BASE_PKGS=(
+	"ipykernel"
+	"ipywidgets"
+	"beautifulsoup4"
+	"scrapy"
+	"nbformat==5.0.2"
+	"matplotlib"
+	"plotly"
+	"seaborn"
+)
+
 MODULES="GCC/12.3.0 OpenMPI/4.1.5 Python/3.11.3"
 
 
@@ -137,20 +148,9 @@ function check_torch(){
 # install base packages
 function base_pkgs(){
 	yellow_text "\nInstalling base packages\n"
-	BASE_PKGS=(
-		"ipykernel"
-		"ipywidgets"
-		"beautifulsoup4"
-		"scrapy"
-		"nbformat==5.0.2"
-		"matplotlib"
-		"plotly"
-		"seaborn"
-	)
 
 	for key in "${!BASE_PKGS[@]}"; do
 		this_base_lib=$BASE_PKGS[$key]
-		return
 		green_reset_line "Installing $this_base_lib"
 		pip install $this_base_lib 2>/dev/null >/dev/null || {
 			red_text "\nFailed to install $this_base_lib\n"
