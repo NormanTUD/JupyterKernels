@@ -10,7 +10,7 @@ function red_text {
 	echo -ne "${Red}$1${Color_Off}\n"
 }
 
-function green {
+function green_text {
 	echo -ne "${Green}$1${Color_Off}\n"
 }
 
@@ -80,7 +80,7 @@ if [[ ! -e $LMOD_CMD ]]; then
 fi
 
 cname=$(basename -s .hpc.tu-dresden.de $hostnamed)
-echo "Cluster: $cname"
+green_text "Cluster: $cname"
 #; sleep 1
 
 function module_load(){
