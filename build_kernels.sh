@@ -4,7 +4,12 @@
 #wrkspace=/software/util/JupyterLab
 wrkspace=/home/s3811141/test/randomtest_53262/JupyterKernels/JL
 
-ML_LIBS="pybrain ray theano scikit-learn nltk"
+ML_LIBS=(
+	"pybrain"
+	"ray"
+	"theano"
+	"scikit-learn nltk"
+)
 
 MODULES="GCC/12.3.0 OpenMPI/4.1.5 Python/3.11.3"
 
@@ -125,12 +130,23 @@ function sci_pkgs(){
 
 function create_venv(){
 	local venv="$1"
-	local logfile=~/install_$(basename $1)-kernel-$cname.log
-	python3 -m venv --system-site-packages $venv
-	source $venv/bin/activate
+	local logfile="$2"
+
+	green_reset_line "Trying to create virtualenv $venv"
+
+	python3 -m venv --system-site-packages $venv || {
+		red_text "\npython3 -m venv --system-site-packages $venv failed\n"
+		exit 10
+	}
+
+	green_reset_line "Loading the previously created virtual environment"
+	source $venv/bin/activate || {
+		red_text "\nSourcing $venv/bin/activate failed\n"
+		exit 11
+	}
 	echo $logfile
 
-	pip install --upgrade pip > $logfile
+	pip install --upgrade pip >> $logfile
 
 	python --version
 }
@@ -138,13 +154,21 @@ function create_venv(){
 function tensor_kernel(){
 	local logfile=~/install_$(basename $1)-kernel-$cname.log
 
-	create_venv "$1"
+	create_venv "$1" "$logfile"
 
 	base_pkgs >> $logfile
 	sci_pkgs >> $logfile
 
 
-	pip install $ML_LIBS
+	green_reset_line "Installing ML libs into venv..."
+	for this_ml_lib in "${!ML_LIBS[@]}"; do
+		green_reset_line "Installing $this_ml_lib"
+		pip install $this_ml_lib >> $logfile || {
+			red_text "\nFailed to install $this_ml_lib\n"
+			exit 13
+		}
+	done
+
 	module load TensorFlow/2.9.1
 	#pip install tensorflow==2.14.1 # machine learning
 	# MLpy # not working
@@ -174,12 +198,19 @@ function pytorchv1_kernel(){
 
 	module load PyTorch/$torch_ver
 
-	create_venv "$1_v1"
+	create_venv "$1_v1" $logfile
 
 	base_pkgs >> $logfile
 	sci_pkgs >> $logfile
 
-	pip install $ML_LIBS
+	green_reset_line "Installing ML libs into venv..."
+	for this_ml_lib in "${!ML_LIBS[@]}"; do
+		green_reset_line "Installing $this_ml_lib"
+		pip install $this_ml_lib >> $logfile || {
+			red_text "\nFailed to install $this_ml_lib\n"
+			exit 13
+		}
+	done
 
 	if [ "$cname" == "alpha" ]; then
 		#pip install nvidia-cudnn-cu12
@@ -199,14 +230,24 @@ function pytorchv2_kernel(){
 	local logfile=~/install_$(basename $1_v2)-kernel-$cname.log
 	local torch_ver=2.1.2-CUDA-12.1.1
 
-	module load PyTorch/$torch_ver
+	module load PyTorch/$torch_ver || {
+		red_text "\nFailed to load PyTorch/$torch_ver\n"
+		exit 12
+	}
 
-	create_venv "$1_v2"
+	create_venv "$1_v2" "$logfile"
 
 	base_pkgs >> $logfile
 	sci_pkgs >> $logfile
 
-	pip install $ML_LIBS
+	green_reset_line "Installing ML libs into venv..."
+	for this_ml_lib in "${!ML_LIBS[@]}"; do
+		green_reset_line "Installing $this_ml_lib"
+		pip install $this_ml_lib >> $logfile || {
+			red_text "\nFailed to install $this_ml_lib\n"
+			exit 13
+		}
+	done
 
 	if [ "$cname" == "alpha" ]; then
 		#pip install nvidia-cudnn-cu12
