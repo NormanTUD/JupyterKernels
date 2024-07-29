@@ -235,7 +235,12 @@ function install_tensorflow_kernel() {
 			ppip $this_ml_lib
 		done
 
-		module_load "TensorFlow/2.9.1"
+		tf_with_version="tensorflow==2.9.1"
+
+		green_reset_line "Installing $tf_with_version"
+		ppip $tf_with_version
+
+		#module_load "TensorFlow/2.9.1"
 		#ppip tensorflow==2.14.1 # machine learning
 		# MLpy # not working
 		# Keras
