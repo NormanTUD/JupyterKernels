@@ -402,7 +402,7 @@ check_libs(libnames)
 	function pytorchv2_kernel(){
 		_path=$1
 		yellow_text "\n➤Install PyTorchv2 Kernel to $_path\n"
-		local logfile=~/install_$(basename $_path_v2)-kernel-$cluster_name.log
+		local logfile=~/install_$(basename ${_path}_v2)-kernel-$cluster_name.log
 		local torch_ver=2.1.2-CUDA-12.1.1
 
 		module load PyTorch/$torch_ver 2>/dev/null >/dev/null || {
