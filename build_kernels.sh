@@ -152,7 +152,7 @@ function check_torch(){
 
 # install base packages
 function base_pkgs(){
-	yellow_text "\nInstalling base packages\n"
+	yellow_text "\n\nInstalling base packages\n"
 
 	for key in "${!BASE_PKGS[@]}"; do
 		this_base_lib=${BASE_PKGS[$key]}
@@ -161,7 +161,7 @@ function base_pkgs(){
 }
 
 function sci_pkgs(){
-	yellow_text "\nInstalling scientific packages\n"
+	yellow_text "\n\nInstalling scientific packages\n"
 
 	for key in "${!SCI_PKGS[@]}"; do
 		this_sci_lib=${SCI_PKGS[$key]}
@@ -373,7 +373,6 @@ green_reset_line "Loading modules..."
 
 case $cname in
 	barnard)
-		green_reset_line "Detected system barnard."
 		module load release/23.10 >/dev/null 2>/dev/null || {
 			red_text "Failed to load release/23.10\n"
 			exit 4
@@ -382,7 +381,6 @@ case $cname in
 		;;
 	alpha)
 		#module load release/23.04 || { # Old release, but fails with GCC/12.3.0
-		green_reset_line "Detected system alpha."
 		module load release/24.04 >/dev/null 2>/dev/null || {
 			red_text "Failed to load release/23.04\n"
 			exit 4
@@ -394,7 +392,6 @@ case $cname in
 		module_load "${MODULES}"
 		;;
 	romeo)
-		green_reset_line "Detected system romeo."
 		module load release/23.04 >/dev/null 2>/dev/null || {
 			red_text "Failed to load release/23.04\n"
 			exit 4
