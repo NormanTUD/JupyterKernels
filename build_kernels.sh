@@ -1,5 +1,6 @@
 #!/bin/bash
 { # Hack to prevent re-reading the file while it is still running
+	ORIGINAL_PWD=$(pwd)
 	# install python virtual environment
 
 	#wrkspace=/software/util/JupyterLab
@@ -321,7 +322,7 @@ check_libs(libnames)
 			\"metadata\": {
 				\"debugger\": true
 			}
-		}" > kernel_${SHORTNAME}.json
+		}" > $ORIGINAL_PWD/kernel_${SHORTNAME}.json
 	}
 
 	function install_tensorflow_kernel {
