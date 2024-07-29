@@ -224,7 +224,7 @@ function pytorchv2_kernel(){
 function pytorch_kernel(){
 	local logfile=~/install_$(basename $1)-kernel-$cname.log
 
-	pytorchv1_kernel $1
+	#pytorchv1_kernel $1 # TODO! V1 Kernel für Alpha
 	pytorchv2_kernel $1
 }
 
