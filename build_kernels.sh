@@ -256,6 +256,7 @@ module reset >/dev/null 2>/dev/null || {
 	red_text "Failed to reset modules\n"
 	exit 4
 }
+green_reset_line "Modules resetted"
 
 case $cname in
 	barnard)
