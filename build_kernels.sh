@@ -144,9 +144,12 @@ function create_venv(){
 		red_text "\nSourcing $venv/bin/activate failed\n"
 		exit 11
 	}
-	echo $logfile
+	green_reset_line "Using logfile $logfile"
 
+	green_reset_line "Upgrading pip..."
 	pip install --upgrade pip >> $logfile
+
+	echo "Showing python version:\n"
 
 	python --version
 }
