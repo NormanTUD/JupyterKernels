@@ -67,7 +67,7 @@ SCI_PKGS=(
 	"xarray[complete]"
 )
 
-MODULES="GCC/12.3.0 OpenMPI/4.1.5 Python/3.11.3"
+BASE_MODULES="GCC/12.3.0 OpenMPI/4.1.5 Python/3.11.3"
 
 
 PIP_REQUIRE_VIRTUALENV=true
@@ -135,13 +135,17 @@ function red_reset_line {
 
 function module_load(){
 	local MODULES="$1"
+	green_text "\n➤Loading modules: $MODULES\n"
+
 	for module in $MODULES; do
 		green_reset_line "➤Loading module: $module"
 		module load $module >/dev/null 2>/dev/null || {
 			red_text "❌Failed to load $module"
-		exit 4
-	}
-done
+			exit 4
+		}
+	done
+
+	green_reset_line "➤Loaded modules: $MODULES"
 }
 
 function ppip {
@@ -415,14 +419,14 @@ green_reset_line "Loading modules..."
 
 case $cname in
 	barnard)
-		module_load "release 23.10 ${MODULES}"
+		module_load "release 23.10 ${BASE_MODULES}"
 		;;
 	alpha)
 		#module load release/23.04 || { # Old release, but fails with GCC/12.3.0
-		module_load "release/24.04 CUDA/12.2.0 ${MODULES}"
+		module_load "release/24.04 CUDA/12.2.0 ${BASE_MODULES}"
 		;;
 	romeo)
-		module_load "release/23.04 ${MODULES}"
+		module_load "release/23.04 ${BASE_MODULES}"
 		;;
 	*)
 		echo unknown cluster
