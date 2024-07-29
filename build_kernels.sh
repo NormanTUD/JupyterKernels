@@ -141,11 +141,11 @@ function base_pkgs(){
 		"ipykernel"
 		"ipywidgets"
 		"beautifulsoup4"
-		"scrapy"     # web scrape tools
-		"nbformat==5.0.2" # for plotly
+		"scrapy"
+		"nbformat==5.0.2"
 		"matplotlib"
 		"plotly"
-		"seaborn" # plot/data visualization tools
+		"seaborn"
 	)
 
 	for this_base_lib in "${!BASE_PKGS[@]}"; do
