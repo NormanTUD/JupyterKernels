@@ -123,11 +123,13 @@ function ppip {
 }
 
 function check_libs(){
-	yellow_text "\nCheck libs...\n"
+	MODS="$1"
+	MODS=$(echo "$MODS" | sed -e 's#\s*# #g' -e "s#\\s#', '#g" -e "s#^#'#" -e "s#\$#'#")
+	yellow_text "\nChecking libs ($MODS)...\n"
 	cat > $cname/share/check_libs.py <<EOF
 from importlib import import_module
 
-libnames = $1
+libnames = [$MODS]
 
 def check_libs(libnames):
     for x in range(len(libnames)):
@@ -145,8 +147,8 @@ EOF
 
 function check_torch(){
 	yellow_text "\nCheck torch...\n"
-	check_libs "['bs4', 'scrapy', 'matplotlib', 'plotly', 'seaborn', 'numpy', 'scipy', 'sympy', 'pandarallel', 'dask', 'mpi4py', 'ipyparallel', 'netCDF4', 'xarray']"
-	check_libs "['pybrain', 'ray', 'theano', 'sklearn', 'nltk', 'torch', 'torchvision', 'torchaudio']"
+	check_libs "bs4 scrapy matplotlib plotly seaborn numpy scipy sympy pandarallel dask mpi4py ipyparallel netCDF4 xarray"
+	check_libs "pybrain ray theano sklearn nltk torch torchvision torchaudio"
 }
 
 
@@ -251,8 +253,8 @@ function install_tensorflow_kernel() {
 			# tensorflow-gpu is not used anymore
 		fi
 
-		check_libs "['bs4', 'scrapy', 'matplotlib', 'plotly', 'seaborn', 'numpy', 'scipy', 'sympy', 'pandarallel', 'dask', 'mpi4py', 'ipyparallel', 'netCDF4', 'xarray']"
-		check_libs "['pybrain', 'ray', 'theano', 'sklearn', 'nltk', 'tensorflow']"
+		check_libs "bs4 scrapy matplotlib plotly seaborn numpy scipy sympy pandarallel dask mpi4py ipyparallel netCDF4 xarray"
+		check_libs "pybrain ray theano sklearn nltk tensorflow"
 
 		deactivate
 	fi
