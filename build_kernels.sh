@@ -1,7 +1,8 @@
 #!/bin/bash
 # install python virtual environment
 
-wrkspace=/software/util/JupyterLab
+#wrkspace=/software/util/JupyterLab
+wrkspace=/home/s3811141/test/randomtest_53262/JupyterKernels/JL
 
 ML_LIBS="pybrain ray theano scikit-learn nltk"
 
