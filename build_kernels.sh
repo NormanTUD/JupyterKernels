@@ -148,10 +148,10 @@ function base_pkgs(){
 		"seaborn" # plot/data visualization tools
 	)
 
-	for this_ml_lib in "${!BASE_PKGS[@]}"; do
-		green_reset_line "Installing $this_ml_lib"
-		pip install $this_ml_lib 2>/dev/null >/dev/null || {
-			red_text "\nFailed to install $this_ml_lib\n"
+	for this_base_lib in "${!BASE_PKGS[@]}"; do
+		green_reset_line "Installing $this_base_lib"
+		pip install $this_base_lib 2>/dev/null >/dev/null || {
+			red_text "\nFailed to install $this_base_lib\n"
 			exit 13
 		}
 	done
@@ -160,10 +160,10 @@ function base_pkgs(){
 function sci_pkgs(){
 	yellow_text "\nInstalling scientific packages\n"
 
-	for this_ml_lib in "${!SCI_PKGS[@]}"; do
-		green_reset_line "Installing $this_ml_lib"
-		pip install $this_ml_lib 2>/dev/null >/dev/null || {
-			red_text "\nFailed to install $this_ml_lib\n"
+	for this_sci_lib in "${!SCI_PKGS[@]}"; do
+		green_reset_line "Installing $this_sci_lib"
+		pip install $this_sci_lib 2>/dev/null >/dev/null || {
+			red_text "\nFailed to install $this_sci_lib\n"
 			exit 13
 		}
 	done
