@@ -148,7 +148,9 @@ function base_pkgs(){
 		"seaborn"
 	)
 
-	for this_base_lib in "${!BASE_PKGS[@]}"; do
+	for key in "${!BASE_PKGS[@]}"; do
+		this_base_lib=$BASE_PKGS[$key]
+		return
 		green_reset_line "Installing $this_base_lib"
 		pip install $this_base_lib 2>/dev/null >/dev/null || {
 			red_text "\nFailed to install $this_base_lib\n"
@@ -160,10 +162,23 @@ function base_pkgs(){
 function sci_pkgs(){
 	yellow_text "\nInstalling scientific packages\n"
 
-	for this_sci_lib in "${!SCI_PKGS[@]}"; do
+	for key in "${!SCI_PKGS[@]}"; do
+		this_sci_lib=$SCI_PKGS[$key]
 		green_reset_line "Installing $this_sci_lib"
 		pip install $this_sci_lib 2>/dev/null >/dev/null || {
 			red_text "\nFailed to install $this_sci_lib\n"
+			exit 13
+		}
+	done
+}
+
+function ml_pkgs () {
+	green_reset_line "Installing ML libs into venv..."
+	for key in "${!ML_LIBS[@]}"; do
+		this_ml_lib=$ML_LIBS[$key]
+		green_reset_line "Installing $this_ml_lib"
+		pip install $this_ml_lib >> $logfile || {
+			red_text "\nFailed to install $this_ml_lib\n"
 			exit 13
 		}
 	done
@@ -202,12 +217,13 @@ function tensorflow_kernel(){
 
 	create_venv "$name" "$logfile"
 
-	base_pkgs >> $logfile
-	sci_pkgs >> $logfile
-
+	base_pkgs
+	sci_pkgs
+	ml_pkgs
 
 	green_reset_line "Installing ML libs into venv..."
-	for this_ml_lib in "${!ML_LIBS[@]}"; do
+	for key in "${!ML_LIBS[@]}"; do
+		this_ml_lib=$ML_LIBS[$key]
 		green_reset_line "Installing $this_ml_lib"
 		pip install $this_ml_lib >> $logfile || {
 			red_text "\nFailed to install $this_ml_lib\n"
@@ -250,17 +266,9 @@ function pytorchv1_kernel(){
 
 	create_venv "$1_v1" $logfile
 
-	base_pkgs >> $logfile
-	sci_pkgs >> $logfile
-
-	green_reset_line "Installing ML libs into venv..."
-	for this_ml_lib in "${!ML_LIBS[@]}"; do
-		green_reset_line "Installing $this_ml_lib"
-		pip install $this_ml_lib >> $logfile || {
-			red_text "\nFailed to install $this_ml_lib\n"
-			exit 13
-		}
-	done
+	base_pkgs
+	sci_pkgs
+	ml_pkgs
 
 	if [ "$cname" == "alpha" ]; then
 		#pip install nvidia-cudnn-cu12
@@ -288,17 +296,10 @@ function pytorchv2_kernel(){
 
 	create_venv "$1_v2" "$logfile"
 
-	base_pkgs >> $logfile
-	sci_pkgs >> $logfile
+	base_pkgs
+	sci_pkgs
+	ml_pkgs
 
-	green_reset_line "Installing ML libs into venv..."
-	for this_ml_lib in "${!ML_LIBS[@]}"; do
-		green_reset_line "Installing $this_ml_lib"
-		pip install $this_ml_lib >> $logfile || {
-			red_text "\nFailed to install $this_ml_lib\n"
-			exit 13
-		}
-	done
 
 	if [ "$cname" == "alpha" ]; then
 		#pip install nvidia-cudnn-cu12
