@@ -11,6 +11,19 @@ ML_LIBS=(
 	"scikit-learn nltk"
 )
 
+SCI_PKGS=(
+	"ipykernel"
+	"numpy"
+	"scipy"
+	"sympy"
+	"pandarallel"
+	"dask"
+	"mpi4py"
+	"ipyparallel"
+	"netcdf4"
+	"xarray[complete]"
+)
+
 MODULES="GCC/12.3.0 OpenMPI/4.1.5 Python/3.11.3"
 
 
@@ -29,6 +42,10 @@ function red_text {
 
 function green_text {
 	echo -ne "${Green}$1${Color_Off}"
+}
+
+function yellow_text {
+	echo -ne "\e\033[0;33m$1\e[0m"
 }
 
 function _tput {
@@ -81,6 +98,7 @@ function module_load(){
 }
 
 function check_libs(){
+	yellow_text "\nCheck libs...\n"
 	cat > $wrkspace/share/check_libs.py <<EOF
 from importlib import import_module
 
@@ -101,34 +119,54 @@ EOF
 }
 
 function check_torch(){
-check_libs "['bs4', 'scrapy',
-          'matplotlib', 'plotly', 'seaborn',
-          'numpy', 'scipy', 'sympy',
-          'pandarallel', 'dask', 'mpi4py', 'ipyparallel',
-          'netCDF4', 'xarray']"
-check_libs "['pybrain', 'ray', 'theano', 'sklearn', 'nltk',
-            'torch', 'torchvision', 'torchaudio']"
+	yellow_text "\nCheck torch...\n"
+	check_libs "['bs4', 'scrapy',
+		  'matplotlib', 'plotly', 'seaborn',
+		  'numpy', 'scipy', 'sympy',
+		  'pandarallel', 'dask', 'mpi4py', 'ipyparallel',
+		  'netCDF4', 'xarray']"
+	check_libs "['pybrain', 'ray', 'theano', 'sklearn', 'nltk',
+		    'torch', 'torchvision', 'torchaudio']"
 }
 
 
 # install base packages
 function base_pkgs(){
-	pip install ipykernel ipywidgets
-	pip install beautifulsoup4 scrapy     # web scrape tools
-	pip install nbformat==5.0.2 # for plotly
-	pip install matplotlib plotly seaborn # plot/data visualization tools
+	yellow_text "\nInstalling base packages\n"
+	BASE_PKGS=(
+		"ipykernel"
+		"ipywidgets"
+		"beautifulsoup4"
+		"scrapy"     # web scrape tools
+		"nbformat==5.0.2" # for plotly
+		"matplotlib"
+		"plotly"
+		"seaborn" # plot/data visualization tools
+	)
+
+	for this_ml_lib in "${!BASE_PKGS[@]}"; do
+		green_reset_line "Installing $this_ml_lib"
+		pip install $this_ml_lib 2>/dev/null >/dev/null || {
+			red_text "\nFailed to install $this_ml_lib\n"
+			exit 13
+		}
+	done
 }
 
 function sci_pkgs(){
-	pip install ipykernel
-	pip install numpy scipy sympy # math libs
-	pip install pandarallel dask mpi4py ipyparallel
-	pip install netcdf4
-	pip install "xarray[complete]"
+	yellow_text "\nInstalling scientific packages\n"
+
+	for this_ml_lib in "${!SCI_PKGS[@]}"; do
+		green_reset_line "Installing $this_ml_lib"
+		pip install $this_ml_lib 2>/dev/null >/dev/null || {
+			red_text "\nFailed to install $this_ml_lib\n"
+			exit 13
+		}
+	done
 }
 
-
 function create_venv(){
+	yellow_text "\nCreating virtual environment\n"
 	local venv="$1"
 	local logfile="$2"
 
@@ -154,10 +192,13 @@ function create_venv(){
 	python --version
 }
 
-function tensor_kernel(){
-	local logfile=~/install_$(basename $1)-kernel-$cname.log
+function tensorflow_kernel(){
+	name="$1"
 
-	create_venv "$1" "$logfile"
+	yellow_text "\nInstall Tensorflow Kernel $name\n"
+	local logfile=~/install_$(basename $name)-kernel-$cname.log
+
+	create_venv "$name" "$logfile"
 
 	base_pkgs >> $logfile
 	sci_pkgs >> $logfile
@@ -172,7 +213,10 @@ function tensor_kernel(){
 		}
 	done
 
-	module load TensorFlow/2.9.1
+	module load TensorFlow/2.9.1 2>/dev/null >/dev/null || {
+		red_text "Could not load TensorFlow/2.9.1"
+		exit 20
+	}
 	#pip install tensorflow==2.14.1 # machine learning
 	# MLpy # not working
 	# Keras
@@ -195,6 +239,7 @@ function tensor_kernel(){
 }
 
 function pytorchv1_kernel(){
+	yellow_text "\nInstall PyTorchv1 Kernel\n"
 	local logfile=~/install_$(basename $1)_v1-kernel-$cname.log
 	#local torch_ver=1.11.0 # from pip
 	local torch_ver=1.13.1 # from module system
@@ -230,6 +275,7 @@ function pytorchv1_kernel(){
 }
 
 function pytorchv2_kernel(){
+	yellow_text "\nInstall PyTorchv2 Kernel\n"
 	local logfile=~/install_$(basename $1_v2)-kernel-$cname.log
 	local torch_ver=2.1.2-CUDA-12.1.1
 
@@ -267,6 +313,7 @@ function pytorchv2_kernel(){
 }
 
 function pytorch_kernel(){
+	yellow_text "\nInstalling pytorch kernel\n"
 	local logfile=~/install_$(basename $1)-kernel-$cname.log
 
 	#pytorchv1_kernel $1 # TODO! V1 Kernel für Alpha
@@ -363,10 +410,12 @@ esac
 # Machine Learning kernel #
 ###########################
 if [ ! -d "$cname/share/tensorflow" ]; then
-	tensor_kernel "$cname/share/tensorflow"
+	tensorflow_kernel "$cname/share/tensorflow"
 fi
 
-pytorch_kernel "$cname/share/pytorch"
+if [ ! -d "$cname/share/pytorch" ]; then
+	pytorch_kernel "$cname/share/pytorch"
+fi
 
 # creating kernel inside workspaces
 #pytorch_kernel /beegfs/ws/1/$(whoami)-pytorch2_alpha_test
