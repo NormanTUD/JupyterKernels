@@ -1,8 +1,6 @@
 #!/bin/bash
 { # Hack to prevent re-reading the file while it is still running
 	ORIGINAL_PWD=$(pwd)
-	# install python virtual environment
-
 	#wrkspace=/software/util/JupyterLab
 	wrkspace=/home/s3811141/test/randomtest_53262/JupyterKernels/JL
 	mkdir -p $wrkspace
@@ -517,8 +515,8 @@ check_libs(libnames)
 	# Machine Learning kernel #
 	###########################
 
-	install_tensorflow_kernel "$cluster_name/share/tensorflow"
 	install_pytorch_kernel "$cluster_name/share/pytorch"
+	install_tensorflow_kernel "$cluster_name/share/tensorflow"
 
 	# creating kernel inside workspaces
 	#install_pytorch_kernel /beegfs/ws/1/$(whoami)-pytorch2_alpha_test
