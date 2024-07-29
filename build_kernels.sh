@@ -302,6 +302,28 @@ check_libs(libnames)
 		ml_pkgs
 	}
 
+	function create_kernel_json {
+		SHORTNAME="$1"
+		NAME="$2"
+
+		if [[ ! -e $wrkspace/$cname/opt/start-kernel.sh ]]; then
+			red_text "!!! $wrkspace/$cname/opt/start-kernel.sh not found !!!"
+		fi
+
+		echo "{
+			\"display_name\": \"$NAME\",
+			\"argv\": [
+				\"$wrkspace/$cname/opt/start-kernel.sh\",
+				\"{connection_file}\"
+			],
+			\"env\": {},
+			\"language\": \"python\",
+			\"metadata\": {
+				\"debugger\": true
+			}
+		}" > kernel_${SHORTNAME}.json
+	}
+
 	function install_tensorflow_kernel {
 		name="$1"
 
@@ -342,6 +364,8 @@ check_libs(libnames)
 
 			deactivate
 		fi
+
+		create_kernel_json "tensorflow" "TensorFlow (Machine Learning)"
 	}
 
 	function pytorchv1_kernel(){
@@ -410,6 +434,8 @@ check_libs(libnames)
 		else
 			yellow_text "\n$wrkspace/$cluster_name/share/pytorch already exists\n"
 		fi
+
+		create_kernel_json "pytorch" "PyTorch (Machine Learning)"
 	}
 
 
