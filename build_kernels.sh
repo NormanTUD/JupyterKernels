@@ -429,7 +429,7 @@ check_libs(libnames)
 		deactivate
 	}
 
-	function install_pytorch_kernel(){
+	function install_pytorch_kernel {
 		_path="$1"
 		if [[ -d "$_path" ]]; then
 			yellow_text "\n➤Installing pytorch kernel to $_path\n"
@@ -513,7 +513,4 @@ check_libs(libnames)
 
 	install_pytorch_kernel "$wrkspace/$cluster_name/share/pytorch"
 	install_tensorflow_kernel "$wrkspace/$cluster_name/share/tensorflow"
-
-	# creating kernel inside workspaces
-	#install_pytorch_kernel /beegfs/ws/1/$(whoami)-pytorch2_alpha_test
 }
