@@ -145,10 +145,16 @@ EOF
 	python3 $cname/share/check_libs.py #| tee $logfile
 }
 
+function check_tensorflow {
+	yellow_text "\nCheck tensorflow...\n"
+
+	check_libs "bs4 scrapy matplotlib plotly seaborn numpy scipy sympy pandarallel dask mpi4py ipyparallel netCDF4 xarray pybrain ray theano sklearn nltk tensorflow"
+}
+
 function check_torch(){
 	yellow_text "\nCheck torch...\n"
-	check_libs "bs4 scrapy matplotlib plotly seaborn numpy scipy sympy pandarallel dask mpi4py ipyparallel netCDF4 xarray"
-	check_libs "pybrain ray theano sklearn nltk torch torchvision torchaudio"
+
+	check_libs "bs4 scrapy matplotlib plotly seaborn numpy scipy sympy pandarallel dask mpi4py ipyparallel netCDF4 xarray pybrain ray theano sklearn nltk torch torchvision torchaudio"
 }
 
 
@@ -171,7 +177,7 @@ function sci_pkgs(){
 	done
 }
 
-function ml_pkgs () {
+function ml_pkgs {
 	green_reset_line "Installing ML libs into venv..."
 	for key in "${!ML_LIBS[@]}"; do
 		this_ml_lib=${ML_LIBS[$key]}
@@ -179,7 +185,7 @@ function ml_pkgs () {
 	done
 }
 
-function create_venv() {
+function create_venv {
 	local venv="$1"
 	local logfile="$2"
 
@@ -211,13 +217,13 @@ function create_venv() {
 	echo -e "\nPython version: $(python --version)"
 }
 
-function install_base_sci_ml_pkgs () {
+function install_base_sci_ml_pkgs {
 	base_pkgs
 	sci_pkgs
 	ml_pkgs
 }
 
-function install_tensorflow_kernel() {
+function install_tensorflow_kernel {
 	name="$1"
 
 	if [[ -d $name ]]; then
@@ -253,8 +259,7 @@ function install_tensorflow_kernel() {
 			# tensorflow-gpu is not used anymore
 		fi
 
-		check_libs "bs4 scrapy matplotlib plotly seaborn numpy scipy sympy pandarallel dask mpi4py ipyparallel netCDF4 xarray"
-		check_libs "pybrain ray theano sklearn nltk tensorflow"
+		check_tensorflow
 
 		deactivate
 	fi
