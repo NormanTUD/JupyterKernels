@@ -191,7 +191,7 @@ function ml_pkgs () {
 	done
 }
 
-function create_venv(){
+function create_venv() {
 	local venv="$1"
 	local logfile="$2"
 
@@ -217,7 +217,13 @@ function create_venv(){
 	echo -e "\nPython version: $(python --version)"
 }
 
-function tensorflow_kernel(){
+function install_base_sci_ml_pkgs () {
+	base_pkgs
+	sci_pkgs
+	ml_pkgs
+}
+
+function tensorflow_kernel() {
 	name="$1"
 
 	yellow_text "\nInstall Tensorflow Kernel $name\n"
@@ -225,9 +231,7 @@ function tensorflow_kernel(){
 
 	create_venv "$name" "$logfile"
 
-	base_pkgs
-	sci_pkgs
-	ml_pkgs
+	install_base_sci_ml_pkgs
 
 	green_reset_line "Installing ML libs into venv..."
 	for key in "${!ML_LIBS[@]}"; do
@@ -274,9 +278,7 @@ function pytorchv1_kernel(){
 
 	create_venv "$1_v1" $logfile
 
-	base_pkgs
-	sci_pkgs
-	ml_pkgs
+	install_base_sci_ml_pkgs
 
 	if [ "$cname" == "alpha" ]; then
 		#ppip nvidia-cudnn-cu12
@@ -304,9 +306,7 @@ function pytorchv2_kernel(){
 
 	create_venv "$1_v2" "$logfile"
 
-	base_pkgs
-	sci_pkgs
-	ml_pkgs
+	install_base_sci_ml_pkgs
 
 
 	if [ "$cname" == "alpha" ]; then
