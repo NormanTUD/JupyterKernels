@@ -187,9 +187,7 @@ function create_venv(){
 	green_reset_line "Upgrading pip..."
 	pip install --upgrade pip >> $logfile
 
-	echo -e "\nShowing python version:\n"
-
-	python --version
+	echo -e "\nPython version: $(python --version)"
 }
 
 function tensorflow_kernel(){
