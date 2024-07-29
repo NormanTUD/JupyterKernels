@@ -415,18 +415,14 @@ green_reset_line "Loading modules..."
 
 case $cname in
 	barnard)
-		module_load release/23.10
-		module_load "${MODULES}"
+		module_load "release 23.10 ${MODULES}"
 		;;
 	alpha)
 		#module load release/23.04 || { # Old release, but fails with GCC/12.3.0
-		module_load release/24.04
-		module_load CUDA/12.2.0
-		module_load "${MODULES}"
+		module_load "release/24.04 CUDA/12.2.0 ${MODULES}"
 		;;
 	romeo)
-		module_load release/23.04
-		module_load "${MODULES}"
+		module_load "release/23.04 ${MODULES}"
 		;;
 	*)
 		echo unknown cluster
