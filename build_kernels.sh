@@ -135,7 +135,7 @@ function red_reset_line {
 
 function module_load(){
 	local MODULES="$1"
-	green_text "\n➤Loading modules: $MODULES\n"
+	green_reset_line "➤Loading modules: $MODULES"
 
 	for module in $MODULES; do
 		green_reset_line "➤Loading module: $module"
