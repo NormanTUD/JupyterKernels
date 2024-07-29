@@ -1,0 +1,13 @@
+{
+  "display_name": "PyTorch v1.x (Machine Learning)",
+  "argv": [
+    "/software/util/JupyterLab/alpha/opt/start-kernel.sh",
+    "{connection_file}"
+  ],
+  "env": {},
+  "language": "python",
+  "metadata": {
+    "debugger": true
+  }
+}
+
