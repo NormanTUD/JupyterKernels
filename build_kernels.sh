@@ -195,8 +195,7 @@
 			i=$(($i+1))
 		done
 
-		PBAR=$(generate_progress_bar $i $(echo "$TO_INSTALL" | sed -e 's#\s#\n#g' | wc -l))
-		green_reset_line "$PBAR✅Modules $TO_INSTALL installed."
+		green_reset_line "✅Modules $TO_INSTALL installed."
 	}
 
 	function check_libs(){
