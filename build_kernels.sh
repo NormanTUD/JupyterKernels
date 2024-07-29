@@ -212,7 +212,7 @@ function create_venv(){
 	green_reset_line "Using logfile $logfile"
 
 	green_reset_line "Upgrading pip..."
-	ppip --upgrade pip >> $logfile
+	pip3 --upgrade pip 2>/dev/null >/dev/null
 
 	echo -e "\nPython version: $(python --version)"
 }
