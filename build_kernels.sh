@@ -192,7 +192,7 @@ function create_venv() {
 
 	yellow_text "\nCreating virtual environment ($venv)\n"
 
-	if [[ ! -e "$venv/bin/activate" ]]
+	if [[ ! -e "$venv/bin/activate" ]]; then
 		green_reset_line "Trying to create virtualenv $venv"
 
 		python3 -m venv --system-site-packages $venv || {
