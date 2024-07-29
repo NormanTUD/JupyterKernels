@@ -333,7 +333,7 @@ check_libs(libnames)
 		_path="$1"
 
 		if [[ -d $_path ]]; then
-			yellow_text "\n$wrkspace/$cluster_name/share/tensorflow already exists\n"
+			yellow_text "\n$_path already exists (install_tensorflow_kernel)\n"
 		else
 			yellow_text "\n➤Install Tensorflow Kernel $_path\n"
 			local logfile=~/install_$(basename $_path)-kernel-$cluster_name.log
@@ -438,7 +438,7 @@ check_libs(libnames)
 			#pytorchv1_kernel $1 # TODO! V1 Kernel für Alpha
 			pytorchv2_kernel $_path
 		else
-			yellow_text "\n$_path already exists\n"
+			yellow_text "\n$_path already exists (install_pytorch_kernel)\n"
 		fi
 
 		create_kernel_json "pytorch" "PyTorch (Machine Learning)"
