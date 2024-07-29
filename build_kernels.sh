@@ -294,7 +294,7 @@ check_libs(libnames)
 			exit 11
 		}
 
-		echo -e "\n➤Python version: $(python --version)"
+		echo -en "\n➤Python version: $(python --version)"
 	}
 
 	function install_base_sci_ml_pkgs {
