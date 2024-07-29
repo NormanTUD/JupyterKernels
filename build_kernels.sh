@@ -160,6 +160,7 @@ function base_pkgs(){
 	yellow_text "\nInstalling base packages\n"
 
 	for key in "${!BASE_PKGS[@]}"; do
+		echo "\nkey: $key\n"
 		this_base_lib=$BASE_PKGS[$key]
 		green_reset_line "Installing base lib $this_base_lib"
 		ppip $this_base_lib
