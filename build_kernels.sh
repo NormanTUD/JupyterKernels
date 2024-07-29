@@ -14,6 +14,32 @@ function green {
 	echo -ne "${Green}$1${Color_Off}\n"
 }
 
+function _tput {
+	set +e
+	CHAR=$1
+
+	if ! command -v tput 2>/dev/null >/dev/null; then
+		red_text "tput not installed" >&2
+		set +e
+		return 0
+	fi
+
+	if [[ -z $CHAR ]]; then
+		red_text "No character given" >&2
+		set +e
+		return 0
+	fi
+
+	if ! tty 2>/dev/null >/dev/null; then
+		echo ""
+		set +e
+		return 0
+	fi
+
+	tput $CHAR
+	set +e
+}
+
 function green_reset_line {
 	_tput cr
 	_tput el
