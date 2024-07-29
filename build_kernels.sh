@@ -161,7 +161,7 @@ function base_pkgs(){
 
 	for key in "${!BASE_PKGS[@]}"; do
 		this_base_lib=$BASE_PKGS[$key]
-		green_reset_line "Installing $this_base_lib"
+		green_reset_line "Installing base lib $this_base_lib"
 		ppip $this_base_lib
 	done
 }
@@ -171,7 +171,7 @@ function sci_pkgs(){
 
 	for key in "${!SCI_PKGS[@]}"; do
 		this_sci_lib=$SCI_PKGS[$key]
-		green_reset_line "Installing $this_sci_lib"
+		green_reset_line "Installing sci lib $this_sci_lib"
 		ppip $this_sci_lib 2>/dev/null >/dev/null || {
 			red_text "\nFailed to install $this_sci_lib\n"
 			exit 13
@@ -183,7 +183,7 @@ function ml_pkgs () {
 	green_reset_line "Installing ML libs into venv..."
 	for key in "${!ML_LIBS[@]}"; do
 		this_ml_lib=$ML_LIBS[$key]
-		green_reset_line "Installing $this_ml_lib"
+		green_reset_line "Installing ml lib $this_ml_lib"
 		ppip $this_ml_lib >> $logfile || {
 			red_text "\nFailed to install $this_ml_lib\n"
 			exit 13
@@ -232,7 +232,7 @@ function tensorflow_kernel(){
 	green_reset_line "Installing ML libs into venv..."
 	for key in "${!ML_LIBS[@]}"; do
 		this_ml_lib=$ML_LIBS[$key]
-		green_reset_line "Installing $this_ml_lib"
+		green_reset_line "Installing tensorflow lib $this_ml_lib"
 		ppip $this_ml_lib >> $logfile || {
 			red_text "\nFailed to install $this_ml_lib\n"
 			exit 13
