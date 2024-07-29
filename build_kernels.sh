@@ -409,10 +409,14 @@ esac
 ###########################
 if [ ! -d "$cname/share/tensorflow" ]; then
 	tensorflow_kernel "$cname/share/tensorflow"
+else
+	yellow_text "$cname/share/tensorflow already exists"
 fi
 
 if [ ! -d "$cname/share/pytorch" ]; then
 	pytorch_kernel "$cname/share/pytorch"
+else
+	yellow_text "$cname/share/pytorch already exists"
 fi
 
 # creating kernel inside workspaces
