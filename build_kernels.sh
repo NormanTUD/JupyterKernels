@@ -189,11 +189,12 @@
 		MAXMODNR=$(echo "$TO_INSTALL" | sed -e 's#\s#\n#g' | wc -l)
 		PBAR=$(generate_progress_bar $i $MAXMODNR)
 		green_reset_line "$PBAR➤Installing $TO_INSTALL"
+		pip3 --upgrade pip 2>/dev/null >/dev/null
 
 		for ELEM in $(echo "$TO_INSTALL"); do
 			PBAR=$(generate_progress_bar $i $MAXMODNR)
 			green_reset_line "$PBAR➤Installing $ELEM ($(($i+1))/$MAXMODNR)"
-			pip3 -q install $ELEM || {
+			pip3 -q install $ELEM 2>/dev/null >/dev/null || {
 				red_text "\n❌Could not install $ELEM.\n"
 				exit 30
 			}
@@ -286,7 +287,6 @@ check_libs(libnames)
 			green_reset_line "➤Using logfile $logfile"
 
 			green_reset_line "➤Upgrading pip..."
-			pip3 --upgrade pip 2>/dev/null >/dev/null
 		else
 			green_text "\n\n$venv already exists. Not re-creating it.\n"
 		fi
@@ -308,15 +308,15 @@ check_libs(libnames)
 	}
 
 	function create_kernel_json {
-		SHORTNAME="$1"
-		NAME="$2"
+		shortname="$1"
+		_name="$2"
 
 		if [[ ! -e $wrkspace/$cname/opt/start-kernel.sh ]]; then
 			red_text "!!! $wrkspace/$cname/opt/start-kernel.sh not found !!!"
 		fi
 
 		echo "{
-			\"display_name\": \"$NAME\",
+			\"display_name\": \"$_name\",
 			\"argv\": [
 				\"$wrkspace/$cname/opt/start-kernel.sh\",
 				\"{connection_file}\"
@@ -326,23 +326,23 @@ check_libs(libnames)
 			\"metadata\": {
 				\"debugger\": true
 			}
-		}" > $ORIGINAL_PWD/kernel_${SHORTNAME}.json
+		}" > $ORIGINAL_PWD/kernel_${shortname}.json
 	}
 
 	function install_tensorflow_kernel {
-		name="$1"
+		_path="$1"
 
-		if [[ -d $name ]]; then
+		if [[ -d $_path ]]; then
 			yellow_text "\n$wrkspace/$cluster_name/share/tensorflow already exists\n"
 		else
-			yellow_text "\n➤Install Tensorflow Kernel $name\n"
-			local logfile=~/install_$(basename $name)-kernel-$cluster_name.log
+			yellow_text "\n➤Install Tensorflow Kernel $_path\n"
+			local logfile=~/install_$(basename $_path)-kernel-$cluster_name.log
 
-			create_venv "$name" "$logfile"
+			create_venv "$_path" "$logfile"
 
 			install_base_sci_ml_pkgs
 
-			yellow_text "\n\n➤Installing tensorflow libs into venv $name...\n"
+			yellow_text "\n\n➤Installing tensorflow libs into venv $_path...\n"
 			for key in "${!ML_LIBS[@]}"; do
 				this_ml_lib=${ML_LIBS[$key]}
 				green_reset_line "➤Installing tensorflow lib $this_ml_lib"
@@ -400,8 +400,9 @@ check_libs(libnames)
 	}
 
 	function pytorchv2_kernel(){
-		yellow_text "\n➤Install PyTorchv2 Kernel\n"
-		local logfile=~/install_$(basename $1_v2)-kernel-$cluster_name.log
+		_path=$1
+		yellow_text "\n➤Install PyTorchv2 Kernel to $_path\n"
+		local logfile=~/install_$(basename $_path_v2)-kernel-$cluster_name.log
 		local torch_ver=2.1.2-CUDA-12.1.1
 
 		module load PyTorch/$torch_ver 2>/dev/null >/dev/null || {
@@ -409,7 +410,7 @@ check_libs(libnames)
 			exit 12
 		}
 
-		create_venv "$1_v2" "$logfile"
+		create_venv "${_path}_v2" "$logfile"
 
 		install_base_sci_ml_pkgs
 
@@ -429,15 +430,15 @@ check_libs(libnames)
 	}
 
 	function install_pytorch_kernel(){
-		name="$1"
-		if [[ -d "$wrkspace/$cluster_name/share/pytorch" ]]; then
-			yellow_text "\n➤Installing pytorch kernel to $name\n"
+		_path="$1"
+		if [[ -d "$_path" ]]; then
+			yellow_text "\n➤Installing pytorch kernel to $_path\n"
 			local logfile=~/install_$(basename $1)-kernel-$cluster_name.log
 
 			#pytorchv1_kernel $1 # TODO! V1 Kernel für Alpha
-			pytorchv2_kernel $name
+			pytorchv2_kernel $_path
 		else
-			yellow_text "\n$wrkspace/$cluster_name/share/pytorch already exists\n"
+			yellow_text "\n$_path already exists\n"
 		fi
 
 		create_kernel_json "pytorch" "PyTorch (Machine Learning)"
@@ -478,8 +479,6 @@ check_libs(libnames)
 		exit 7
 	fi
 
-	cd $wrkspace
-
 	green_reset_line "Resetting modules..."
 
 	module reset >/dev/null 2>/dev/null || {
@@ -512,8 +511,8 @@ check_libs(libnames)
 	# Machine Learning kernel #
 	###########################
 
-	install_pytorch_kernel "$cluster_name/share/pytorch"
-	install_tensorflow_kernel "$cluster_name/share/tensorflow"
+	install_pytorch_kernel "$wrkspace/$cluster_name/share/pytorch"
+	install_tensorflow_kernel "$wrkspace/$cluster_name/share/tensorflow"
 
 	# creating kernel inside workspaces
 	#install_pytorch_kernel /beegfs/ws/1/$(whoami)-pytorch2_alpha_test
