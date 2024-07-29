@@ -124,7 +124,7 @@ function ppip {
 
 function check_libs(){
 	yellow_text "\nCheck libs...\n"
-	cat > $name/share/check_libs.py <<EOF
+	cat > $cname/share/check_libs.py <<EOF
 from importlib import import_module
 
 libnames = $1
