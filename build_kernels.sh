@@ -117,7 +117,7 @@ function ppip {
 
 	green_reset_line "Installing $TO_INSTALL"
 	pip3 install $TO_INSTALL 2>/dev/null >/dev/null || {
-		red_text "Could not install $TO_INSTALL."
+		red_text "\nCould not install $TO_INSTALL.\n"
 		exit 30
 	}
 }
@@ -236,7 +236,7 @@ function tensorflow_kernel() {
 		done
 
 		module load TensorFlow/2.9.1 2>/dev/null >/dev/null || {
-			red_text "Could not load TensorFlow/2.9.1"
+			red_text "\nCould not load TensorFlow/2.9.1\n"
 			exit 20
 		}
 		#ppip tensorflow==2.14.1 # machine learning
