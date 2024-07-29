@@ -174,12 +174,13 @@
 		TO_INSTALL="$1"
 
 		i=0
-		PBAR=$(generate_progress_bar $i $(echo "$TO_INSTALL" | sed -e 's#\s#\n#g' | wc -l))
+		MAXMODNR=$(echo "$TO_INSTALL" | sed -e 's#\s#\n#g' | wc -l)
+		PBAR=$(generate_progress_bar $i $MAXMODNR)
 		green_reset_line "$PBAR➤Installing $TO_INSTALL"
 
 		for ELEM in $(echo "$TO_INSTALL"); do
-			PBAR=$(generate_progress_bar $i $(echo "$TO_INSTALL" | sed -e 's#\s#\n#g' | wc -l))
-			green_reset_line "$PBAR➤Installing $ELEM"
+			PBAR=$(generate_progress_bar $i $MAXMODNR)
+			green_reset_line "$PBAR➤Installing $ELEM ($i/$MAXMODNR)"
 			pip3 install $ELEM 2>/dev/null >/dev/null || {
 				red_text "\n❌Could not install $TO_INSTALL.\n"
 				exit 30
@@ -202,12 +203,12 @@ libnames = [$MODS]
 
 def check_libs(libnames):
     for x in range(len(libnames)):
-	try:
-	    import_module(libnames[x])
-	except:
-	    print(libnames[x] + " - failed")
-    else:
-	print(libnames[x] + " - ok")
+        try:
+            import_module(libnames[x])
+        except:
+            print(libnames[x] + " - failed")
+        else:
+            print(libnames[x] + " - ok")
 
 check_libs(libnames)
 EOF
@@ -298,9 +299,9 @@ EOF
 		name="$1"
 
 		if [[ -d $name ]]; then
-			yellow_text "\n$cluster_name/share/tensorflow already exists\n"
+			yellow_text "\n$wrkspace/$cluster_name/share/tensorflow already exists\n"
 		else
-			yellow_text "\nInstall Tensorflow Kernel $name\n"
+			yellow_text "\n➤Install Tensorflow Kernel $name\n"
 			local logfile=~/install_$(basename $name)-kernel-$cluster_name.log
 
 			create_venv "$name" "$logfile"
@@ -337,7 +338,7 @@ EOF
 	}
 
 	function pytorchv1_kernel(){
-		yellow_text "\nInstall PyTorchv1 Kernel\n"
+		yellow_text "\n➤Install PyTorchv1 Kernel\n"
 		local logfile=~/install_$(basename $1)_v1-kernel-$cluster_name.log
 		#local torch_ver=1.11.0 # from pip
 		local torch_ver=1.13.1 # from module system
@@ -363,7 +364,7 @@ EOF
 	}
 
 	function pytorchv2_kernel(){
-		yellow_text "\nInstall PyTorchv2 Kernel\n"
+		yellow_text "\n➤Install PyTorchv2 Kernel\n"
 		local logfile=~/install_$(basename $1_v2)-kernel-$cluster_name.log
 		local torch_ver=2.1.2-CUDA-12.1.1
 
@@ -400,7 +401,7 @@ EOF
 			#pytorchv1_kernel $1 # TODO! V1 Kernel für Alpha
 			pytorchv2_kernel $name
 		else
-			yellow_text "\n$cluster_name/share/pytorch already exists\n"
+			yellow_text "\n$wrkspace/$cluster_name/share/pytorch already exists\n"
 		fi
 	}
 
