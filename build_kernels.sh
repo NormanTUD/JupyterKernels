@@ -11,6 +11,17 @@ ML_LIBS=(
 	"scikit-learn nltk"
 )
 
+BASE_PKGS=(
+	"ipykernel"
+	"ipywidgets"
+	"beautifulsoup4"
+	"scrapy"
+	"nbformat==5.0.2"
+	"matplotlib"
+	"plotly"
+	"seaborn"
+)
+
 SCI_PKGS=(
 	"ipykernel"
 	"numpy"
@@ -22,17 +33,6 @@ SCI_PKGS=(
 	"ipyparallel"
 	"netcdf4"
 	"xarray[complete]"
-)
-
-BASE_PKGS=(
-	"ipykernel"
-	"ipywidgets"
-	"beautifulsoup4"
-	"scrapy"
-	"nbformat==5.0.2"
-	"matplotlib"
-	"plotly"
-	"seaborn"
 )
 
 MODULES="GCC/12.3.0 OpenMPI/4.1.5 Python/3.11.3"
@@ -249,7 +249,7 @@ function tensorflow_kernel(){
 	# Pytorch
 
 	if [ "$cname" == "alpha" ]; then
-		pp nvidia-cudnn-cu12
+		ppip nvidia-cudnn-cu12
 		# tensorflow-gpu is not used anymore
 	fi
 
