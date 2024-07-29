@@ -4,6 +4,37 @@
 #wrkspace=/software/util/JupyterLab
 wrkspace=/home/s3811141/test/randomtest_53262/JupyterKernels/JL
 
+generate_progress_bar() {
+	local current_progress=$1
+	local total_progress=$2
+
+	# Überprüfen, ob die Eingaben gültige positive Ganzzahlen sind
+	if ! [[ "$current_progress" =~ ^[0-9]+$ ]] || ! [[ "$total_progress" =~ ^[0-9]+$ ]]; then
+		echo "Fehler: Beide Parameter müssen positive Ganzzahlen sein, sind $current_progress/$total_progress." >&2
+		return 1
+	fi
+
+	# Überprüfen, ob der aktuelle Fortschritt den Gesamtfortschritt nicht überschreitet
+	if [ "$current_progress" -gt "$total_progress" ]; then
+		echo "Fehler: Der aktuelle Fortschritt darf den Gesamtfortschritt nicht überschreiten ($current_progress/$total_progress)." >&2
+		return 1
+	fi
+
+	local bar_length=30
+	local filled_length=$((bar_length * current_progress / total_progress))
+	local empty_length=$((bar_length - filled_length))
+
+	local bar=""
+	for ((i = 0; i < filled_length; i++)); do
+		bar="${bar}#"
+	done
+	for ((i = 0; i < empty_length; i++)); do
+		bar="${bar} "
+	done
+
+	echo "[${bar}] "
+}
+
 ML_LIBS=(
 	"pybrain"
 	"ray"
@@ -115,11 +146,12 @@ done
 function ppip {
 	TO_INSTALL="$1"
 
-	green_reset_line "Installing $TO_INSTALL"
+	green_reset_line "➤Installing $TO_INSTALL"
 	pip3 install $TO_INSTALL 2>/dev/null >/dev/null || {
-		red_text "\nCould not install $TO_INSTALL.\n"
+		red_text "\n❌Could not install $TO_INSTALL.\n"
 		exit 30
 	}
+	green_reset_line "✅Modules $TO_INSTALL installed."
 }
 
 function check_libs(){
@@ -160,7 +192,7 @@ function check_torch(){
 
 # install base packages
 function base_pkgs(){
-	yellow_text "\n\nInstalling base packages\n"
+	yellow_text "\n\n➤Installing base packages\n"
 
 	for key in "${!BASE_PKGS[@]}"; do
 		this_base_lib=${BASE_PKGS[$key]}
@@ -169,7 +201,7 @@ function base_pkgs(){
 }
 
 function sci_pkgs(){
-	yellow_text "\n\nInstalling scientific packages\n"
+	yellow_text "\n\n➤Installing scientific packages\n"
 
 	for key in "${!SCI_PKGS[@]}"; do
 		this_sci_lib=${SCI_PKGS[$key]}
@@ -178,7 +210,7 @@ function sci_pkgs(){
 }
 
 function ml_pkgs {
-	green_reset_line "Installing ML libs into venv..."
+	green_reset_line "➤Installing ML libs into venv..."
 	for key in "${!ML_LIBS[@]}"; do
 		this_ml_lib=${ML_LIBS[$key]}
 		ppip $this_ml_lib
@@ -236,16 +268,16 @@ function install_tensorflow_kernel {
 
 		install_base_sci_ml_pkgs
 
-		green_reset_line "Installing tensorflow libs into venv..."
+		green_reset_line "➤Installing tensorflow libs into venv..."
 		for key in "${!ML_LIBS[@]}"; do
 			this_ml_lib=${ML_LIBS[$key]}
-			green_reset_line "Installing tensorflow lib $this_ml_lib"
+			green_reset_line "➤Installing tensorflow lib $this_ml_lib"
 			ppip $this_ml_lib
 		done
 
 		tf_with_version="tensorflow==2.12.0"
 
-		green_reset_line "Installing $tf_with_version"
+		green_reset_line "➤Installing $tf_with_version"
 		ppip $tf_with_version
 
 		#module_load "TensorFlow/2.9.1"
@@ -323,7 +355,7 @@ function pytorchv2_kernel(){
 function install_pytorch_kernel(){
 	name="$1"
 	if [[ -d $name ]]; then
-		yellow_text "\nInstalling pytorch kernel to $name\n"
+		yellow_text "\n➤Installing pytorch kernel to $name\n"
 		local logfile=~/install_$(basename $1)-kernel-$cname.log
 
 		#pytorchv1_kernel $1 # TODO! V1 Kernel für Alpha
