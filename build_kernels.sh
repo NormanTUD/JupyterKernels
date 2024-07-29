@@ -1,6 +1,17 @@
 #!/bin/bash
 # install python virtual environment
 
+wrkspace=/software/util/JupyterLab
+
+ML_LIBS="pybrain ray theano scikit-learn nltk"
+
+MODULES="GCC/12.3.0 OpenMPI/4.1.5 Python/3.11.3"
+
+
+PIP_REQUIRE_VIRTUALENV=true
+PYTHONNOUSERSITE=true
+
+hostnamed=$(hostname -d)
 
 Color_Off='\033[0m'
 Green='\033[0;32m'
@@ -51,37 +62,6 @@ function red_reset_line {
 	_tput el
 	red_text "$1"
 }
-
-wrkspace=/software/util/JupyterLab
-
-ML_LIBS="pybrain ray theano scikit-learn nltk"
-
-MODULES="GCC/12.3.0 OpenMPI/4.1.5 Python/3.11.3"
-
-
-PIP_REQUIRE_VIRTUALENV=true
-PYTHONNOUSERSITE=true
-
-hostnamed=$(hostname -d)
-
-if ! echo "$hostnamed" | grep "hpc.tu-dresden.de" 2>/dev/null >/dev/null; then
-	red_text "You must run this on the clusters of the HPC system of the TU Dresden.\n"
-	exit 1
-fi
-
-if [[ -z $LMOD_CMD ]]; then
-	red_text "\$LMOD_CMD is not defined. Cannot run this script without module/lmod\n"
-	exit 2
-fi
-
-if [[ ! -e $LMOD_CMD ]]; then
-	red_text "\$LMOD_CMD ($LMOD_CMD) file cannot be found. Cannot run this script without module/lmod\n"
-	exit 3
-fi
-
-cname=$(basename -s .hpc.tu-dresden.de $hostnamed)
-green_text "Cluster: $cname\n"
-#; sleep 1
 
 function module_load(){
 	local MODULES="$1"
@@ -247,6 +227,27 @@ function pytorch_kernel(){
 
 
 set -e
+
+if ! echo "$hostnamed" | grep "hpc.tu-dresden.de" 2>/dev/null >/dev/null; then
+	red_text "You must run this on the clusters of the HPC system of the TU Dresden.\n"
+	exit 1
+fi
+
+if [[ -z $LMOD_CMD ]]; then
+	red_text "\$LMOD_CMD is not defined. Cannot run this script without module/lmod\n"
+	exit 2
+fi
+
+if [[ ! -e $LMOD_CMD ]]; then
+	red_text "\$LMOD_CMD ($LMOD_CMD) file cannot be found. Cannot run this script without module/lmod\n"
+	exit 3
+fi
+
+cname=$(basename -s .hpc.tu-dresden.de $hostnamed)
+green_text "Cluster: $cname\n"
+#; sleep 1
+
+
 
 module reset
 case $cname in
