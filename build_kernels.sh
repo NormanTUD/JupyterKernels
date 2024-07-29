@@ -214,12 +214,10 @@ function base_pkgs(){
 }
 
 function sci_pkgs(){
-	yellow_text "\n\n➤Installing scientific packages\n"
+	BASE_PKGS_STR=$(join_by ", " $SCI_PKGS)
+	yellow_text "\n\n➤Installing scientific packages $BASE_PKGS_STR\n"
 
-	for key in "${!SCI_PKGS[@]}"; do
-		this_sci_lib=${SCI_PKGS[$key]}
-		ppip $this_sci_lib
-	done
+	ppip "$BASE_PKGS_STR"
 }
 
 function ml_pkgs {
