@@ -288,6 +288,16 @@ case $cname in
 		exit
 esac
 
+if [[ ! -d "$wrkspace" ]]; then
+	red_text "workspace $wrkspace cannot be found. Cannot continue."
+	exit 6
+fi
+
+if [[ ! -w "$wrkspace" ]]; then
+	red_text "workspace $wrkspace is not writable. Cannot continue."
+	exit 7
+fi
+
 cd $wrkspace
 
 # install packages
