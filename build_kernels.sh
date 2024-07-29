@@ -5,6 +5,13 @@
 wrkspace=/home/s3811141/test/randomtest_53262/JupyterKernels/JL
 mkdir -p $wrkspace
 
+function join_by {
+        local d=${1-} f=${2-}
+        if shift 2; then
+                printf %s "$f" "${@/#/$d}"
+        fi
+}
+
 generate_progress_bar() {
 	local current_progress=$1
 	local total_progress=$2
@@ -152,10 +159,13 @@ function ppip {
 	TO_INSTALL="$1"
 
 	green_reset_line "➤Installing $TO_INSTALL"
-	pip3 install $TO_INSTALL 2>/dev/null >/dev/null || {
-		red_text "\n❌Could not install $TO_INSTALL.\n"
-		exit 30
-	}
+	for $ELEM in $(echo "$TO_INSTALL"); do
+		green_reset_line "➤Installing $ELEM"
+		pip3 install $ELEM 2>/dev/null >/dev/null || {
+			red_text "\n❌Could not install $TO_INSTALL.\n"
+			exit 30
+		}
+	fi
 	green_reset_line "✅Modules $TO_INSTALL installed."
 }
 
@@ -197,12 +207,10 @@ function check_torch(){
 
 # install base packages
 function base_pkgs(){
-	yellow_text "\n\n➤Installing base packages\n"
+	BASE_PKGS_STR=$(join_by ", " $BASE_PKGS)
+	yellow_text "\n\n➤Installing base packages $BASE_PKGS_STR\n"
 
-	for key in "${!BASE_PKGS[@]}"; do
-		this_base_lib=${BASE_PKGS[$key]}
-		ppip $this_base_lib
-	done
+	ppip $BASE_PKGS_STR
 }
 
 function sci_pkgs(){
