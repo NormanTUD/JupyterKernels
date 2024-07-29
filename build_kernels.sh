@@ -24,13 +24,11 @@
 		local current_progress=$1
 		local total_progress=$2
 
-		# Überprüfen, ob die Eingaben gültige positive Ganzzahlen sind
 		if ! [[ "$current_progress" =~ ^[0-9]+$ ]] || ! [[ "$total_progress" =~ ^[0-9]+$ ]]; then
 			echo "Fehler: Beide Parameter müssen positive Ganzzahlen sein, sind $current_progress/$total_progress." >&2
 			return 1
 		fi
 
-		# Überprüfen, ob der aktuelle Fortschritt den Gesamtfortschritt nicht überschreitet
 		if [ "$current_progress" -gt "$total_progress" ]; then
 			echo "Fehler: Der aktuelle Fortschritt darf den Gesamtfortschritt nicht überschreiten ($current_progress/$total_progress)." >&2
 			return 1
