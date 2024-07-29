@@ -165,7 +165,7 @@ function ppip {
 			red_text "\n❌Could not install $TO_INSTALL.\n"
 			exit 30
 		}
-	fi
+	done
 	green_reset_line "✅Modules $TO_INSTALL installed."
 }
 
