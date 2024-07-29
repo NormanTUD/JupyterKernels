@@ -266,7 +266,7 @@ case $cname in
 		;;
 	alpha)
 		#module load release/23.04 || { # Old release, but fails with GCC/12.3.0
-		module load release/24.04 >/dev/null || {
+		module load release/23.10 >/dev/null || {
 			red_text "Failed to load release/23.04\n"
 			exit 4
 		}
