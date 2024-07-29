@@ -194,7 +194,7 @@
 			PBAR=$(generate_progress_bar $i $MAXMODNR)
 			green_reset_line "$PBAR➤Installing $ELEM ($(($i+1))/$MAXMODNR)"
 			pip3 install $ELEM 2>/dev/null >/dev/null || {
-				red_text "\n❌Could not install $TO_INSTALL.\n"
+				red_text "\n❌Could not install $ELEM.\n"
 				exit 30
 			}
 			i=$(($i+1))
