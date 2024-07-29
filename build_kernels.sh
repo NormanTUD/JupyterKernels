@@ -205,7 +205,7 @@ function create_venv() {
 		green_reset_line "Upgrading pip..."
 		pip3 --upgrade pip 2>/dev/null >/dev/null
 	else
-		green_text "\n$venv already exists. Not re-creating it.\n"
+		green_text "\n\n$venv already exists. Not re-creating it.\n"
 	fi
 
 
