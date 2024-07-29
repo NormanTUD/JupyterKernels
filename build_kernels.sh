@@ -252,6 +252,20 @@ green_text "Cluster: $cname\n"
 #; sleep 1
 
 
+if [[ ! -d "$wrkspace" ]]; then
+	echo ""
+	red_text "workspace $wrkspace cannot be found. Cannot continue.\n"
+	exit 6
+fi
+
+if [[ ! -w "$wrkspace" ]]; then
+	echo ""
+	red_text "workspace $wrkspace is not writable. Cannot continue.\n"
+	exit 7
+fi
+
+cd $wrkspace
+
 green_reset_line "Resetting modules..."
 module reset >/dev/null 2>/dev/null || {
 	red_text "Failed to reset modules\n"
@@ -290,20 +304,6 @@ case $cname in
 		echo unknown cluster
 		exit
 esac
-
-if [[ ! -d "$wrkspace" ]]; then
-	echo ""
-	red_text "workspace $wrkspace cannot be found. Cannot continue.\n"
-	exit 6
-fi
-
-if [[ ! -w "$wrkspace" ]]; then
-	echo ""
-	red_text "workspace $wrkspace is not writable. Cannot continue.\n"
-	exit 7
-fi
-
-cd $wrkspace
 
 # install packages
 #pandas pandarallel
