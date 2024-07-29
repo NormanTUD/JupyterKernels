@@ -233,7 +233,7 @@ function pytorchv2_kernel(){
 	local logfile=~/install_$(basename $1_v2)-kernel-$cname.log
 	local torch_ver=2.1.2-CUDA-12.1.1
 
-	module load PyTorch/$torch_ver || {
+	module load PyTorch/$torch_ver 2>/dev/null >/dev/null || {
 		red_text "\nFailed to load PyTorch/$torch_ver\n"
 		exit 12
 	}
