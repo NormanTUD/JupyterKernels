@@ -400,8 +400,6 @@ check_libs(libnames)
 			yellow_text "\nPIP-Dependency group for $kernel_name: $pip_dependency_group:\n"
 			dependency_value=$(echo "$CONFIG_JSON" | ./jq -r ".pip_module_groups[\"$pip_dependency_group\"]")
 			if [[ $? -eq 0 ]]; then
-				ppip "$dependency_value"
-
 				# Check for pip_complex for the current cluster
 				pip_complex_value=$(echo "$CONFIG_JSON" | ./jq -r ".pip_module_groups[\"$pip_dependency_group\"].pip_complex[\"$cluster_name\"]" 2>/dev/null)
 				if [[ $? -eq 0 ]]; then
@@ -412,7 +410,7 @@ check_libs(libnames)
 						#red_reset_line "Could not find .pip_module_groups[$pip_dependency_group].pip_complex[$cluster_name]}"
 					fi
 				else
-					true
+					ppip "$dependency_value"
 					#red_reset_line "Could not find .pip_module_groups[$pip_dependency_group].pip_complex[$cluster_name]}"
 				fi
 			else
