@@ -447,7 +447,13 @@ echo '========================================================='
 
 		source $kernel_dir/bin/activate
 
-		pip install --upgrade pip
+		green_reset_line "➤Upgrading pip in $kernel_dir"
+		pip install --upgrade pip 2>/dev/null >/dev/null
+		if [[ $? -eq 0 ]]; then
+			green_reset_line "✅Pip upgraded $kernel_dir"
+		else
+			red_reset_line "❌Pip upgraded $kernel_dir"
+		fi
 
 		FROZEN=$(pip list --format=freeze)
 
@@ -462,14 +468,14 @@ echo '========================================================='
 						ppip_complex "$pip_complex_value"
 					else
 						true
-						#red_reset_line "Could not find .pip_module_groups[$pip_dependency_group].pip_complex[$cluster_name]}"
+						#red_reset_line "❌Could not find .pip_module_groups[$pip_dependency_group].pip_complex[$cluster_name]}"
 					fi
 				else
 					ppip "$dependency_value"
-					#red_reset_line "Could not find .pip_module_groups[$pip_dependency_group].pip_complex[$cluster_name]}"
+					#red_reset_line "❌Could not find .pip_module_groups[$pip_dependency_group].pip_complex[$cluster_name]}"
 				fi
 			else
-				red_reset_line "Could not find .pip_module_groups[$pip_dependency_group]"
+				red_reset_line "❌Could not find .pip_module_groups[$pip_dependency_group]"
 			fi
 		done
 
