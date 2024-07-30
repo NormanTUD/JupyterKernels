@@ -547,11 +547,32 @@ check_libs(libnames)
 
 	module_load "$current_load"
 
-	echo "$CONFIG_JSON" | ./jq -r '.kernels | to_entries | .[] | "\(.key): \(.value.name)\nTests: \(.value.tests)\nDependencies: \(.value.dependencies)\n"' | while IFS= read -r kernel_info; do
-		echo "Kernel Info:"
-		echo "$kernel_info"
+	echo "$CONFIG_JSON" | ./jq -c '.kernels | to_entries[]' | while IFS= read -r kernel_entry; do
+		kernel_key=$(echo "$kernel_entry" | jq -r '.key')
+		kernel_name=$(echo "$kernel_entry" | jq -r '.value.name')
+		kernel_tests=$(echo "$kernel_entry" | jq -r '.value.tests | join(" ")')
+		kernel_dependencies=$(echo "$kernel_entry" | jq -r '.value.dependencies | join(" ")')
+
+		echo -e "\nKernel Info:"
+		echo "Key: $kernel_key"
+		echo "Name: $kernel_name"
+		echo "Tests: $kernel_tests"
+		echo "Dependencies: $kernel_dependencies"
 		echo "---------------------"
+
+		# Iterate through tests
+		echo "Iterating over tests:"
+		for test in $kernel_tests; do
+			echo "Test: $test"
+		done
+
+		# Iterate through dependencies
+		echo "Iterating over dependencies:"
+		for dependency in $kernel_dependencies; do
+			echo "Dependency: $dependency"
+		done
 	done
+
 	exit
 
 	# install packages
