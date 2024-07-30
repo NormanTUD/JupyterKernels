@@ -157,11 +157,11 @@
 			return 0
 		fi
 
-		if ! tty 2>/dev/null >/dev/null; then
-			echo ""
-			set +e
-			return 0
-		fi
+		#if ! tty 2>/dev/null >/dev/null; then
+		#	echo ""
+		#	set +e
+		#	return 0
+		#fi
 
 		tput $CHAR
 		set +e
