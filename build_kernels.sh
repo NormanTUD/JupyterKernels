@@ -301,7 +301,7 @@ sys.exit(check_libs(libnames))
 			return
 		}
 
-		kernel_start_file="$opt_dir/start-kernel.sh"
+		kernel_start_file="$opt_dir/start-${shortname}-kernel.sh"
 
 		echo "#!/bin/bash
 
@@ -337,14 +337,14 @@ echo '========================================================='
 		shortname="$1"
 		_name="$2"
 
-		if [[ ! -e $wrkspace/$cluster_name/opt/start-kernel.sh ]]; then
-			red_text "!!! $wrkspace/$cluster_name/opt/start-kernel.sh not found !!!"
+		if [[ ! -e $wrkspace/$cluster_name/opt/start-${shortname}-kernel.sh ]]; then
+			red_text "!!! $wrkspace/$cluster_name/opt/start-${shortname}-kernel.sh not found !!!"
 		fi
 
 		echo "{
 			\"display_name\": \"$_name\",
 			\"argv\": [
-				\"$wrkspace/$cluster_name/opt/start-kernel.sh\",
+				\"$wrkspace/$cluster_name/opt/start-${shortname}-kernel.sh\",
 				\"{connection_file}\"
 			],
 			\"env\": {},
