@@ -298,66 +298,6 @@ check_libs(libnames)
 	}
 
 
-	# install base packages
-	function base_pkgs(){
-		BASE_PKGS_STR=$(join_by " " ${BASE_PKGS_LIST[@]})
-		yellow_text "\n\n➤Installing base packages $BASE_PKGS_STR\n"
-
-		ppip "$BASE_PKGS_STR"
-	}
-
-	function sci_pkgs(){
-		SCI_PKGS_STR=$(join_by " " "${BASE_SCI_PKGS[@]}")
-		yellow_text "\n\n➤Installing scientific packages $SCI_PKGS_STR\n"
-
-		ppip "$SCI_PKGS_STR"
-	}
-
-	function ml_pkgs {
-		green_reset_line "➤Installing ML libs into venv..."
-		for key in "${!ML_LIBS[@]}"; do
-			this_ml_lib=${ML_LIBS[$key]}
-			ppip $this_ml_lib
-		done
-	}
-
-	function create_venv {
-		local venv="$1"
-		local logfile="$2"
-
-		yellow_text "\n➤Creating virtual environment ($venv)\n"
-
-		if [[ ! -e "$venv/bin/activate" ]]; then
-			green_reset_line "➤Trying to create virtualenv $venv"
-
-			python3 -m venv --system-site-packages $venv || {
-				red_text "\n➤python3 -m venv --system-site-packages $venv failed\n"
-				exit 10
-			}
-
-			green_reset_line "➤Using logfile $logfile"
-
-			green_reset_line "➤Upgrading pip..."
-		else
-			green_text "\n\n$venv already exists. Not re-creating it.\n"
-		fi
-
-
-		green_reset_line "➤Loading the previously created virtual environment"
-		source $venv/bin/activate || {
-			red_text "\nSourcing $venv/bin/activate failed\n"
-			exit 11
-		}
-
-		echo -en "\n➤Python version: $(python --version)"
-	}
-
-	function install_base_sci_ml_pkgs {
-		base_pkgs
-		sci_pkgs
-		ml_pkgs
-	}
-
 	function create_kernel_json {
 		shortname="$1"
 		_name="$2"
@@ -380,50 +320,6 @@ check_libs(libnames)
 		}" > $ORIGINAL_PWD/kernel_${shortname}.json
 	}
 
-	function install_tensorflow_kernel {
-		_path="$1"
-
-		if [[ -d $_path ]]; then
-			yellow_text "\n$_path already exists (install_tensorflow_kernel)\n"
-		else
-			yellow_text "\n➤Install Tensorflow Kernel $_path\n"
-			local logfile=~/install_$(basename $_path)-kernel-$cluster_name.log
-
-			create_venv "$_path" "$logfile"
-
-			install_base_sci_ml_pkgs
-
-			yellow_text "\n\n➤Installing tensorflow libs into venv $_path...\n"
-			for key in "${!ML_LIBS[@]}"; do
-				this_ml_lib=${ML_LIBS[$key]}
-				green_reset_line "➤Installing tensorflow lib $this_ml_lib"
-				ppip $this_ml_lib
-			done
-
-			tf_with_version="tensorflow==2.12.0"
-
-			green_reset_line "➤Installing $tf_with_version"
-			ppip $tf_with_version
-
-			#module_load "TensorFlow/2.9.1"
-			#ppip tensorflow==2.14.1 # machine learning
-			# MLpy # not working
-			# Keras
-			# Pytorch
-
-			if [ "$cluster_name" == "alpha" ]; then
-				ppip nvidia-cudnn-cu12
-				# tensorflow-gpu is not used anymore
-			fi
-
-			check_tensorflow
-
-			deactivate
-		fi
-
-		create_kernel_json "tensorflow" "TensorFlow (Machine Learning)"
-	}
-
 	function pytorchv1_kernel(){
 		yellow_text "\n➤Install PyTorchv1 Kernel\n"
 		local logfile=~/install_$(basename $1)_v1-kernel-$cluster_name.log
@@ -431,8 +327,6 @@ check_libs(libnames)
 		local torch_ver=1.13.1 # from module system
 
 		module load PyTorch/$torch_ver
-
-		create_venv "$1_v1" $logfile
 
 		install_base_sci_ml_pkgs
 
@@ -449,52 +343,6 @@ check_libs(libnames)
 
 		deactivate
 	}
-
-	function pytorchv2_kernel(){
-		_path=$1
-		yellow_text "\n➤Install PyTorchv2 Kernel to $_path\n"
-		local logfile=~/install_$(basename ${_path}_v2)-kernel-$cluster_name.log
-		local torch_ver=2.1.2-CUDA-12.1.1
-
-		module load PyTorch/$torch_ver 2>/dev/null >/dev/null || {
-			red_text "\nFailed to load PyTorch/$torch_ver\n"
-			exit 12
-		}
-
-		create_venv "${_path}_v2" "$logfile"
-
-		install_base_sci_ml_pkgs
-
-
-		if [ "$cluster_name" == "alpha" ]; then
-			#ppip nvidia-cudnn-cu12
-			#module load cuDNN/8.6.0.163-CUDA-11.8.0
-			# tensorflow-gpu is not used anymore
-			ppip_complex torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-		else
-			ppip_complex torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
-		fi
-
-		check_torchv2
-
-		deactivate
-	}
-
-	function install_pytorch_kernel {
-		_path="$1"
-		if [[ ! -d "$_path" ]]; then
-			yellow_text "\n➤Installing pytorch kernel to $_path\n"
-			local logfile=~/install_$(basename $1)-kernel-$cluster_name.log
-
-			#pytorchv1_kernel $1 # TODO! V1 Kernel für Alpha
-			pytorchv2_kernel $_path
-		else
-			yellow_text "\n$_path already exists (install_pytorch_kernel)\n"
-		fi
-
-		create_kernel_json "pytorch" "PyTorch (Machine Learning)"
-	}
-
 
 	set -e
 
@@ -548,6 +396,8 @@ check_libs(libnames)
 	green_reset_line "➤Loading modules for $cluster_name..."
 
 	module_load "$current_load"
+
+	green_text "\n➤Python version: $(python --version)"
 
 	echo "$CONFIG_JSON" | ./jq -c '.kernels | to_entries[]' | while IFS= read -r kernel_entry; do
 		kernel_key=$(echo "$kernel_entry" | ./jq -r '.key')
@@ -625,12 +475,4 @@ check_libs(libnames)
 	#bokeh
 	#joblib
 	#dispy
-
-
-	###########################
-	# Machine Learning kernel #
-	###########################
-
-	install_pytorch_kernel "$wrkspace/$cluster_name/share/pytorch"
-	install_tensorflow_kernel "$wrkspace/$cluster_name/share/tensorflow"
 }
