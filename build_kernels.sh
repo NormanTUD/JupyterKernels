@@ -86,39 +86,6 @@
 		echo "[${bar}] "
 	}
 
-	ML_LIBS=(
-		"pybrain"
-		"ray"
-		"theano"
-		"scikit-learn"
-		"nltk"
-	)
-
-	BASE_PKGS_LIST=(
-		"ipykernel"
-		"ipywidgets"
-		"beautifulsoup4"
-		"scrapy"
-		"nbformat==5.0.2"
-		"matplotlib"
-		"plotly"
-		"seaborn"
-	)
-
-	BASE_SCI_PKGS=(
-		"ipykernel"
-		"numpy"
-		"scipy"
-		"sympy"
-		"pandarallel"
-		"dask"
-		"mpi4py"
-		"ipyparallel"
-		"netcdf4"
-		"xarray[complete]"
-	)
-
-
 	PIP_REQUIRE_VIRTUALENV=true
 	PYTHONNOUSERSITE=true
 
@@ -426,8 +393,6 @@ check_libs(libnames)
 		fi
 
 		source $kernel_dir/bin/activate
-
-		green_reset_line "Iterating over pip-dependencies for $kernel_name:"
 
 		for pip_dependency_group in $kernel_pip_dependencies; do
 			yellow_text "\nPIP-Dependency group for $kernel_name: $pip_dependency_group:\n"
