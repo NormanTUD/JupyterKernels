@@ -19,10 +19,11 @@
 			    "ml_libs": "pybrain ray theano scikit-learn nltk",
 			    "base_pks": "ipykernel ipywidgets beautifulsoup4 scrapy nbformat==5.0.2 matplotlib plotly seaborn",
 			    "sci_pks": "ipykernel numpy scipy sympy pandaralleldask mpi4py ipyparallel netcdf4 xarray[complete]",
-			    "torchvision": {
+			    "torchvision_torchaudio": {
 			      "pip_complex": {
 				"alpha": "torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121",
-				"else": "torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu"
+				"barnard": "torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu"
+				"romeo": "torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu"
 			      }
 			    },
 			    "nvidia-cudnn-cu12": {
@@ -40,7 +41,7 @@
 			    "pytorch": {
 			      "name": "PyTorch (Machine Learning)",
 			      "tests": ["check_torchv2"],
-			      "pip_dependencies": ["base_pks", "sci_pks", "ml_libs", "torchvision"]
+			      "pip_dependencies": ["base_pks", "sci_pks", "ml_libs", "torchvision_torchaudio"]
 			    }
 			  }
 			}
