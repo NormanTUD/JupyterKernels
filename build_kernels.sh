@@ -114,7 +114,7 @@ FROZEN=""
 	Red='\033[0;31m'
 
 	function echoerr {
-		echo -ne "$@" 1>&2
+		echo -ne "$@"
 	}
 
 	function red_text {
@@ -469,7 +469,7 @@ echo '========================================================='
 
 	module_load "$current_load"
 
-	green_text "\n➤Python version: $(python --version)"
+	green_text "\nPython version: $(python --version)"
 
 	echo "$CONFIG_JSON" | ./jq -c '.kernels | to_entries[]' | while IFS= read -r kernel_entry; do
 		kernel_key=$(echo "$kernel_entry" | ./jq -r '.key')
@@ -479,7 +479,7 @@ echo '========================================================='
 
 		kernel_dir="$wrkspace/$cluster_name/share/$kernel_key"
 
-		yellow_text "\nInstalling kernel $kernel_key ($kernel_name)...\n"
+		yellow_text "\n➤Installing kernel $kernel_key ($kernel_name)...\n"
 
 		if [[ ! -d $kernel_dir ]]; then
 			green_reset_line "➤Trying to create virtualenv $kernel_dir"
