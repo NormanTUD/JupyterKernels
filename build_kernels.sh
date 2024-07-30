@@ -287,9 +287,9 @@ sys.exit(check_libs(libnames))
 " | python3 2>/dev/null
 		exit_code=$?
 		if [[ $exit_code -eq 0 ]]; then
-			green_text "\ncheck_libs($MODS) successful\n"
+			green_text "\ncheck_libs($MODS) successful"
 		else
-			red_text "\ncheck_libs($MODS) failed\n"
+			red_text "\ncheck_libs($MODS) failed"
 		fi
 	}
 
