@@ -587,7 +587,7 @@ check_libs(libnames)
 	    green_reset_line "Iterating over pip-dependencies:"
 	    for pip_dependency in $kernel_pip_dependencies; do
 		green_reset_line "PIP-Dependency: $pip_dependency"
-		dependency_value=$(echo "$CONFIG_JSON" | ./jq -r ".pip_module_groups[\"$pip_dependency\"]" 2> /dev/null)
+		dependency_value=$(echo "$CONFIG_JSON" | ./jq -r ".pip_module_groups[\"$pip_dependency\"]")
 		if [[ $? -eq 0 ]]; then
 			ppip "$dependency_value"
 
@@ -600,6 +600,8 @@ check_libs(libnames)
 			fi
 		fi
 	    done
+
+	    create_kernel_json "$kernel_key" "$kernel_name"
 
 	    # Iterate through tests
 	    echo "Iterating over tests:"
