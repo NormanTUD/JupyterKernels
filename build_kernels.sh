@@ -271,6 +271,15 @@ check_libs(libnames)
 		_name="$2"
 		_module_list="$3"
 
+		opt_dir="$wrkspace/$cluster_name/opt/"
+
+		mkdir -p $opt_dir || {
+			red_text "\nCannot create $opt_dir\n"
+			return
+		}
+
+		kernel_start_file="$opt_dir/start-kernel.sh"
+
 		echo "#!/bin/bash
 
 CONNFILE=\${1}
@@ -292,21 +301,27 @@ python \
   -f \${CONNFILE}
 
 echo '========================================================='
-"
+" > $kernel_start_file
+
+		if [[ -e "$kernel_start_file" ]]; then
+			green_text "\n$kernel_start_file succesfully created\n"
+		else
+			red_text "\n$kernel_start_file succesfully created\n"
+		fi
 	}
 
 	function create_kernel_json {
 		shortname="$1"
 		_name="$2"
 
-		if [[ ! -e $wrkspace/$cname/opt/start-kernel.sh ]]; then
-			red_text "!!! $wrkspace/$cname/opt/start-kernel.sh not found !!!"
+		if [[ ! -e $wrkspace/$cluster_name/opt/start-kernel.sh ]]; then
+			red_text "!!! $wrkspace/$cluster_name/opt/start-kernel.sh not found !!!"
 		fi
 
 		echo "{
 			\"display_name\": \"$_name\",
 			\"argv\": [
-				\"$wrkspace/$cname/opt/start-kernel.sh\",
+				\"$wrkspace/$cluster_name/opt/start-kernel.sh\",
 				\"{connection_file}\"
 			],
 			\"env\": {},
