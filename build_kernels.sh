@@ -588,7 +588,7 @@ check_libs(libnames)
 	    # Iterate through pip-dependencies
 	    green_reset_line "Iterating over pip-dependencies:"
 	    for pip_dependency_group in $kernel_pip_dependencies; do
-		green_reset_line "PIP-Dependency group: $pip_dependency_group"
+		yellow_text "\nPIP-Dependency group: $pip_dependency_group:\n"
 		dependency_value=$(echo "$CONFIG_JSON" | ./jq -r ".pip_module_groups[\"$pip_dependency_group\"]")
 		if [[ $? -eq 0 ]]; then
 			ppip "$dependency_value"
