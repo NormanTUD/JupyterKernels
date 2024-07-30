@@ -541,7 +541,7 @@ check_libs(libnames)
 		exit 101
 	fi
 
-	if ! echo "$CONFIG_JSON" | ./jq; then
+	if ! echo "$CONFIG_JSON" | ./jq 2>/dev/null >/dev/null; then
 		red_text "\nThe JSON string has a syntax error\n"
 		exit 100
 	fi
