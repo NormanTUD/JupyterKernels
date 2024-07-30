@@ -1,7 +1,7 @@
 {
 			"display_name": "PyTorch (Machine Learning)",
 			"argv": [
-				"/home/s3811141/test/randomtest_53262/JupyterKernels/JL//opt/start-kernel.sh",
+				"/home/s3811141/test/randomtest_53262/JupyterKernels/JL/alpha/opt/start-pytorch-kernel.sh",
 				"{connection_file}"
 			],
 			"env": {},
