@@ -41,7 +41,7 @@ CONFIG_JSON=$(echo '
 	'
 )
 
-if [[ -z $1 ]]; then
+if [[ ! -z $1 ]]; then
 	wrkspace=$1
 else
 	wrkspace=/software/util/JupyterLab
