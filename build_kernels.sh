@@ -5,6 +5,8 @@
 	wrkspace=/home/s3811141/test/randomtest_53262/JupyterKernels/JL
 	mkdir -p $wrkspace
 
+	export LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH
+
 	CONFIG_JSON=$(echo '
 			{
 			  "same_modules_everywhere": "GCC/12.3.0 OpenMPI/4.1.5 Python/3.11.3",
@@ -539,7 +541,7 @@ check_libs(libnames)
 		exit 101
 	fi
 
-	if ! echo "$CONFIG_JSON" | jq; then
+	if ! echo "$CONFIG_JSON" | ./jq; then
 		red_text "\nThe JSON string has a syntax error\n"
 		exit 100
 	fi
