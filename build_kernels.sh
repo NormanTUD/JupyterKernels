@@ -287,6 +287,19 @@ sys.exit(check_libs(libnames))
 
 		check_base_libs
 		check_libs "torch torchvision torchaudio"
+
+		if command -v nvidia-smi 2>/dev/null >/dev/null; then
+			TORCH_ENV=$(python3 -m torch.utils.collect_env)
+
+			if ! echo "$TORCH_ENV" | grep "Is CUDA available: True" 2>/dev/null >/dev/null; then
+				red_text "'Is CUDA available: True' not found in python3 -m torch.utils.collect_env"
+			fi
+
+			if ! echo "$TORCH_ENV" | grep "GPU 0:" 2>/dev/null >/dev/null; then
+				red_text "'GPU 0:' not found in python3 -m torch.utils.collect_env"
+			fi
+
+		fi
 	}
 
 	function create_start_kernel_sh {
