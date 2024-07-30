@@ -245,7 +245,7 @@ def check_libs(libnames):
             import_module(libname)
         except:
             print(libname + ' - failed')
-	    ok = False
+            ok = False
         else:
             print(libname + ' - ok')
 
