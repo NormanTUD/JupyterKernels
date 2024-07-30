@@ -586,14 +586,14 @@ check_libs(libnames)
 
 	    # Iterate through pip-dependencies
 	    green_reset_line "Iterating over pip-dependencies:"
-	    for pip_dependency in $kernel_pip_dependencies; do
-		green_reset_line "PIP-Dependency: $pip_dependency"
-		dependency_value=$(echo "$CONFIG_JSON" | ./jq -r ".pip_module_groups[\"$pip_dependency\"]")
+	    for pip_dependency_group in $kernel_pip_dependencies; do
+		green_reset_line "PIP-Dependency: $pip_dependency_group"
+		dependency_value=$(echo "$CONFIG_JSON" | ./jq -r ".pip_module_groups[\"$pip_dependency_group\"]")
 		if [[ $? -eq 0 ]]; then
 			ppip "$dependency_value"
 
 			# Check for pip_complex for the current cluster
-			pip_complex_value=$(echo "$CONFIG_JSON" | ./jq -r ".pip_module_groups[\"$pip_dependency\"].pip_complex[\"$cluster_name\"]" 2>/dev/null)
+			pip_complex_value=$(echo "$CONFIG_JSON" | ./jq -r ".pip_module_groups[\"$pip_dependency_group\"].pip_complex[\"$cluster_name\"]" 2>/dev/null)
 			if [[ $? -eq 0 ]]; then
 				if [[ "$pip_complex_value" != "null" ]]; then
 				    echo "PIP-Complex ($cluster_name): $pip_complex_value"
