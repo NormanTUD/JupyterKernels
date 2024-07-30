@@ -535,10 +535,11 @@ echo '========================================================='
 		create_kernel_json "$kernel_key" "$kernel_name"
 
 		# Iterate through tests
-		green_reset_line "Iterating over tests:"
 		for kernel_test in $kernel_tests; do
-			green_reset_line "Running kernel-test $kernel_test"
 			eval "$kernel_test"
+			if [[ $? -ne 0 ]]; then
+				red_text "$kernel_key tests failed"
+			fi
 		done
 
 		deactivate
