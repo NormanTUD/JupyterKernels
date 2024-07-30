@@ -22,7 +22,7 @@
 			    "torchvision_torchaudio": {
 			      "pip_complex": {
 				"alpha": "torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121",
-				"barnard": "torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu"
+				"barnard": "torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu",
 				"romeo": "torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu"
 			      }
 			    },
@@ -47,6 +47,8 @@
 			}
 		'
 	)
+
+
 
 	function join_by {
 		local d=${1-} f=${2-}
@@ -141,6 +143,16 @@
 	function yellow_text {
 		echoerr "\e\033[0;33m$1\e[0m"
 	}
+
+	if [[ ! -e jq ]]; then
+		red_text "\njq not found. Please install it, e.g. via apt-get install jq or download it using https://github.com/jqlang/jq/releases/download/jq-1.7.1/jq-linux-amd64\n"
+		exit 101
+	fi
+
+	if ! echo "$CONFIG_JSON" | ./jq 2>/dev/null >/dev/null; then
+		red_text "The JSON string has a syntax error. Cannot continue.\n"
+		exit 100
+	fi
 
 	function _tput {
 		set +e
@@ -526,17 +538,6 @@ check_libs(libnames)
 	}
 
 	green_reset_line "Modules resetted"
-
-	if [[ ! -e jq ]]; then
-		red_text "\njq not found. Please install it, e.g. via apt-get install jq or download it using https://github.com/jqlang/jq/releases/download/jq-1.7.1/jq-linux-amd64\n"
-		exit 101
-	fi
-
-	if ! echo "$CONFIG_JSON" | ./jq 2>/dev/null >/dev/null; then
-		red_text "\nThe JSON string has a syntax error\n"
-		exit 100
-	fi
-
 
 	same_modules_everywhere=$(echo "$CONFIG_JSON" | ./jq -r '.same_modules_everywhere')
 
