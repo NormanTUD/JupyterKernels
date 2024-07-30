@@ -611,9 +611,10 @@ check_libs(libnames)
 	    create_kernel_json "$kernel_key" "$kernel_name"
 
 	    # Iterate through tests
-	    echo "Iterating over tests:"
-	    for test in $kernel_tests; do
-		echo "Test: $test"
+	    green_reset_line "Iterating over tests:"
+	    for kernel_test in $kernel_tests; do
+		green_reset_line "Running kernel-test $kernel_test"
+		eval "$kernel_test"
 	    done
 
 	    echo "---------------------"
