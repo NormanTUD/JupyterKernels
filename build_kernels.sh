@@ -13,7 +13,7 @@
 			  "modules_by_cluster": {
 			    "barnard": "release/23.10",
 			    "alpha": "release/24.04 CUDA/12.2.0",
-	a		    "romeo": "release/23.04"
+			    "romeo": "release/23.04"
 			  },
 			  "module_groups": {
 			    "ml_libs": "pybrain ray theano scikit-learn nltk",
@@ -537,7 +537,7 @@ check_libs(libnames)
 	green_reset_line "Modules resetted"
 
 	if [[ ! -e jq ]]; then
-		red_text "\njq not found. Please install it, e.g. via apt-get install jq\n"
+		red_text "\njq not found. Please install it, e.g. via apt-get install jq or download it using https://github.com/jqlang/jq/releases/download/jq-1.7.1/jq-linux-amd64\n"
 		exit 101
 	fi
 
