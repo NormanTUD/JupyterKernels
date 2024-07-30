@@ -272,7 +272,7 @@ def check_libs(libnames):
         try:
             import_module(libname)
         except:
-            print(libname + ' - failed')
+            print(\"\\n\" + libname + ' - failed')
             ok = False
         else:
             mods_ok.append(libname)
