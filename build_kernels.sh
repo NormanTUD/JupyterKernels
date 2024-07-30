@@ -550,7 +550,7 @@ check_libs(libnames)
 	module_load "$current_load"
 
 	echo "$CONFIG_JSON" | ./jq -c '.kernels | to_entries[]' | while IFS= read -r kernel_entry; do
-	    echo "\n---------------------"
+	    echo -e "\n---------------------"
 
 	    kernel_key=$(echo "$kernel_entry" | ./jq -r '.key')
 	    kernel_name=$(echo "$kernel_entry" | ./jq -r '.value.name')
@@ -559,7 +559,6 @@ check_libs(libnames)
 
 	    kernel_dir="$wrkspace/$cluster_name/share/$kernel_key"
 
-	    echo -e "\nKernel Info:"
 	    echo "Key: $kernel_key"
 	    echo "Name: $kernel_name"
 	    echo "Tests: $kernel_tests"
