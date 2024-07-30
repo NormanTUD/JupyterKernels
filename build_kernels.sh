@@ -232,20 +232,28 @@ FROZEN=""
 		MODS=$(echo "$MODS" | sed -e 's#\s\s*# #g' -e 's#\s#, #g' -e "s#^#'#" -e "s#\$#'#")
 		yellow_text "\nChecking libs ($MODS)...\n"
 		echo "
+import sys
 from importlib import import_module
 
 libnames = [$MODS]
 
 def check_libs(libnames):
+    ok = True
     for x in range(len(libnames)):
+        libname = libnames[x]
         try:
-            import_module(libnames[x])
+            import_module(libname)
         except:
-            print(libnames[x] + ' - failed')
+            print(libname + ' - failed')
+	    ok = False
         else:
-            print(libnames[x] + ' - ok')
+            print(libname + ' - ok')
 
-check_libs(libnames)
+    if not ok:
+        return 1
+    return 0
+
+sys.exit(check_libs(libnames))
 " | python3
 		exit_code=$?
 		echo "Exit-Code for check lib: $exit_code"
