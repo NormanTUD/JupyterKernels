@@ -546,14 +546,21 @@ check_libs(libnames)
 		exit 100
 	fi
 
-	green_reset_line "➤Loading modules for $cluster_name..."
 
 	if [[ -z ${MODULE_BY_CLUSTER[$cluster_name]} ]]; then
 		red_text "Cannot find \${MODULE_BY_CLUSTER[$cluster_name]}"
 		exit 30
 	fi
 
-	module_load "${MODULE_BY_CLUSTER[$cluster_name]}"
+	same_modules_everywhere=$(echo "$CONFIG_JSON" | ./jq -r '.same_modules_everywhere')
+
+	current_cluster_load=$(echo "$CONFIG_JSON" | ./jq -r --arg cluster_name "$cluster_name" '.modules_by_cluster[$cluster_name]')
+
+	current_load="$current_cluster_load $same_modules_everywhere"
+
+	green_reset_line "➤Loading modules for $cluster_name..."
+
+	module_load "$current_load"
 
 	# install packages
 	#pandas pandarallel
