@@ -530,7 +530,7 @@ echo '========================================================='
 			else
 				red_reset_line "❌Could not find .pip_module_groups[$pip_dependency_group]"
 			fi
-			echo "\n"
+			echo ""
 		done
 
 		create_start_kernel_sh "$kernel_key" "$kernel_name" "$current_load"
