@@ -548,10 +548,10 @@ check_libs(libnames)
 	module_load "$current_load"
 
 	echo "$CONFIG_JSON" | ./jq -c '.kernels | to_entries[]' | while IFS= read -r kernel_entry; do
-		kernel_key=$(echo "$kernel_entry" | jq -r '.key')
-		kernel_name=$(echo "$kernel_entry" | jq -r '.value.name')
-		kernel_tests=$(echo "$kernel_entry" | jq -r '.value.tests | join(" ")')
-		kernel_dependencies=$(echo "$kernel_entry" | jq -r '.value.dependencies | join(" ")')
+		kernel_key=$(echo "$kernel_entry" | ./jq -r '.key')
+		kernel_name=$(echo "$kernel_entry" | ./jq -r '.value.name')
+		kernel_tests=$(echo "$kernel_entry" | ./jq -r '.value.tests | join(" ")')
+		kernel_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.dependencies | join(" ")')
 
 		echo -e "\nKernel Info:"
 		echo "Key: $kernel_key"
