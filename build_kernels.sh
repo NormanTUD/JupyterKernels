@@ -1,54 +1,56 @@
 #!/bin/bash
+
+CONFIG_JSON=$(echo '
+		{
+		  "same_modules_everywhere": "GCC/12.3.0 OpenMPI/4.1.5 Python/3.11.3",
+		  "modules_by_cluster": {
+		    "barnard": "release/23.10",
+		    "alpha": "release/24.04 CUDA/12.2.0",
+		    "romeo": "release/23.04"
+		  },
+		  "pip_module_groups": {
+		    "ml_libs": "pybrain ray theano scikit-learn nltk",
+		    "base_pks": "ipykernel ipywidgets beautifulsoup4 scrapy nbformat==5.0.2 matplotlib plotly seaborn",
+		    "sci_pks": "ipykernel numpy scipy sympy pandaralleldask mpi4py ipyparallel netcdf4 xarray[complete]",
+		    "torchvision_torchaudio": {
+		      "pip_complex": {
+			"alpha": "torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121",
+			"barnard": "torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu",
+			"romeo": "torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu"
+		      }
+		    },
+		    "nvidia-cudnn-cu12": {
+		      "pip_complex": {
+			"alpha": "nvidia-cudnn-cu12"
+		      }
+		    }
+		  },
+		  "kernels": {
+		    "tensorflow": {
+		      "name": "TensorFlow (Machine Learning)",
+		      "tests": ["check_tensorflow"],
+		      "pip_dependencies": ["base_pks", "sci_pks", "ml_libs", "nvidia-cudnn-cu12"]
+		    },
+		    "pytorch": {
+		      "name": "PyTorch (Machine Learning)",
+		      "tests": ["check_torchv2"],
+		      "pip_dependencies": ["base_pks", "sci_pks", "ml_libs", "torchvision_torchaudio"]
+		    }
+		  }
+		}
+	'
+)
+
 { # Hack to prevent re-reading the file while it is still running
 	ORIGINAL_PWD=$(pwd)
 	#wrkspace=/software/util/JupyterLab
 	wrkspace=/home/s3811141/test/randomtest_53262/JupyterKernels/JL
-	mkdir -p $wrkspace
+	mkdir -p $wrkspace || {
+		echo "Cannot create $wrkspace"
+		exit 123
+	}
 
 	export LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH
-
-	CONFIG_JSON=$(echo '
-			{
-			  "same_modules_everywhere": "GCC/12.3.0 OpenMPI/4.1.5 Python/3.11.3",
-			  "modules_by_cluster": {
-			    "barnard": "release/23.10",
-			    "alpha": "release/24.04 CUDA/12.2.0",
-			    "romeo": "release/23.04"
-			  },
-			  "pip_module_groups": {
-			    "ml_libs": "pybrain ray theano scikit-learn nltk",
-			    "base_pks": "ipykernel ipywidgets beautifulsoup4 scrapy nbformat==5.0.2 matplotlib plotly seaborn",
-			    "sci_pks": "ipykernel numpy scipy sympy pandaralleldask mpi4py ipyparallel netcdf4 xarray[complete]",
-			    "torchvision_torchaudio": {
-			      "pip_complex": {
-				"alpha": "torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121",
-				"barnard": "torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu",
-				"romeo": "torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu"
-			      }
-			    },
-			    "nvidia-cudnn-cu12": {
-			      "pip_complex": {
-				"alpha": "nvidia-cudnn-cu12"
-			      }
-			    }
-			  },
-			  "kernels": {
-			    "tensorflow": {
-			      "name": "TensorFlow (Machine Learning)",
-			      "tests": ["check_tensorflow"],
-			      "pip_dependencies": ["base_pks", "sci_pks", "ml_libs", "nvidia-cudnn-cu12"]
-			    },
-			    "pytorch": {
-			      "name": "PyTorch (Machine Learning)",
-			      "tests": ["check_torchv2"],
-			      "pip_dependencies": ["base_pks", "sci_pks", "ml_libs", "torchvision_torchaudio"]
-			    }
-			  }
-			}
-		'
-	)
-
-
 
 	function join_by {
 		local d=${1-} f=${2-}
