@@ -447,6 +447,8 @@ echo '========================================================='
 
 		source $kernel_dir/bin/activate
 
+		pip install --upgrade pip
+
 		FROZEN=$(pip list --format=freeze)
 
 		for pip_dependency_group in $kernel_pip_dependencies; do
