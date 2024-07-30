@@ -364,9 +364,9 @@ echo '========================================================='
 " > $kernel_start_file
 
 		if [[ -e "$kernel_start_file" ]]; then
-			green_text "\n$kernel_start_file succesfully created\n"
+			green_text "\n$kernel_start_file succesfully created"
 		else
-			red_text "\n$kernel_start_file succesfully created\n"
+			red_text "\n$kernel_start_file succesfully created"
 		fi
 	}
 
