@@ -441,10 +441,12 @@ check_libs(libnames)
 					if [[ "$pip_complex_value" != "null" ]]; then
 						ppip_complex "$pip_complex_value"
 					else
-						red_reset_line "Could not find .pip_module_groups[$pip_dependency_group].pip_complex[$cluster_name]}"
+						true
+						#red_reset_line "Could not find .pip_module_groups[$pip_dependency_group].pip_complex[$cluster_name]}"
 					fi
 				else
-					red_reset_line "Could not find .pip_module_groups[$pip_dependency_group].pip_complex[$cluster_name]}"
+					true
+					#red_reset_line "Could not find .pip_module_groups[$pip_dependency_group].pip_complex[$cluster_name]}"
 				fi
 			else
 				red_reset_line "Could not find .pip_module_groups[$pip_dependency_group]"
