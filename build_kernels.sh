@@ -550,7 +550,7 @@ check_libs(libnames)
 	module_load "$current_load"
 
 	echo "$CONFIG_JSON" | ./jq -c '.kernels | to_entries[]' | while IFS= read -r kernel_entry; do
-	    echo "---------------------"
+	    echo "\n---------------------"
 
 	    kernel_key=$(echo "$kernel_entry" | ./jq -r '.key')
 	    kernel_name=$(echo "$kernel_entry" | ./jq -r '.value.name')
