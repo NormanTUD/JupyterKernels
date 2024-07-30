@@ -35,12 +35,12 @@
 			    "tensorflow": {
 			      "name": "TensorFlow (Machine Learning)",
 			      "tests": ["check_tensorflow"],
-			      "dependencies": ["base_pks", "sci_pks", "ml_libs", "nvidia-cudnn-cu12"]
+			      "pip_dependencies": ["base_pks", "sci_pks", "ml_libs", "nvidia-cudnn-cu12"]
 			    },
 			    "pytorch": {
 			      "name": "PyTorch (Machine Learning)",
 			      "tests": ["check_torchv2"],
-			      "dependencies": ["base_pks", "sci_pks", "ml_libs", "torchvision"]
+			      "pip_dependencies": ["base_pks", "sci_pks", "ml_libs", "torchvision"]
 			    }
 			  }
 			}
@@ -551,13 +551,13 @@ check_libs(libnames)
 		kernel_key=$(echo "$kernel_entry" | ./jq -r '.key')
 		kernel_name=$(echo "$kernel_entry" | ./jq -r '.value.name')
 		kernel_tests=$(echo "$kernel_entry" | ./jq -r '.value.tests | join(" ")')
-		kernel_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.dependencies | join(" ")')
+		kernel_pip_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.pip_dependencies | join(" ")')
 
 		echo -e "\nKernel Info:"
 		echo "Key: $kernel_key"
 		echo "Name: $kernel_name"
 		echo "Tests: $kernel_tests"
-		echo "Dependencies: $kernel_dependencies"
+		echo "PIP-Dependencies: $kernel_pip_dependencies"
 		echo "---------------------"
 
 		# Iterate through tests
@@ -566,10 +566,10 @@ check_libs(libnames)
 			echo "Test: $test"
 		done
 
-		# Iterate through dependencies
-		echo "Iterating over dependencies:"
-		for dependency in $kernel_dependencies; do
-			echo "Dependency: $dependency"
+		# Iterate through pip-dependencies
+		echo "Iterating over pip-dependencies:"
+		for pip_dependency in $kernel_pip_dependencies; do
+			echo "PIP-Dependency: $pip_dependency"
 		done
 	done
 
