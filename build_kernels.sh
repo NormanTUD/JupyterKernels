@@ -479,7 +479,7 @@ echo '========================================================='
 
 		kernel_dir="$wrkspace/$cluster_name/share/$kernel_key"
 
-		yellow_text "Installing kernel $kernel_key ($kernel_name)...\n"
+		yellow_text "\nInstalling kernel $kernel_key ($kernel_name)...\n"
 
 		if [[ ! -d $kernel_dir ]]; then
 			green_reset_line "➤Trying to create virtualenv $kernel_dir"
