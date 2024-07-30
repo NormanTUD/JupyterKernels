@@ -272,8 +272,8 @@ sys.exit(check_libs(libnames))
 	}
 
 	function check_base_libs {
-		# pybrain, theano entfernt aus den check_base_libs
-		check_libs "bs4 scrapy matplotlib plotly seaborn numpy scipy sympy pandarallel dask mpi4py ipyparallel netCDF4 xarray ray sklearn nltk"
+		# TODO pybrain, theano, ray entfernt aus den check_base_libs
+		check_libs "bs4 scrapy matplotlib plotly seaborn numpy scipy sympy pandarallel dask mpi4py ipyparallel netCDF4 xarray sklearn nltk"
 	}
 
 	function check_tensorflow {
