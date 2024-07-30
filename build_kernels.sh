@@ -121,8 +121,21 @@ FROZEN=""
 	}
 
 	if [[ ! -e jq ]]; then
-		red_text "\njq not found. Please install it, e.g. via apt-get install jq or download it using https://github.com/jqlang/jq/releases/download/jq-1.7.1/jq-linux-amd64\n"
-		exit 101
+		red_text "\njq not found. Please install it, e.g. via apt-get install jq or download it using \n"
+		wget https://github.com/jqlang/jq/releases/download/jq-1.7.1/jq-linux-amd64 || {
+			red_text "jq not found and could not be downloaded"
+			exit 101
+		}
+
+		mv jq-linux-amd64 jq || {
+			red_text "Could not move jq-linux-amd64 to jq"
+			exit 102
+		}
+
+		chmod +x jq || {
+			red_text "Could not chmod +x jq"
+			exit 103
+		}
 	fi
 
 	if ! echo "$CONFIG_JSON" | ./jq 2>/dev/null >/dev/null; then
