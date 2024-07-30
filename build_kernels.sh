@@ -578,7 +578,7 @@ check_libs(libnames)
 	    source $kernel_dir/bin/activate
 
 	    # Iterate through pip-dependencies
-	    green_reset_line "Iterating over pip-dependencies:"
+	    green_reset_line "Iterating over pip-dependencies for $kernel_name:"
 	    for pip_dependency_group in $kernel_pip_dependencies; do
 		yellow_text "\nPIP-Dependency group: $pip_dependency_group:\n"
 		dependency_value=$(echo "$CONFIG_JSON" | ./jq -r ".pip_module_groups[\"$pip_dependency_group\"]")
