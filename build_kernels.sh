@@ -21,6 +21,7 @@ CONFIG_JSON=$(echo '
 		    "ml_libs": "pybrain ray theano scikit-learn nltk",
 		    "base_pks": "ipykernel ipywidgets beautifulsoup4 scrapy nbformat==5.0.2 matplotlib plotly seaborn",
 		    "sci_pks": "ipykernel numpy scipy sympy pandarallel dask mpi4py ipyparallel netcdf4 xarray[complete]",
+		    "tensorflow": "tensorflow==2.17.0",
 		    "torchvision_torchaudio": {
 		      "pip_complex": {
 			"alpha": "torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121",
@@ -38,7 +39,7 @@ CONFIG_JSON=$(echo '
 		    "tensorflow": {
 		      "name": "TensorFlow (Machine Learning)",
 		      "tests": ["check_tensorflow"],
-		      "pip_dependencies": ["base_pks", "sci_pks", "ml_libs", "nvidia-cudnn-cu12"]
+		      "pip_dependencies": ["base_pks", "sci_pks", "ml_libs", "nvidia-cudnn-cu12", "tensorflow"]
 		    },
 		    "pytorch": {
 		      "name": "PyTorch (Machine Learning)",
