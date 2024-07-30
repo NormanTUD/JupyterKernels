@@ -41,6 +41,8 @@ CONFIG_JSON=$(echo '
 	'
 )
 
+FROZEN=""
+
 { # Hack to prevent re-reading the file while it is still running
 	ORIGINAL_PWD=$(pwd)
 	#wrkspace=/software/util/JupyterLab
@@ -194,6 +196,7 @@ CONFIG_JSON=$(echo '
 			exit 30
 		}
 
+		FROZEN=$(pip list --format=freeze)
 		green_reset_line "✅Module $TO_INSTALL installed."
 	}
 
@@ -207,12 +210,17 @@ CONFIG_JSON=$(echo '
 		pip3 --upgrade pip 2>/dev/null >/dev/null
 
 		for ELEM in $(echo "$TO_INSTALL"); do
-			PBAR=$(generate_progress_bar $i $MAXMODNR)
-			green_reset_line "$PBAR➤Installing $ELEM ($(($i+1))/$MAXMODNR)"
-			pip3 -q install $ELEM 2>/dev/null >/dev/null || {
-				red_text "\n❌Could not install $ELEM.\n"
-				exit 30
-			}
+			if ! echo "$FROZEN" | grep "$ELEM" 2>/dev/null >/dev/null; then
+				PBAR=$(generate_progress_bar $i $MAXMODNR)
+				green_reset_line "$PBAR➤Installing $ELEM ($(($i+1))/$MAXMODNR)"
+				pip3 -q install $ELEM 2>/dev/null >/dev/null || {
+					red_text "\n❌Could not install $ELEM.\n"
+					exit 30
+				}
+
+				FROZEN=$(pip list --format=freeze)
+			fi
+
 			i=$(($i+1))
 		done
 
@@ -438,6 +446,8 @@ echo '========================================================='
 		fi
 
 		source $kernel_dir/bin/activate
+
+		FROZEN=$(pip list --format=freeze)
 
 		for pip_dependency_group in $kernel_pip_dependencies; do
 			yellow_text "\nPIP-Dependency group for $kernel_name: $pip_dependency_group:\n"
