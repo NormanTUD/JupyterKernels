@@ -277,7 +277,7 @@ def check_libs(libnames):
         else:
             mods_ok.append(libname)
 
-    print('Mods OK: ' + (', '.join(mods_ok)))
+    #print('Mods OK: ' + (', '.join(mods_ok)))
 
     if not ok:
         return 1
