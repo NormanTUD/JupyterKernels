@@ -5,6 +5,46 @@
 	wrkspace=/home/s3811141/test/randomtest_53262/JupyterKernels/JL
 	mkdir -p $wrkspace
 
+	JSON=$(echo '
+			{
+			  "same_modules_everywhere": "GCC/12.3.0 OpenMPI/4.1.5 Python/3.11.3",
+			  "modules_by_cluster": {
+			    "barnard": "release/23.10",
+			    "alpha": "release/24.04 CUDA/12.2.0",
+			    "romeo": "release/23.04"
+			  },
+			  "module_groups": {
+			    "ml_libs": "pybrain ray theano scikit-learn nltk",
+			    "base_pks": "ipykernel ipywidgets beautifulsoup4 scrapy nbformat==5.0.2 matplotlib plotly seaborn",
+			    "sci_pks": "ipykernel numpy scipy sympy pandaralleldask mpi4py ipyparallel netcdf4 xarray[complete]",
+			    "torchvision": {
+			      "pip_complex": {
+				"alpha": "torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121",
+				"else": "torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu"
+			      }
+			    },
+			    "nvidia-cudnn-cu12": {
+			      "pip_complex": {
+				"alpha": "nvidia-cudnn-cu12"
+			      }
+			    }
+			  },
+			  "kernels": {
+			    "tensorflow": {
+			      "name": "TensorFlow (Machine Learning)",
+			      "tests": ["check_tensorflow"],
+			      "dependencies": ["base_pks", "sci_pks", "ml_libs", "nvidia-cudnn-cu12"]
+			    },
+			    "pytorch": {
+			      "name": "PyTorch (Machine Learning)",
+			      "tests": ["check_torch"],
+			      "dependencies": ["base_pks", "sci_pks", "ml_libs", "torchvision"]
+			    }
+			  }
+			}
+		'
+	)
+
 	MODULES_THAT_ARE_THE_SAME_EVERYWHERE="GCC/12.3.0 OpenMPI/4.1.5 Python/3.11.3"
 
 	declare -A MODULE_BY_CLUSTER=(
@@ -254,14 +294,14 @@ check_libs(libnames)
 
 
 	# install base packages
-	function base_pkgs{
+	function base_pkgs(){
 		BASE_PKGS_STR=$(join_by " " ${BASE_PKGS_LIST[@]})
 		yellow_text "\n\n➤Installing base packages $BASE_PKGS_STR\n"
 
 		ppip "$BASE_PKGS_STR"
 	}
 
-	function sci_pkgs{
+	function sci_pkgs(){
 		SCI_PKGS_STR=$(join_by " " "${BASE_SCI_PKGS[@]}")
 		yellow_text "\n\n➤Installing scientific packages $SCI_PKGS_STR\n"
 
@@ -405,7 +445,7 @@ check_libs(libnames)
 		deactivate
 	}
 
-	function pytorchv2_kernel{
+	function pytorchv2_kernel(){
 		_path=$1
 		yellow_text "\n➤Install PyTorchv2 Kernel to $_path\n"
 		local logfile=~/install_$(basename ${_path}_v2)-kernel-$cluster_name.log
