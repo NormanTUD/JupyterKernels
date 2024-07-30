@@ -2,7 +2,7 @@
 
 CONFIG_JSON=$(echo '
 		{
-		  "same_modules_everywhere": "GCC/12.3.0 OpenMPI/4.1.5 Python/3.11.3",
+		  "same_modules_everywhere": "GCC/12.3.0 OpenMPI/4.1.5 Python/3.11.3 libffi/3.4.4",
 		  "modules_by_cluster": {
 		    "barnard": "release/23.10",
 		    "alpha": "release/24.04 CUDA/12.2.0",
