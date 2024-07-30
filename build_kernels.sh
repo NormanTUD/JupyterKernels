@@ -550,69 +550,69 @@ check_libs(libnames)
 	module_load "$current_load"
 
 	echo "$CONFIG_JSON" | ./jq -c '.kernels | to_entries[]' | while IFS= read -r kernel_entry; do
-	    kernel_key=$(echo "$kernel_entry" | ./jq -r '.key')
-	    kernel_name=$(echo "$kernel_entry" | ./jq -r '.value.name')
-	    kernel_tests=$(echo "$kernel_entry" | ./jq -r '.value.tests | join(" ")')
-	    kernel_pip_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.pip_dependencies | join(" ")')
+		kernel_key=$(echo "$kernel_entry" | ./jq -r '.key')
+		kernel_name=$(echo "$kernel_entry" | ./jq -r '.value.name')
+		kernel_tests=$(echo "$kernel_entry" | ./jq -r '.value.tests | join(" ")')
+		kernel_pip_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.pip_dependencies | join(" ")')
 
-	    kernel_dir="$wrkspace/$cluster_name/share/$kernel_key"
+		kernel_dir="$wrkspace/$cluster_name/share/$kernel_key"
 
-	    if [[ ! -d $kernel_dir ]]; then
-		green_reset_line "➤Trying to create virtualenv $kernel_dir"
+		if [[ ! -d $kernel_dir ]]; then
+			green_reset_line "➤Trying to create virtualenv $kernel_dir"
 
-		python3 -m venv --system-site-packages $kernel_dir || {
-		    red_text "\n➤python3 -m venv --system-site-packages $kernel_dir failed\n"
-		    exit 10
-		}
-		green_reset_line "✅Virtualenv $kernel_dir created"
-	    else
-		green_reset_line "✅Virtualenv $kernel_dir already exists"
-	    fi
+			python3 -m venv --system-site-packages $kernel_dir || {
+				red_text "\n➤python3 -m venv --system-site-packages $kernel_dir failed\n"
+				exit 10
+			}
+			green_reset_line "✅Virtualenv $kernel_dir created"
+		else
+			green_reset_line "✅Virtualenv $kernel_dir already exists"
+		fi
 
-	    green_reset_line "✅Activating virtualenv $kernel_dir/bin/activate"
-	    if [[ ! -e "$kernel_dir/bin/activate" ]]; then
-		red_text "\n$kernel_dir/bin/activate could not be found\n"
-		exit 199
-	    fi
+		green_reset_line "✅Activating virtualenv $kernel_dir/bin/activate"
+		if [[ ! -e "$kernel_dir/bin/activate" ]]; then
+			red_text "\n$kernel_dir/bin/activate could not be found\n"
+			exit 199
+		fi
 
-	    source $kernel_dir/bin/activate
+		source $kernel_dir/bin/activate
 
-	    # Iterate through pip-dependencies
-	    green_reset_line "Iterating over pip-dependencies for $kernel_name:"
-	    for pip_dependency_group in $kernel_pip_dependencies; do
-		yellow_text "\nPIP-Dependency group for $kernel_name: $pip_dependency_group:\n"
-		dependency_value=$(echo "$CONFIG_JSON" | ./jq -r ".pip_module_groups[\"$pip_dependency_group\"]")
-		if [[ $? -eq 0 ]]; then
-			ppip "$dependency_value"
+		green_reset_line "Iterating over pip-dependencies for $kernel_name:"
 
-			# Check for pip_complex for the current cluster
-			pip_complex_value=$(echo "$CONFIG_JSON" | ./jq -r ".pip_module_groups[\"$pip_dependency_group\"].pip_complex[\"$cluster_name\"]" 2>/dev/null)
+		for pip_dependency_group in $kernel_pip_dependencies; do
+			yellow_text "\nPIP-Dependency group for $kernel_name: $pip_dependency_group:\n"
+			dependency_value=$(echo "$CONFIG_JSON" | ./jq -r ".pip_module_groups[\"$pip_dependency_group\"]")
 			if [[ $? -eq 0 ]]; then
-				if [[ "$pip_complex_value" != "null" ]]; then
-					ppip_complex "$pip_complex_value"
+				ppip "$dependency_value"
+
+				# Check for pip_complex for the current cluster
+				pip_complex_value=$(echo "$CONFIG_JSON" | ./jq -r ".pip_module_groups[\"$pip_dependency_group\"].pip_complex[\"$cluster_name\"]" 2>/dev/null)
+				if [[ $? -eq 0 ]]; then
+					if [[ "$pip_complex_value" != "null" ]]; then
+						ppip_complex "$pip_complex_value"
+					else
+						red_reset_line "Could not find .pip_module_groups[$pip_dependency_group].pip_complex[$cluster_name]}"
+					fi
 				else
 					red_reset_line "Could not find .pip_module_groups[$pip_dependency_group].pip_complex[$cluster_name]}"
 				fi
 			else
-				red_reset_line "Could not find .pip_module_groups[$pip_dependency_group].pip_complex[$cluster_name]}"
+				red_reset_line "Could not find .pip_module_groups[$pip_dependency_group]"
 			fi
-		else
-			red_reset_line "Could not find .pip_module_groups[$pip_dependency_group]"
-		fi
 
-		green_text "\nInstalled $dependency_value"
-	    done
+			green_text "\nInstalled $dependency_value"
+		done
 
-	    create_kernel_json "$kernel_key" "$kernel_name"
+		create_kernel_json "$kernel_key" "$kernel_name"
 
-	    # Iterate through tests
-	    green_reset_line "Iterating over tests:"
-	    for kernel_test in $kernel_tests; do
-		green_reset_line "Running kernel-test $kernel_test"
-		eval "$kernel_test"
-	    done
+		# Iterate through tests
+		green_reset_line "Iterating over tests:"
+		for kernel_test in $kernel_tests; do
+			green_reset_line "Running kernel-test $kernel_test"
+			eval "$kernel_test"
+		done
 
-	    deactivate
+		deactivate
 	done
 
 	exit
