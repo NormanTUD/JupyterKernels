@@ -596,7 +596,9 @@ check_libs(libnames)
 			pip_complex_value=$(echo "$CONFIG_JSON" | ./jq -r ".pip_module_groups[\"$pip_dependency_group\"].pip_complex[\"$cluster_name\"]" 2>/dev/null)
 			if [[ $? -eq 0 ]]; then
 				if [[ "$pip_complex_value" != "null" ]]; then
-				    echo "PIP-Complex ($cluster_name): $pip_complex_value"
+					ppip_complex "$pip_complex_value"
+				else
+					red_reset_line "Could not find .pip_module_groups[$pip_dependency_group].pip_complex[$cluster_name]}"
 				fi
 			else
 				red_reset_line "Could not find .pip_module_groups[$pip_dependency_group].pip_complex[$cluster_name]}"
