@@ -562,18 +562,41 @@ check_libs(libnames)
 		echo "Kernel-dir: $kernel_dir"
 		echo "PIP-Dependencies: $kernel_pip_dependencies"
 
+		if [[ ! -d $kernel_dir ]]; then
+			green_reset_line "➤Trying to create virtualenv $kernel_dir"
+
+			python3 -m venv --system-site-packages $kernel_dir || {
+				red_text "\n➤python3 -m venv --system-site-packages $kernel_dir failed\n"
+				exit 10
+			}
+			green_reset_line "✅Virtualenv $kernel_dir created"
+		else
+			green_reset_line "✅Virtualenv $kernel_dir already exists"
+		fi
+
+		green_reset_line "✅Activating virtualenv $kernel_dir/bin/activate"
+		if [[ ! -e "$kernel_dir/bin/activate" ]]; then
+			red_text "\n$kernel_dir/bin/activate could not be found\n"
+			exit 199
+		fi
+
+		source $kernel_dir/bin/activate
+
+		# Iterate through pip-dependencies
+		echo "Iterating over pip-dependencies:"
+		for pip_dependency in $kernel_pip_dependencies; do
+			echo "PIP-Dependency group: $pip_dependency"
+		done
+
 		# Iterate through tests
 		echo "Iterating over tests:"
 		for test in $kernel_tests; do
 			echo "Test: $test"
 		done
 
-		# Iterate through pip-dependencies
-		echo "Iterating over pip-dependencies:"
-		for pip_dependency in $kernel_pip_dependencies; do
-			echo "PIP-Dependency: $pip_dependency"
-		done
 		echo "---------------------"
+
+		deactivate
 	done
 
 	exit
