@@ -239,6 +239,7 @@ libnames = [$MODS]
 
 def check_libs(libnames):
     ok = True
+    mods_ok = []
     for x in range(len(libnames)):
         libname = libnames[x]
         try:
@@ -247,7 +248,9 @@ def check_libs(libnames):
             print(libname + ' - failed')
             ok = False
         else:
-            print(libname + ' - ok')
+            mods_ok.append(libname)
+
+    print('Mods OK: ' + (', '.join(mods_ok)))
 
     if not ok:
         return 1
