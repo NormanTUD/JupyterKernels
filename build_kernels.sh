@@ -591,9 +591,11 @@ check_libs(libnames)
 		echo "\"$pip_dependency\" => \"$dependency_value\""
 
 		# Check for pip_complex for the current cluster
-		pip_complex_value=$(echo "$CONFIG_JSON" | ./jq -r ".pip_module_groups[\"$pip_dependency\"].pip_complex[\"$cluster_name\"]")
-		if [[ "$pip_complex_value" != "null" ]]; then
-		    echo "PIP-Complex ($cluster_name): $pip_complex_value"
+		pip_complex_value=$(echo "$CONFIG_JSON" | ./jq -r ".pip_module_groups[\"$pip_dependency\"].pip_complex[\"$cluster_name\"]" 2>/dev/null)
+		if [[ $? -eq 0 ]]; then
+			if [[ "$pip_complex_value" != "null" ]]; then
+			    echo "PIP-Complex ($cluster_name): $pip_complex_value"
+			fi
 		fi
 	    done
 
