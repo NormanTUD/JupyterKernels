@@ -356,8 +356,8 @@ PYVENV_PATH=$wrkspace/$cluster_name/share/$shortname
 
 source \$PYVENV_PATH/bin/activate
 
-python \
-  -m ipykernel_launcher \
+python \\
+  -m ipykernel_launcher \\
   -f \${CONNFILE}
 
 echo '========================================================='
