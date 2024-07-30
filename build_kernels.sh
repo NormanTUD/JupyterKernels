@@ -45,8 +45,8 @@ FROZEN=""
 
 { # Hack to prevent re-reading the file while it is still running
 	ORIGINAL_PWD=$(pwd)
-	#wrkspace=/software/util/JupyterLab
-	wrkspace=/home/s3811141/test/randomtest_53262/JupyterKernels/JL
+	wrkspace=/software/util/JupyterLab
+
 	mkdir -p $wrkspace || {
 		echo "Cannot create $wrkspace"
 		exit 123
