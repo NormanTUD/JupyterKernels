@@ -1,5 +1,14 @@
 #!/bin/bash
 
+trap 'calltracer' ERR
+
+function calltracer {
+	LINE_AND_FUNCTION=$(caller)
+	echo ""
+	caller
+	echo "Runtime (calltracer): $(displaytime $SECONDS), PID: $$"
+}
+
 CONFIG_JSON=$(echo '
 		{
 		  "same_modules_everywhere": "GCC/12.3.0 OpenMPI/4.1.5 Python/3.11.3 libffi/3.4.4",
@@ -275,7 +284,7 @@ def check_libs(libnames):
     return 0
 
 sys.exit(check_libs(libnames))
-" | python3
+" | python3 2>/dev/null
 		exit_code=$?
 		if [[ $exit_code -eq 0 ]]; then
 			green_text "\ncheck_libs($MODS) successful\n"
@@ -501,7 +510,6 @@ echo '========================================================='
 		FROZEN=$(pip list --format=freeze)
 
 		for pip_dependency_group in $kernel_pip_dependencies; do
-			yellow_text "\nPIP-Dependency group for $kernel_name: $pip_dependency_group:\n"
 			dependency_value=$(echo "$CONFIG_JSON" | ./jq -r ".pip_module_groups[\"$pip_dependency_group\"]")
 			if [[ $? -eq 0 ]]; then
 				# Check for pip_complex for the current cluster
@@ -520,6 +528,7 @@ echo '========================================================='
 			else
 				red_reset_line "❌Could not find .pip_module_groups[$pip_dependency_group]"
 			fi
+			echo "\n"
 		done
 
 		create_start_kernel_sh "$kernel_key" "$kernel_name" "$current_load"
