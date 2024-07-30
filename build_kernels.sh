@@ -256,7 +256,11 @@ def check_libs(libnames):
 sys.exit(check_libs(libnames))
 " | python3
 		exit_code=$?
-		echo "Exit-Code for check lib: $exit_code"
+		if [[ $exit_code -eq 0 ]]; then
+			green_text "\ncheck_libs($MODS) successful\n"
+		else
+			red_text "\ncheck_libs($MODS) failed\n"
+		fi
 	}
 
 	function check_base_libs {
