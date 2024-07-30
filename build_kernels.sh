@@ -257,7 +257,7 @@ FROZEN=""
 	function check_libs(){
 		MODS="$1"
 		MODS=$(echo "$MODS" | sed -e 's#\s\s*# #g' -e 's#\s#, #g' -e "s#^#'#" -e "s#\$#'#" -e "s#, #', '#g")
-		yellow_text "\nChecking libs ($MODS)...\n"
+		#yellow_text "\nChecking libs ($MODS)...\n"
 		echo "
 import sys
 from importlib import import_module
