@@ -553,12 +553,14 @@ check_libs(libnames)
 		kernel_tests=$(echo "$kernel_entry" | ./jq -r '.value.tests | join(" ")')
 		kernel_pip_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.pip_dependencies | join(" ")')
 
+		kernel_dir="$wrkspace/$cluster_name/share/$kernel_key"
+
 		echo -e "\nKernel Info:"
 		echo "Key: $kernel_key"
 		echo "Name: $kernel_name"
 		echo "Tests: $kernel_tests"
+		echo "Kernel-dir: $kernel_dir"
 		echo "PIP-Dependencies: $kernel_pip_dependencies"
-		echo "---------------------"
 
 		# Iterate through tests
 		echo "Iterating over tests:"
@@ -571,6 +573,7 @@ check_libs(libnames)
 		for pip_dependency in $kernel_pip_dependencies; do
 			echo "PIP-Dependency: $pip_dependency"
 		done
+		echo "---------------------"
 	done
 
 	exit
