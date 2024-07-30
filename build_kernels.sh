@@ -547,7 +547,7 @@ check_libs(libnames)
 
 	module_load "$current_load"
 
-	echo "$CONFIG_JSON" | jq -r '.kernels | to_entries | .[] | "\(.key): \(.value.name)\nTests: \(.value.tests)\nDependencies: \(.value.dependencies)\n"' | while IFS= read -r kernel_info; do
+	echo "$CONFIG_JSON" | ./jq -r '.kernels | to_entries | .[] | "\(.key): \(.value.name)\nTests: \(.value.tests)\nDependencies: \(.value.dependencies)\n"' | while IFS= read -r kernel_info; do
 		echo "Kernel Info:"
 		echo "$kernel_info"
 		echo "---------------------"
