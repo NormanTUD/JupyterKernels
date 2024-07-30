@@ -5,7 +5,7 @@
 	wrkspace=/home/s3811141/test/randomtest_53262/JupyterKernels/JL
 	mkdir -p $wrkspace
 
-	JSON=$(echo '
+	CONFIG_JSON=$(echo '
 			{
 			  "same_modules_everywhere": "GCC/12.3.0 OpenMPI/4.1.5 Python/3.11.3",
 			  "modules_by_cluster": {
@@ -556,6 +556,13 @@ check_libs(libnames)
 	###########################
 	# Machine Learning kernel #
 	###########################
+
+	if ! jq -e . >/dev/null 2>&1 <<<"$CONFIG_JSON"; then
+		red_text "The JSON string has a syntax error"
+		exit 100
+	fi
+
+
 
 	install_pytorch_kernel "$wrkspace/$cluster_name/share/pytorch"
 	install_tensorflow_kernel "$wrkspace/$cluster_name/share/tensorflow"
