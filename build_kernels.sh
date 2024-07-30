@@ -418,8 +418,6 @@ check_libs(libnames)
 			else
 				red_reset_line "Could not find .pip_module_groups[$pip_dependency_group]"
 			fi
-
-			green_text "\nInstalled $dependency_value"
 		done
 
 		create_kernel_json "$kernel_key" "$kernel_name"
