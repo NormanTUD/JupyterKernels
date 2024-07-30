@@ -290,8 +290,6 @@ sys.exit(check_libs(libnames))
 	}
 
 	function check_tensorflow {
-		yellow_text "\nCheck tensorflow...\n"
-
 		check_base_libs
 		check_libs "tensorflow"
 	}
@@ -302,13 +300,11 @@ sys.exit(check_libs(libnames))
 	}
 
 	function check_torchv2(){
-		yellow_text "\nCheck torchv2...\n"
-
 		check_base_libs
 		check_libs "torch torchvision torchaudio"
 
 		if command -v nvidia-smi 2>/dev/null >/dev/null; then
-			TORCH_ENV=$(python3 -m torch.utils.collect_env)
+			TORCH_ENV=$(python3 -m torch.utils.collect_env 2>&1)
 
 			if ! echo "$TORCH_ENV" | grep "Is CUDA available: True" 2>/dev/null >/dev/null; then
 				red_text "'Is CUDA available: True' not found in python3 -m torch.utils.collect_env"
