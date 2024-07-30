@@ -254,14 +254,14 @@ check_libs(libnames)
 
 
 	# install base packages
-	function base_pkgs(){
+	function base_pkgs{
 		BASE_PKGS_STR=$(join_by " " ${BASE_PKGS_LIST[@]})
 		yellow_text "\n\n➤Installing base packages $BASE_PKGS_STR\n"
 
 		ppip "$BASE_PKGS_STR"
 	}
 
-	function sci_pkgs(){
+	function sci_pkgs{
 		SCI_PKGS_STR=$(join_by " " "${BASE_SCI_PKGS[@]}")
 		yellow_text "\n\n➤Installing scientific packages $SCI_PKGS_STR\n"
 
@@ -405,7 +405,7 @@ check_libs(libnames)
 		deactivate
 	}
 
-	function pytorchv2_kernel(){
+	function pytorchv2_kernel{
 		_path=$1
 		yellow_text "\n➤Install PyTorchv2 Kernel to $_path\n"
 		local logfile=~/install_$(basename ${_path}_v2)-kernel-$cluster_name.log
