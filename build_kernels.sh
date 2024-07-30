@@ -534,6 +534,16 @@ check_libs(libnames)
 
 	green_reset_line "Modules resetted"
 
+	if [[ ! -e jq ]]; then
+		red_text "\njq not found. Please install it, e.g. via apt-get install jq\n"
+		exit 101
+	fi
+
+	if ! echo "$CONFIG_JSON" | jq; then
+		red_text "\nThe JSON string has a syntax error\n"
+		exit 100
+	fi
+
 	green_reset_line "➤Loading modules for $cluster_name..."
 
 	if [[ -z ${MODULE_BY_CLUSTER[$cluster_name]} ]]; then
@@ -556,13 +566,6 @@ check_libs(libnames)
 	###########################
 	# Machine Learning kernel #
 	###########################
-
-	if ! jq -e . >/dev/null 2>&1 <<<"$CONFIG_JSON"; then
-		red_text "The JSON string has a syntax error"
-		exit 100
-	fi
-
-
 
 	install_pytorch_kernel "$wrkspace/$cluster_name/share/pytorch"
 	install_tensorflow_kernel "$wrkspace/$cluster_name/share/tensorflow"
