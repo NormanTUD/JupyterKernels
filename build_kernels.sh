@@ -224,14 +224,12 @@ FROZEN=""
 		i=0
 		MAXMODNR=$(echo "$TO_INSTALL" | sed -e 's#\s#\n#g' | wc -l)
 		PBAR=$(generate_progress_bar $i $MAXMODNR)
-		if [[ ! -z $pip_dependency_group ]]; then PBAR="$PBAR$PIP_REQUIRE_VIRTUALENV"; fi
 		green_reset_line "$PBAR➤Installing $TO_INSTALL"
 		pip3 --upgrade pip 2>/dev/null >/dev/null
 
 		for ELEM in $(echo "$TO_INSTALL"); do
 			if ! echo "$FROZEN" | grep "$ELEM" 2>/dev/null >/dev/null; then
 				PBAR=$(generate_progress_bar $i $MAXMODNR)
-				if [[ ! -z $pip_dependency_group ]]; then PBAR="$PBAR$PIP_REQUIRE_VIRTUALENV"; fi
 				green_reset_line "$PBAR➤Installing $ELEM ($(($i+1))/$MAXMODNR)"
 				pip3 -q install $ELEM 2>/dev/null >/dev/null || {
 					red_text "\n❌Could not install $ELEM.\n"
