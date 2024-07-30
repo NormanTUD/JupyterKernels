@@ -550,20 +550,12 @@ check_libs(libnames)
 	module_load "$current_load"
 
 	echo "$CONFIG_JSON" | ./jq -c '.kernels | to_entries[]' | while IFS= read -r kernel_entry; do
-	    echo -e "\n---------------------"
-
 	    kernel_key=$(echo "$kernel_entry" | ./jq -r '.key')
 	    kernel_name=$(echo "$kernel_entry" | ./jq -r '.value.name')
 	    kernel_tests=$(echo "$kernel_entry" | ./jq -r '.value.tests | join(" ")')
 	    kernel_pip_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.pip_dependencies | join(" ")')
 
 	    kernel_dir="$wrkspace/$cluster_name/share/$kernel_key"
-
-	    echo "Key: $kernel_key"
-	    echo "Name: $kernel_name"
-	    echo "Tests: $kernel_tests"
-	    echo "Kernel-dir: $kernel_dir"
-	    echo "PIP-Dependencies: $kernel_pip_dependencies"
 
 	    if [[ ! -d $kernel_dir ]]; then
 		green_reset_line "➤Trying to create virtualenv $kernel_dir"
@@ -617,8 +609,6 @@ check_libs(libnames)
 		green_reset_line "Running kernel-test $kernel_test"
 		eval "$kernel_test"
 	    done
-
-	    echo "---------------------"
 
 	    deactivate
 	done
