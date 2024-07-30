@@ -587,7 +587,7 @@ check_libs(libnames)
 	    # Iterate through pip-dependencies
 	    green_reset_line "Iterating over pip-dependencies:"
 	    for pip_dependency_group in $kernel_pip_dependencies; do
-		green_reset_line "PIP-Dependency: $pip_dependency_group"
+		green_reset_line "PIP-Dependency group: $pip_dependency_group"
 		dependency_value=$(echo "$CONFIG_JSON" | ./jq -r ".pip_module_groups[\"$pip_dependency_group\"]")
 		if [[ $? -eq 0 ]]; then
 			ppip "$dependency_value"
@@ -598,7 +598,11 @@ check_libs(libnames)
 				if [[ "$pip_complex_value" != "null" ]]; then
 				    echo "PIP-Complex ($cluster_name): $pip_complex_value"
 				fi
+			else
+				red_reset_line "Could not find .pip_module_groups[$pip_dependency_group].pip_complex[$cluster_name]}"
 			fi
+		else
+			red_reset_line "Could not find .pip_module_groups[$pip_dependency_group]"
 		fi
 	    done
 
