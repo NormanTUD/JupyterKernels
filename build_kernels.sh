@@ -15,7 +15,7 @@
 			    "alpha": "release/24.04 CUDA/12.2.0",
 			    "romeo": "release/23.04"
 			  },
-			  "module_groups": {
+			  "pip_module_groups": {
 			    "ml_libs": "pybrain ray theano scikit-learn nltk",
 			    "base_pks": "ipykernel ipywidgets beautifulsoup4 scrapy nbformat==5.0.2 matplotlib plotly seaborn",
 			    "sci_pks": "ipykernel numpy scipy sympy pandaralleldask mpi4py ipyparallel netcdf4 xarray[complete]",
@@ -39,27 +39,12 @@
 			    },
 			    "pytorch": {
 			      "name": "PyTorch (Machine Learning)",
-			      "tests": ["check_torch"],
+			      "tests": ["check_torchv2"],
 			      "dependencies": ["base_pks", "sci_pks", "ml_libs", "torchvision"]
 			    }
 			  }
 			}
 		'
-	)
-
-	MODULES_THAT_ARE_THE_SAME_EVERYWHERE="GCC/12.3.0 OpenMPI/4.1.5 Python/3.11.3"
-
-	declare -A MODULE_BY_CLUSTER=(
-		["barnard"]="release/23.10 ${MODULES_THAT_ARE_THE_SAME_EVERYWHERE}"
-		["alpha"]="release/24.04 CUDA/12.2.0 ${MODULES_THAT_ARE_THE_SAME_EVERYWHERE}"
-		["romeo"]="release/23.04 ${MODULES_THAT_ARE_THE_SAME_EVERYWHERE}"
-	)
-
-	declare -A MODULES=(
-		["ml_libs"]="pybrain ray theano scikit-learn nltk"
-		["base_pks"]="ipykernel ipywidgets beautifulsoup4 scrapy nbformat==5.0.2 matplotlib plotly seaborn"
-		["sci_pks"]="ipykernel numpy scipy sympy pandaralleldask mpi4py ipyparallel netcdf4 xarray[complete]"
-
 	)
 
 	function join_by {
@@ -287,8 +272,13 @@ check_libs(libnames)
 		check_libs "tensorflow"
 	}
 
-	function check_torch(){
-		yellow_text "\nCheck torch...\n"
+	function check_torchv1(){
+		yellow_text "\nChec torchv1\n"
+		red_text "\nNOT YET IMPLEMENTED\n"
+	}
+
+	function check_torchv2(){
+		yellow_text "\nCheck torchv2...\n"
 
 		check_base_libs
 		check_libs "torch torchvision torchaudio"
@@ -442,7 +432,7 @@ check_libs(libnames)
 			ppip_complex torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 		fi
 
-		check_torch
+		check_torchv1
 
 		deactivate
 	}
@@ -472,7 +462,7 @@ check_libs(libnames)
 			ppip_complex torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 		fi
 
-		check_torch
+		check_torchv2
 
 		deactivate
 	}
@@ -546,11 +536,6 @@ check_libs(libnames)
 		exit 100
 	fi
 
-
-	if [[ -z ${MODULE_BY_CLUSTER[$cluster_name]} ]]; then
-		red_text "Cannot find \${MODULE_BY_CLUSTER[$cluster_name]}"
-		exit 30
-	fi
 
 	same_modules_everywhere=$(echo "$CONFIG_JSON" | ./jq -r '.same_modules_everywhere')
 
