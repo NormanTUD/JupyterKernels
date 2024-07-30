@@ -548,55 +548,64 @@ check_libs(libnames)
 	module_load "$current_load"
 
 	echo "$CONFIG_JSON" | ./jq -c '.kernels | to_entries[]' | while IFS= read -r kernel_entry; do
-		kernel_key=$(echo "$kernel_entry" | ./jq -r '.key')
-		kernel_name=$(echo "$kernel_entry" | ./jq -r '.value.name')
-		kernel_tests=$(echo "$kernel_entry" | ./jq -r '.value.tests | join(" ")')
-		kernel_pip_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.pip_dependencies | join(" ")')
+	    kernel_key=$(echo "$kernel_entry" | ./jq -r '.key')
+	    kernel_name=$(echo "$kernel_entry" | ./jq -r '.value.name')
+	    kernel_tests=$(echo "$kernel_entry" | ./jq -r '.value.tests | join(" ")')
+	    kernel_pip_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.pip_dependencies | join(" ")')
 
-		kernel_dir="$wrkspace/$cluster_name/share/$kernel_key"
+	    kernel_dir="$wrkspace/$cluster_name/share/$kernel_key"
 
-		echo -e "\nKernel Info:"
-		echo "Key: $kernel_key"
-		echo "Name: $kernel_name"
-		echo "Tests: $kernel_tests"
-		echo "Kernel-dir: $kernel_dir"
-		echo "PIP-Dependencies: $kernel_pip_dependencies"
+	    echo -e "\nKernel Info:"
+	    echo "Key: $kernel_key"
+	    echo "Name: $kernel_name"
+	    echo "Tests: $kernel_tests"
+	    echo "Kernel-dir: $kernel_dir"
+	    echo "PIP-Dependencies: $kernel_pip_dependencies"
+	    echo "---------------------"
 
-		if [[ ! -d $kernel_dir ]]; then
-			green_reset_line "➤Trying to create virtualenv $kernel_dir"
+	    if [[ ! -d $kernel_dir ]]; then
+		green_reset_line "➤Trying to create virtualenv $kernel_dir"
 
-			python3 -m venv --system-site-packages $kernel_dir || {
-				red_text "\n➤python3 -m venv --system-site-packages $kernel_dir failed\n"
-				exit 10
-			}
-			green_reset_line "✅Virtualenv $kernel_dir created"
-		else
-			green_reset_line "✅Virtualenv $kernel_dir already exists"
+		python3 -m venv --system-site-packages $kernel_dir || {
+		    red_text "\n➤python3 -m venv --system-site-packages $kernel_dir failed\n"
+		    exit 10
+		}
+		green_reset_line "✅Virtualenv $kernel_dir created"
+	    else
+		green_reset_line "✅Virtualenv $kernel_dir already exists"
+	    fi
+
+	    green_reset_line "✅Activating virtualenv $kernel_dir/bin/activate"
+	    if [[ ! -e "$kernel_dir/bin/activate" ]]; then
+		red_text "\n$kernel_dir/bin/activate could not be found\n"
+		exit 199
+	    fi
+
+	    source $kernel_dir/bin/activate
+
+	    # Iterate through pip-dependencies
+	    echo "Iterating over pip-dependencies:"
+	    for pip_dependency in $kernel_pip_dependencies; do
+		echo "PIP-Dependency: $pip_dependency"
+		dependency_value=$(echo "$CONFIG_JSON" | ./jq -r ".pip_module_groups[\"$pip_dependency\"]")
+		echo "\"$pip_dependency\" => \"$dependency_value\""
+
+		# Check for pip_complex for the current cluster
+		pip_complex_value=$(echo "$CONFIG_JSON" | ./jq -r ".pip_module_groups[\"$pip_dependency\"].pip_complex[\"$cluster_name\"]")
+		if [[ "$pip_complex_value" != "null" ]]; then
+		    echo "PIP-Complex ($cluster_name): $pip_complex_value"
 		fi
+	    done
 
-		green_reset_line "✅Activating virtualenv $kernel_dir/bin/activate"
-		if [[ ! -e "$kernel_dir/bin/activate" ]]; then
-			red_text "\n$kernel_dir/bin/activate could not be found\n"
-			exit 199
-		fi
+	    # Iterate through tests
+	    echo "Iterating over tests:"
+	    for test in $kernel_tests; do
+		echo "Test: $test"
+	    done
 
-		source $kernel_dir/bin/activate
+	    echo "---------------------"
 
-		# Iterate through pip-dependencies
-		echo "Iterating over pip-dependencies:"
-		for pip_dependency in $kernel_pip_dependencies; do
-			echo "PIP-Dependency group: $pip_dependency"
-		done
-
-		# Iterate through tests
-		echo "Iterating over tests:"
-		for test in $kernel_tests; do
-			echo "Test: $test"
-		done
-
-		echo "---------------------"
-
-		deactivate
+	    deactivate
 	done
 
 	exit
