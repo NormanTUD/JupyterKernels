@@ -13,7 +13,7 @@
 			  "modules_by_cluster": {
 			    "barnard": "release/23.10",
 			    "alpha": "release/24.04 CUDA/12.2.0",
-			    "romeo": "release/23.04"
+	a		    "romeo": "release/23.04"
 			  },
 			  "module_groups": {
 			    "ml_libs": "pybrain ray theano scikit-learn nltk",
