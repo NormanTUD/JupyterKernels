@@ -41,11 +41,16 @@ CONFIG_JSON=$(echo '
 	'
 )
 
+if [[ -z $1 ]]; then
+	wrkspace=$1
+else
+	wrkspace=/software/util/JupyterLab
+fi
+
 FROZEN=""
 
 { # Hack to prevent re-reading the file while it is still running
 	ORIGINAL_PWD=$(pwd)
-	wrkspace=/software/util/JupyterLab
 
 	mkdir -p $wrkspace || {
 		echo "Cannot create $wrkspace"
