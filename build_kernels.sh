@@ -266,6 +266,34 @@ check_libs(libnames)
 		check_libs "torch torchvision torchaudio"
 	}
 
+	function create_start_kernel_sh {
+		shortname="$1"
+		_name="$2"
+		_module_list="$3"
+
+		echo "#!/bin/bash
+
+CONNFILE=\${1}
+
+set -euo pipefail
+
+echo '========================================================='
+echo 'Starting ${_name}...'
+
+module reset
+module load ${_module_list}
+
+PYVENV_PATH=$wrkspace/$cluster_name/share/$shortname
+
+source \$PYVENV_PATH/bin/activate
+
+python \
+  -m ipykernel_launcher \
+  -f \${CONNFILE}
+
+echo '========================================================='
+"
+	}
 
 	function create_kernel_json {
 		shortname="$1"
@@ -418,6 +446,7 @@ check_libs(libnames)
 			fi
 		done
 
+		create_start_kernel_sh "$kernel_key" "$kernel_name" "$current_load"
 		create_kernel_json "$kernel_key" "$kernel_name"
 
 		# Iterate through tests
