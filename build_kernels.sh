@@ -538,7 +538,7 @@ echo '========================================================='
 		for kernel_test in $kernel_tests; do
 			eval "$kernel_test"
 			if [[ $? -ne 0 ]]; then
-				red_text "$kernel_key tests failed"
+				red_text "\n$kernel_key tests failed\n"
 			fi
 		done
 
