@@ -11,7 +11,7 @@ CONFIG_JSON=$(echo '
 		  "pip_module_groups": {
 		    "ml_libs": "pybrain ray theano scikit-learn nltk",
 		    "base_pks": "ipykernel ipywidgets beautifulsoup4 scrapy nbformat==5.0.2 matplotlib plotly seaborn",
-		    "sci_pks": "ipykernel numpy scipy sympy pandaralleldask mpi4py ipyparallel netcdf4 xarray[complete]",
+		    "sci_pks": "ipykernel numpy scipy sympy pandarallel dask mpi4py ipyparallel netcdf4 xarray[complete]",
 		    "torchvision_torchaudio": {
 		      "pip_complex": {
 			"alpha": "torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121",
