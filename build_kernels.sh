@@ -23,52 +23,10 @@ function calltracer {
 
 trap 'calltracer' ERR
 
-default_config_json='
-	{
-	  "same_modules_everywhere": "GCC/12.3.0 OpenMPI/4.1.5 Python/3.11.3 libffi/3.4.4",
-	  "modules_by_cluster": {
-	    "barnard": "release/23.10",
-	    "alpha": "release/24.04 CUDA/12.2.0",
-	    "romeo": "release/23.04"
-	  },
-	  "pip_module_groups": {
-	    "ml_libs": "pybrain ray theano scikit-learn nltk",
-	    "base_pks": "ipykernel ipywidgets beautifulsoup4 scrapy nbformat==5.0.2 matplotlib plotly seaborn",
-	    "sci_pks": "ipykernel numpy scipy sympy pandarallel dask mpi4py ipyparallel netcdf4 xarray[complete]",
-	    "tensorflow": "tensorflow==2.17.0",
-	    "torchvision_torchaudio": {
-	      "pip_complex": {
-		"alpha": "torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121",
-		"barnard": "torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu",
-		"romeo": "torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu"
-	      }
-	    },
-	    "nvidia-cudnn-cu12": {
-	      "pip_complex": {
-		"alpha": "nvidia-cudnn-cu12"
-	      }
-	    }
-	  },
-	  "kernels": {
-	    "tensorflow": {
-	      "name": "TensorFlow (Machine Learning)",
-	      "tests": ["check_tensorflow"],
-	      "module_load":  ["libffi/3.4.4"],
-	      "pip_dependencies": ["base_pks", "sci_pks", "ml_libs", "nvidia-cudnn-cu12", "tensorflow"]
-	    },
-	    "pytorch": {
-	      "name": "PyTorch (Machine Learning)",
-	      "tests": ["check_torchv2"],
-	      "pip_dependencies": ["base_pks", "sci_pks", "ml_libs", "torchvision_torchaudio"]
-	    }
-	  }
-	}
-'
-
 default_workspace='/software/util/JupyterLab'
 
 # Initialize variables
-CONFIG_JSON=$default_config_json
+CONFIG_JSON=""
 wrkspace=$default_workspace
 
 # Function to check if a file is a JSON file
@@ -93,7 +51,7 @@ is_directory() {
 for param in "$@"; do
 	if is_json_file "$param"; then
 		CONFIG_JSON=$(cat "$param")
-	elif is_directory "$param"; then
+	else
 		wrkspace="$param"
 	fi
 done
