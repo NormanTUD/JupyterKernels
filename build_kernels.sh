@@ -53,6 +53,7 @@ CONFIG_JSON=$(echo '
 		    "tensorflow": {
 		      "name": "TensorFlow (Machine Learning)",
 		      "tests": ["check_tensorflow"],
+		      "module_load":  ["libffi/3.4.4"],
 		      "pip_dependencies": ["base_pks", "sci_pks", "ml_libs", "nvidia-cudnn-cu12", "tensorflow"]
 		    },
 		    "pytorch": {
@@ -490,11 +491,16 @@ echo '========================================================='
 		kernel_key=$(echo "$kernel_entry" | ./jq -r '.key')
 		kernel_name=$(echo "$kernel_entry" | ./jq -r '.value.name')
 		kernel_tests=$(echo "$kernel_entry" | ./jq -r '.value.tests | join(" ")')
+		kernel_ml_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.module_load | join(" ")')
 		kernel_pip_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.pip_dependencies | join(" ")')
 
 		kernel_dir="$wrkspace/$cluster_name/share/$kernel_key"
 
 		yellow_text "\n➤Installing kernel $kernel_key ($kernel_name)...\n"
+
+		for ml_dependency_group in $kernel_ml_dependencies; do
+			module_load $ml_dependency_group
+		done
 
 		if [[ ! -d $kernel_dir ]]; then
 			green_reset_line "➤Trying to create virtualenv $kernel_dir"
@@ -548,7 +554,7 @@ echo '========================================================='
 			echo ""
 		done
 
-		create_start_kernel_sh "$kernel_key" "$kernel_name" "$current_load"
+		create_start_kernel_sh "$kernel_key" "$kernel_name" "$current_load $kernel_ml_dependencies"
 		create_kernel_json "$kernel_key" "$kernel_name"
 
 		# Iterate through tests
