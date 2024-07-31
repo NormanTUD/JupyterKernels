@@ -469,7 +469,7 @@ echo '========================================================='
 
 	module_load "$current_load"
 
-	green_text "\nPython version: $(python --version)"
+	green_text "\nPython version: $(python3 --version)"
 
 	echo "$CONFIG_JSON" | ./jq -c '.kernels | to_entries[]' | while IFS= read -r kernel_entry; do
 		kernel_key=$(echo "$kernel_entry" | ./jq -r '.key')
