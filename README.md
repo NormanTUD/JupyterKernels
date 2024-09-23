@@ -34,7 +34,11 @@ You can specify the install requirements with a simple JSON file.
   "kernels": {
     "tensorflow": {
       "name": "TensorFlow (Machine Learning)",
-      "module_load": ["TensorFlow/2.11.0-CUDA-11.7.0"],
+      "modules_load": {
+	      "alpha": "TensorFlow/2.11.0-CUDA-11.7.0",
+	      "romeo": "TensorFlow/2.11.0-CUDA-11.7.0",
+	      "barnard": "TensorFlow/2.9.1"
+      },
       "pip_dependencies": ["base_pks", "sci_pks", "ml_libs"],
       "check_libs": "bs4 scrapy matplotlib plotly seaborn numpy scipy sympy dask mpi4py ipyparallel netCDF4 sklearn nltk tensorflow",
       "test_script": "true"
@@ -69,6 +73,8 @@ If the value is a simple string, it will be the same for all clusters. If it is 
 A list of kernels to be installed. Each kernel has a key that acts as it's internal name (e.g. tensorflow). It also has a 'nice' name that is given as a parameter to the key, e.g. "TensorFlow (Machine Learning)". 
 
 `module_load` specifies modules that should be loaded, but are inconvienent to define in the `modules_by_cluster`. This is not a module or pip-group, but rather, a list (string) of ml modules to be loaded before pip is used.
+
+If it is not an array, but a dict, it will look for the key as cluster names, and depending on the cluster name of your currently running OS, will install the dependencies for it.
 
 ### `pip_dependencies`:
 

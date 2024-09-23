@@ -32,7 +32,11 @@
   "kernels": {
     "tensorflow": {
       "name": "TensorFlow (Machine Learning)",
-      "module_load": ["TensorFlow/2.11.0-CUDA-11.7.0"],
+      "modules_load": {
+	      "alpha": "TensorFlow/2.11.0-CUDA-11.7.0",
+	      "romeo": "TensorFlow/2.11.0-CUDA-11.7.0",
+	      "barnard": "TensorFlow/2.9.1"
+      },
       "pip_dependencies": ["base_pks", "sci_pks", "ml_libs"],
       "check_libs": "bs4 scrapy matplotlib plotly seaborn numpy scipy sympy dask mpi4py ipyparallel netCDF4 sklearn nltk tensorflow",
       "test_script": "true"
