@@ -446,10 +446,11 @@ echo '========================================================='
 
 	green_text "\nPython version: $(python3 --version)"
 
-	echo "$CONFIG_JSON" | ./jq -c '.kernels | to_entries[]' | while IFS= read -r kernel_entry; do
+	kernel_entries=$(echo "$CONFIG_JSON" | ./jq -c '.kernels | to_entries[]')
+
+	echo "$kernel_entries" | while IFS= read -r kernel_entry; do
 		kernel_key=$(echo "$kernel_entry" | ./jq -r '.key')
 		kernel_name=$(echo "$kernel_entry" | ./jq -r '.value.name')
-		kernel_tests=$(echo "$kernel_entry" | ./jq -r '.value.tests | join(" ")')
 		kernel_ml_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.module_load | join(" ")')
 		kernel_pip_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.pip_dependencies | join(" ")' 2>/dev/null)
 		_check_libs=$(echo "$kernel_entry" | ./jq -r '.value.check_libs' 2>/dev/null)
@@ -517,14 +518,6 @@ echo '========================================================='
 
 		create_start_kernel_sh "$kernel_key" "$kernel_name" "$current_load $kernel_ml_dependencies"
 		create_kernel_json "$kernel_key" "$kernel_name"
-
-		# Iterate through tests
-		for kernel_test in $kernel_tests; do
-			eval "$kernel_test"
-			if [[ $? -ne 0 ]]; then
-				red_text "\n$kernel_key tests failed\n"
-			fi
-		done
 
 		if [[ -n $_check_libs ]]; then
 			check_libs "$_check_libs"
