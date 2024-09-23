@@ -1,9 +1,9 @@
 {
-  "same_modules_everywhere": "GCC/12.3.0 OpenMPI/4.1.5 Python/3.11.3 libffi/3.4.4",
+  "same_modules_everywhere": "",
   "modules_by_cluster": {
     "barnard": "release/23.10",
-    "alpha": "release/24.04 CUDA/12.2.0",
-    "romeo": "release/23.04"
+    "alpha": "release/23.10  GCC/11.3.0  OpenMPI/4.1.4 Python/3.10.4",
+    "romeo": "release/23.10  GCC/11.3.0  OpenMPI/4.1.4 Python/3.10.4"
   },
   "pip_module_groups": {
     "ml_libs": "pybrain ray theano scikit-learn nltk",
@@ -12,7 +12,7 @@
     "tensorflow": "tensorflow==2.17.0",
     "torchvision_torchaudio": {
       "pip_complex": {
-	"alpha": "torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121",
+	"alpha": "torchvision torchaudio",
 	"barnard": "torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu",
 	"romeo": "torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu"
       }
@@ -27,12 +27,13 @@
     "tensorflow": {
       "name": "TensorFlow (Machine Learning)",
       "tests": ["check_tensorflow"],
-      "module_load":  ["libffi/3.4.4"],
-      "pip_dependencies": ["base_pks", "sci_pks", "ml_libs", "nvidia-cudnn-cu12", "tensorflow"]
+      "module_load":  ["TensorFlow/2.11.0-CUDA-11.7.0"],
+      "pip_dependencies": ["base_pks", "sci_pks", "ml_libs"]
     },
     "pytorch": {
       "name": "PyTorch (Machine Learning)",
       "tests": ["check_torchv2"],
+      "module_load": ["PyTorch/1.13.1"],
       "pip_dependencies": ["base_pks", "sci_pks", "ml_libs", "torchvision_torchaudio"]
     }
   }

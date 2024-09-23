@@ -23,8 +23,8 @@ function calltracer {
 
 trap 'calltracer' ERR
 
-default_workspace='/software/util/JupyterLab'
-
+#default_workspace='/software/util/JupyterLab'
+default_workspace='/data/horse/ws/s4122485-jupyter_kernels'
 # Initialize variables
 CONFIG_JSON=""
 wrkspace=$default_workspace
