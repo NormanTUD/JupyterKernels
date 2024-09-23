@@ -287,6 +287,8 @@
 			fi
 		done
 
+		echo ""
+
 		return $failed
 	}
 
