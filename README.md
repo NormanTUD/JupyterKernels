@@ -80,4 +80,4 @@ A list of libraries that need to be loadable in Python for the build to be calle
 
 ### `test_script`:
 
-A bash script that is executed. If it exits with anything other than exit-code 0, it will count as failed.
+A bash script that is executed. If it exits with anything other than exit-code 0, it will count as failed. Example would be: `bash path/to/your_test/script.sh`.
