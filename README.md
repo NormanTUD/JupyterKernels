@@ -74,7 +74,7 @@ A list of kernels to be installed. Each kernel has a key that acts as it's inter
 
 `module_load` specifies modules that should be loaded, but are inconvienent to define in the `modules_by_cluster`. This is not a module or pip-group, but rather, a list (string) of ml modules to be loaded before pip is used.
 
-If it is not an array, but a dict, it will look for the key as cluster names, and depending on the cluster name of your currently running OS, will install the dependencies for it.
+`modules_load` specifies a list of modules to load for each cluster.
 
 ### `pip_dependencies`:
 
