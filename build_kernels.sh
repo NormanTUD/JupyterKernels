@@ -242,7 +242,7 @@
 		MAXMODNR=$(echo "$TO_INSTALL" | sed -e 's#\s#\n#g' | wc -l)
 		PBAR=$(generate_progress_bar $i $MAXMODNR)
 		green_reset_line "$PBAR➤Installing $TO_INSTALL"
-		#pip3 --upgrade pip 2>/dev/null >/dev/null
+		pip3 --upgrade pip 2>/dev/null >/dev/null
 
 		for ELEM in $(echo "$TO_INSTALL"); do
 			if ! echo "$FROZEN" | grep "$ELEM" 2>/dev/null >/dev/null; then
@@ -516,7 +516,7 @@ echo '========================================================='
 		source $kernel_dir/bin/activate
 
 		green_reset_line "➤Upgrading pip in $kernel_dir"
-		#pip install --upgrade pip 2>/dev/null >/dev/null
+		pip install --upgrade pip 2>/dev/null >/dev/null
 		if [[ $? -eq 0 ]]; then
 			green_reset_line "✅Pip upgraded $kernel_dir"
 		else
