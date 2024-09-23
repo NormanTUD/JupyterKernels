@@ -1,0 +1,34 @@
+{
+  "modules_by_cluster": {
+    "barnard": "release/23.10",
+    "alpha": "release/23.10 GCC/11.3.0 OpenMPI/4.1.4 Python/3.10.4",
+    "romeo": "release/23.10 GCC/11.3.0 OpenMPI/4.1.4 Python/3.10.4"
+  },
+  "pip_module_groups": {
+    "base_pks": "Cython setuptools wheel ipykernel ipywidgets beautifulsoup4 scrapy nbformat==5.0.2 matplotlib plotly seaborn",
+    "sci_pks": "ipykernel numpy scipy sympy pandarallel dask mpi4py ipyparallel netcdf4 xarray[complete]",
+    "ml_libs": "ray scikit-learn nltk",
+    "tensorflow": "tensorflow==2.17.0",
+    "torchvision_torchaudio": {
+      "pip_complex": {
+	"alpha": "torchvision torchaudio",
+	"barnard": "torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu",
+	"romeo": "torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu"
+      }
+    },
+    "nvidia-cudnn-cu12": {
+      "pip_complex": {
+	"alpha": "nvidia-cudnn-cu12"
+      }
+    }
+  },
+  "kernels": {
+    "pytorch": {
+      "name": "PyTorch (Machine Learning)",
+      "module_load": ["PyTorch/1.13.1"],
+      "pip_dependencies": ["base_pks", "sci_pks", "ml_libs", "torchvision_torchaudio"],
+      "check_libs": "bs4 scrapy matplotlib plotly seaborn numpy scipy sympy dask mpi4py ipyparallel netCDF4 sklearn nltk torch torchvision torchaudio",
+      "test_script": "true"
+    }
+  }
+}

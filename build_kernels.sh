@@ -268,41 +268,20 @@
 
 	function check_libs(){
 		MODS="$1"
-		MODS=$(echo "$MODS" | sed -e 's#\s\s*# #g' -e 's#\s#, #g' -e "s#^#'#" -e "s#\$#'#" -e "s#, #', '#g")
-		#yellow_text "\nChecking libs ($MODS)...\n"
-		echo "
-import sys
-from importlib import import_module
+		failed=0
 
-libnames = [$MODS]
+		for l in $MODS; do
+			echo "import $l" | python3
+			exit_code=$?
 
-def check_libs(libnames):
-    ok = True
-    mods_ok = []
-    for x in range(len(libnames)):
-        libname = libnames[x]
-        try:
-            import_module(libname)
-        except Exception as e:
-            print(\"\\n\" + libname + f' - failed ({e})')
-            ok = False
-        else:
-            mods_ok.append(libname)
+			if [[ $exit_code -ne 0 ]]; then
+				red_text "\n-> echo 'import $l' | python3 <- failed\n"
 
-    #print('Mods OK: ' + (', '.join(mods_ok)))
+				failed=$(($failed+1))
+			fi
+		done
 
-    if not ok:
-        return 1
-    return 0
-
-sys.exit(check_libs(libnames))
-" | python3 2>/dev/null
-		exit_code=$?
-		if [[ $exit_code -eq 0 ]]; then
-			green_text "\ncheck_libs($MODS) successful\n"
-		else
-			red_text "\ncheck_libs($MODS) failed\n"
-		fi
+		return $failed
 	}
 
 	function create_start_kernel_sh {
@@ -500,7 +479,10 @@ echo '========================================================='
 		create_kernel_json "$kernel_key" "$kernel_name"
 
 		if [[ -n $kernel_check_libs ]]; then
-			check_libs "$kernel_check_libs"
+			check_libs "$kernel_check_libs" || {
+				echo "Failed checking libs..."
+				exit 199
+			}
 		else
 			yellow_text "No check_libs for $kernel_key"
 		fi
