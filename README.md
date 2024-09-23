@@ -74,6 +74,10 @@ A list of kernels to be installed. Each kernel has a key that acts as it's inter
 
 References to a key of the `pip_module_groups`. Installs those modules in the order of the elements in the `pip_module_groups`.
 
+### `check_libs`:
+
+A list of libraries that need to be loadable in Python for the build to be called a success.
+
 ### `test_script`:
 
 A bash script that is executed. If it exits with anything other than exit-code 0, it will count as failed.
