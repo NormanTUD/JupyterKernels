@@ -403,7 +403,7 @@ echo '========================================================='
 
 	green_reset_line "Modules resetted"
 
-	current_cluster_load=$(echo "$CONFIG_JSON" | ./jq -r --arg cluster_name "$cluster_name" '.modules_by_cluster[$cluster_name]')
+	current_cluster_load=$(echo "$CONFIG_JSON" | ./jq -r --arg cluster_name "$cluster_name" '.modules_by_cluster[$cluster_name]' 2>/dev/null)
 
 	current_load="$current_cluster_load"
 
@@ -416,9 +416,9 @@ echo '========================================================='
 	kernel_entries=$(echo "$CONFIG_JSON" | ./jq -c '.kernels | to_entries[]')
 
 	echo "$kernel_entries" | while IFS= read -r kernel_entry; do
-		kernel_key=$(echo "$kernel_entry" | ./jq -r '.key')
-		kernel_name=$(echo "$kernel_entry" | ./jq -r '.value.name')
-		kernel_ml_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.module_load | join(" ")')
+		kernel_key=$(echo "$kernel_entry" | ./jq -r '.key' 2>/dev/null)
+		kernel_name=$(echo "$kernel_entry" | ./jq -r '.value.name' 2>/dev/null)
+		kernel_ml_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.module_load | join(" ")' 2>/dev/null)
 		kernel_pip_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.pip_dependencies | join(" ")' 2>/dev/null)
 		kernel_check_libs=$(echo "$kernel_entry" | ./jq -r '.value.check_libs' 2>/dev/null)
 		kernel_test_script=$(echo "$kernel_entry" | ./jq -r '.value.test_script' 2>/dev/null)
@@ -462,7 +462,7 @@ echo '========================================================='
 		FROZEN=$(pip list --format=freeze)
 
 		for pip_dependency_group in $kernel_pip_dependencies; do
-			dependency_value=$(echo "$CONFIG_JSON" | ./jq -r ".pip_module_groups[\"$pip_dependency_group\"]")
+			dependency_value=$(echo "$CONFIG_JSON" | ./jq -r ".pip_module_groups[\"$pip_dependency_group\"]" 2>/dev/null)
 			if [[ $? -eq 0 ]]; then
 				# Check for pip_complex for the current cluster
 				pip_complex_value=$(echo "$CONFIG_JSON" | ./jq -r ".pip_module_groups[\"$pip_dependency_group\"].pip_complex[\"$cluster_name\"]" 2>/dev/null)
