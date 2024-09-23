@@ -28,7 +28,7 @@
 	default_workspace='/data/horse/ws/s4122485-jupyter_kernels'
 	# Initialize variables
 	CONFIG_JSON=""
-	wrkspace=$default_workspace
+	workspace=$default_workspace
 
 	# Function to check if a file is a JSON file
 	is_json_file() {
@@ -114,7 +114,7 @@
 		if is_json_file "$param"; then
 			CONFIG_JSON=$(cat "$param")
 		else
-			wrkspace="$param"
+			workspace="$param"
 		fi
 	done
 
@@ -124,8 +124,8 @@
 
 	ORIGINAL_PWD=$(pwd)
 
-	mkdir -p $wrkspace || {
-		echo "Cannot create $wrkspace"
+	mkdir -p $workspace 2>/dev/null || {
+		red_text "Cannot create workspace $workspace"
 		exit 123
 	}
 
@@ -298,7 +298,7 @@
 		_module_list="$3"
 		_modules_list="$4"
 
-		opt_dir="$wrkspace/$cluster_name/opt/"
+		opt_dir="$workspace/$cluster_name/opt/"
 
 		opt_dir=$(echo "$opt_dir" | sed -e 's#//#/#g')
 
@@ -321,7 +321,7 @@ echo 'Starting ${_name}...'
 module reset
 module load ${_module_list}
 
-PYVENV_PATH=$wrkspace/$cluster_name/share/$shortname
+PYVENV_PATH=$workspace/$cluster_name/share/$shortname
 
 source \$PYVENV_PATH/bin/activate
 
@@ -343,14 +343,14 @@ echo '========================================================='
 		shortname="$1"
 		_name="$2"
 
-		if [[ ! -e $wrkspace/$cluster_name/opt/start-${shortname}-kernel.sh ]]; then
-			red_text "!!! $wrkspace/$cluster_name/opt/start-${shortname}-kernel.sh not found !!!"
+		if [[ ! -e $workspace/$cluster_name/opt/start-${shortname}-kernel.sh ]]; then
+			red_text "!!! $workspace/$cluster_name/opt/start-${shortname}-kernel.sh not found !!!"
 		fi
 
 		echo "{
 			\"display_name\": \"$_name\",
 			\"argv\": [
-				\"$wrkspace/$cluster_name/opt/start-${shortname}-kernel.sh\",
+				\"$workspace/$cluster_name/opt/start-${shortname}-kernel.sh\",
 				\"{connection_file}\"
 			],
 			\"env\": {},
@@ -383,15 +383,15 @@ echo '========================================================='
 	#; sleep 1
 
 
-	if [[ ! -d "$wrkspace" ]]; then
+	if [[ ! -d "$workspace" ]]; then
 		echo ""
-		red_text "workspace $wrkspace cannot be found. Cannot continue.\n"
+		red_text "workspace $workspace cannot be found. Cannot continue.\n"
 		exit 6
 	fi
 
-	if [[ ! -w "$wrkspace" ]]; then
+	if [[ ! -w "$workspace" ]]; then
 		echo ""
-		red_text "workspace $wrkspace is not writable. Cannot continue.\n"
+		red_text "workspace $workspace is not writable. Cannot continue.\n"
 		exit 7
 	fi
 
@@ -425,7 +425,7 @@ echo '========================================================='
 		kernel_check_libs=$(echo "$kernel_entry" | ./jq -r '.value.check_libs' 2>/dev/null)
 		kernel_test_script=$(echo "$kernel_entry" | ./jq -r '.value.test_script' 2>/dev/null)
 
-		kernel_dir="$wrkspace/$cluster_name/share/$kernel_key"
+		kernel_dir="$workspace/$cluster_name/share/$kernel_key"
 
 		yellow_text "\n➤Installing kernel $kernel_key ($kernel_name) to $kernel_dir...\n"
 
