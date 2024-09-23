@@ -226,7 +226,7 @@
 
 		LOGFILE="$(echo ${TO_INSTALL} | md5sum | sed -e 's# .*##')_pip.log"
 
-		pip3 install -q $TO_INSTALL 2>&1 > $LOGFILE || {
+		pip3 install -qqq $TO_INSTALL 2>&1 > $LOGFILE || {
 			red_text "\n❌Could not install $TO_INSTALL. Check $LOGFILE for more details\n"
 			exit 30
 		}
@@ -250,7 +250,7 @@
 			if ! echo "$FROZEN" | grep "$ELEM" 2>/dev/null >/dev/null; then
 				PBAR=$(generate_progress_bar $i $MAXMODNR)
 				green_reset_line "$PBAR➤Installing $ELEM ($(($i+1))/$MAXMODNR)"
-				pip3 install -q $ELEM 2>&1 > "${ELEM}_pip.log" || {
+				pip3 install -qqq $ELEM 2>&1 > "${ELEM}_pip.log" || {
 					red_text "\n❌Could not install $ELEM. Check ${ELEM}_pip.log for more details.\n"
 					exit 30
 				}
@@ -530,9 +530,9 @@ echo '========================================================='
 			eval "$test_script"
 			exit_code=$?
 			if [[ $exit_code -eq 0 ]]; then
-				green_text "Test for $kernel_key successful\n"
+				green_text "Testscript '$test_script' for $kernel_key successful\n"
 			else
-				red_text "Test for $kernel_key failed with exit code $exit_code\n"
+				red_text "Testscript '$test_script' for $kernel_key failed with exit code $exit_code\n"
 			fi
 		else
 			yellow_text "No test_script found (\$test_script: $test_script)...\n"
