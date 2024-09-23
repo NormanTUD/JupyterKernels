@@ -266,65 +266,7 @@
 		green_reset_line "✅Modules $TO_INSTALL installed."
 	}
 
-	function check_libs(){
-		MODS="$1"
-		MODS=$(echo "$MODS" | sed -e 's#\s\s*# #g' -e 's#\s#, #g' -e "s#^#'#" -e "s#\$#'#" -e "s#, #', '#g")
-		#yellow_text "\nChecking libs ($MODS)...\n"
-		echo "
-import sys
-from importlib import import_module
-
-libnames = [$MODS]
-
-def check_libs(libnames):
-    ok = True
-    mods_ok = []
-    for x in range(len(libnames)):
-        libname = libnames[x]
-        try:
-            import_module(libname)
-        except:
-            print(\"\\n\" + libname + ' - failed')
-            ok = False
-        else:
-            mods_ok.append(libname)
-
-    #print('Mods OK: ' + (', '.join(mods_ok)))
-
-    if not ok:
-        return 1
-    return 0
-
-sys.exit(check_libs(libnames))
-" | python3 2>/dev/null
-		exit_code=$?
-		if [[ $exit_code -eq 0 ]]; then
-			green_text "\ncheck_libs($MODS) successful\n"
-		else
-			red_text "\ncheck_libs($MODS) failed\n"
-		fi
-	}
-
-	function check_base_libs {
-		# TODO pybrain, theano, ray entfernt aus den check_base_libs
-		#check_libs "bs4 scrapy matplotlib plotly seaborn numpy scipy sympy pandarallel dask mpi4py ipyparallel netCDF4 xarray sklearn nltk"
-		check_libs "bs4 scrapy matplotlib plotly seaborn numpy scipy sympy dask mpi4py ipyparallel netCDF4 sklearn nltk"
-	}
-
-	function check_tensorflow {
-		check_base_libs
-		check_libs "tensorflow"
-	}
-
-	function check_torchv1(){
-		yellow_text "\nChec torchv1\n"
-		red_text "\nNOT YET IMPLEMENTED\n"
-	}
-
 	function check_torchv2(){
-		check_base_libs
-		#check_libs "torch torchvision torchaudio"
-
 		if command -v nvidia-smi 2>/dev/null >/dev/null; then
 			TORCH_ENV=$(python3 -m torch.utils.collect_env 2>&1)
 
@@ -423,8 +365,6 @@ echo '========================================================='
 			#ppip torch==$torch_ver torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 			ppip_complex torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 		fi
-
-		check_torchv1
 
 		deactivate
 	}

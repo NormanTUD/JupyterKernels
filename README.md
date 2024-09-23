@@ -34,16 +34,16 @@ You can specify the install requirements with a simple JSON file.
   "kernels": {
     "tensorflow": {
       "name": "TensorFlow (Machine Learning)",
-      "tests": ["check_tensorflow"],
       "module_load": ["TensorFlow/2.11.0-CUDA-11.7.0"],
       "pip_dependencies": ["base_pks", "sci_pks", "ml_libs"],
+      "check_libs": "bs4 scrapy matplotlib plotly seaborn numpy scipy sympy dask mpi4py ipyparallel netCDF4 sklearn nltk tensorflow",
       "test_script": "true"
     },
     "pytorch": {
       "name": "PyTorch (Machine Learning)",
-      "tests": ["check_torchv2"],
       "module_load": ["PyTorch/1.13.1"],
       "pip_dependencies": ["base_pks", "sci_pks", "ml_libs", "torchvision_torchaudio"],
+      "check_libs": "bs4 scrapy matplotlib plotly seaborn numpy scipy sympy dask mpi4py ipyparallel netCDF4 sklearn nltk torch torchvision torchaudio",
       "test_script": "false"
     }
   }
@@ -67,8 +67,6 @@ If the value is a simple string, it will be the same for all clusters. If it is 
 ### `kernels`:
 
 A list of kernels to be installed. Each kernel has a key that acts as it's internal name (e.g. tensorflow). It also has a 'nice' name that is given as a parameter to the key, e.g. "TensorFlow (Machine Learning)". 
-
-The `tests`-key is a list of tests that has to be implemented in the `build_kernels.sh`. Currently, only `check_torchv1`, `check_torchv2`, `check_base_libs` and `check_tensorflow` are implemented.
 
 `module_load` specifies modules that should be loaded, but are inconvienent to define in the `modules_by_cluster`. This is not a module or pip-group, but rather, a list (string) of ml modules to be loaded before pip is used.
 
