@@ -266,18 +266,42 @@
 		green_reset_line "✅Modules $TO_INSTALL installed."
 	}
 
-	function check_torchv2(){
-		if command -v nvidia-smi 2>/dev/null >/dev/null; then
-			TORCH_ENV=$(python3 -m torch.utils.collect_env 2>&1)
+	function check_libs(){
+		MODS="$1"
+		MODS=$(echo "$MODS" | sed -e 's#\s\s*# #g' -e 's#\s#, #g' -e "s#^#'#" -e "s#\$#'#" -e "s#, #', '#g")
+		#yellow_text "\nChecking libs ($MODS)...\n"
+		echo "
+import sys
+from importlib import import_module
 
-			if ! echo "$TORCH_ENV" | grep "Is CUDA available: True" 2>/dev/null >/dev/null; then
-				red_text "'Is CUDA available: True' not found in python3 -m torch.utils.collect_env"
-			fi
+libnames = [$MODS]
 
-			if ! echo "$TORCH_ENV" | grep "GPU 0:" 2>/dev/null >/dev/null; then
-				red_text "'GPU 0:' not found in python3 -m torch.utils.collect_env"
-			fi
+def check_libs(libnames):
+    ok = True
+    mods_ok = []
+    for x in range(len(libnames)):
+        libname = libnames[x]
+        try:
+            import_module(libname)
+        except:
+            print(\"\\n\" + libname + ' - failed')
+            ok = False
+        else:
+            mods_ok.append(libname)
 
+    #print('Mods OK: ' + (', '.join(mods_ok)))
+
+    if not ok:
+        return 1
+    return 0
+
+sys.exit(check_libs(libnames))
+" | python3 2>/dev/null
+		exit_code=$?
+		if [[ $exit_code -eq 0 ]]; then
+			green_text "\ncheck_libs($MODS) successful\n"
+		else
+			red_text "\ncheck_libs($MODS) failed\n"
 		fi
 	}
 
@@ -428,6 +452,7 @@ echo '========================================================='
 		kernel_tests=$(echo "$kernel_entry" | ./jq -r '.value.tests | join(" ")')
 		kernel_ml_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.module_load | join(" ")')
 		kernel_pip_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.pip_dependencies | join(" ")' 2>/dev/null)
+		check_libs=$(echo "$kernel_entry" | ./jq -r '.value.check_libs' 2>/dev/null)
 		test_script=$(echo "$kernel_entry" | ./jq -r '.value.test_script' 2>/dev/null)
 
 		kernel_dir="$wrkspace/$cluster_name/share/$kernel_key"
@@ -500,6 +525,12 @@ echo '========================================================='
 				red_text "\n$kernel_key tests failed\n"
 			fi
 		done
+
+		if [[ -n $check_libs ]]; then
+			check_libs "$check_libs"
+		else
+			yellow_text "No check_libs for $kernel_key"
+		fi
 
 		if [[ -n $test_script ]]; then
 			yellow_text "Checking test_script '$test_script'...\n"
