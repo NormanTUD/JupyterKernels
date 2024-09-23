@@ -562,16 +562,16 @@ echo '========================================================='
 		done
 
 		if [[ -n $test_script ]]; then
-			yellow_text "Checking $test_script..."
+			yellow_text "Checking test_script '$test_script'...\n"
 			eval "$test_script"
 			exit_code=$?
 			if [[ $exit_code -eq 0 ]]; then
-				green_text "Test for $kernel_key successful"
+				green_text "Test for $kernel_key successful\n"
 			else
-				red "Test for $kernel_key failed with exit code $exit_code"
+				red_text "Test for $kernel_key failed with exit code $exit_code\n"
 			fi
 		else
-			yellow_text "No test_script found (\$test_script: $test_script)..."
+			yellow_text "No test_script found (\$test_script: $test_script)...\n"
 		fi
 
 		deactivate

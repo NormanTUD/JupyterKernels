@@ -35,7 +35,7 @@
       "tests": ["check_torchv2"],
       "module_load": ["PyTorch/1.13.1"],
       "pip_dependencies": ["base_pks", "sci_pks", "ml_libs", "torchvision_torchaudio"],
-      "test_script": "false"
+      "test_script": "true"
     }
   }
 }
