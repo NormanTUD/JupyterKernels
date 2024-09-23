@@ -224,12 +224,14 @@
 
 		green_reset_line "➤Installing $TO_INSTALL"
 
-		pip3 install $TO_INSTALL 2>&1 > "${TO_INSTALL}_pip.log" || {
-			red_text "\n❌Could not install $TO_INSTALL. Check ${TO_INSTALL}_pip.log for more details\n"
+		LOGFILE="$(echo ${TO_INSTALL} | md5sum | sed -e 's# .*##')_pip.log"
+
+		pip3 install $TO_INSTALL 2>&1 > $LOGFILE || {
+			red_text "\n❌Could not install $TO_INSTALL. Check $LOGFILE for more details\n"
 			exit 30
 		}
 
-		rm "${TO_INSTALL}_pip.log"
+		rm "$LOGFILE"
 
 		FROZEN=$(pip list --format=freeze)
 		green_reset_line "✅Module $TO_INSTALL installed."
@@ -321,7 +323,7 @@ sys.exit(check_libs(libnames))
 
 	function check_torchv2(){
 		check_base_libs
-		check_libs "torch torchvision torchaudio"
+		#check_libs "torch torchvision torchaudio"
 
 		if command -v nvidia-smi 2>/dev/null >/dev/null; then
 			TORCH_ENV=$(python3 -m torch.utils.collect_env 2>&1)
