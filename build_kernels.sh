@@ -244,7 +244,7 @@
 		MAXMODNR=$(echo "$TO_INSTALL" | sed -e 's#\s#\n#g' | wc -l)
 		PBAR=$(generate_progress_bar $i $MAXMODNR)
 		green_reset_line "$PBAR➤Installing $TO_INSTALL"
-		pip3 --upgrade pip 2>/dev/null >/dev/null
+		pip3 -qqq --upgrade pip 2>/dev/null >/dev/null
 
 		for ELEM in $(echo "$TO_INSTALL"); do
 			if ! echo "$FROZEN" | grep "$ELEM" 2>/dev/null >/dev/null; then
@@ -369,28 +369,6 @@ echo '========================================================='
 				\"debugger\": true
 			}
 		}" > $ORIGINAL_PWD/kernel_${shortname}.json
-	}
-
-	function pytorchv1_kernel(){
-		yellow_text "\n➤Install PyTorchv1 Kernel\n"
-		local logfile=~/install_$(basename $1)_v1-kernel-$cluster_name.log
-		#local torch_ver=1.11.0 # from pip
-		local torch_ver=1.13.1 # from module system
-
-		module load PyTorch/$torch_ver
-
-		install_base_sci_ml_pkgs
-
-		if [ "$cluster_name" == "alpha" ]; then
-			#ppip nvidia-cudnn-cu12
-			module_load cuDNN/8.6.0.163-CUDA-11.8.0
-			ppip torchvision torchaudio
-		else
-			#ppip torch==$torch_ver torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
-			ppip_complex torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
-		fi
-
-		deactivate
 	}
 
 	set -e
