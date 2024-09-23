@@ -452,7 +452,7 @@ echo '========================================================='
 		kernel_tests=$(echo "$kernel_entry" | ./jq -r '.value.tests | join(" ")')
 		kernel_ml_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.module_load | join(" ")')
 		kernel_pip_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.pip_dependencies | join(" ")' 2>/dev/null)
-		check_libs=$(echo "$kernel_entry" | ./jq -r '.value.check_libs' 2>/dev/null)
+		_check_libs=$(echo "$kernel_entry" | ./jq -r '.value.check_libs' 2>/dev/null)
 		test_script=$(echo "$kernel_entry" | ./jq -r '.value.test_script' 2>/dev/null)
 
 		kernel_dir="$wrkspace/$cluster_name/share/$kernel_key"
@@ -526,8 +526,8 @@ echo '========================================================='
 			fi
 		done
 
-		if [[ -n $check_libs ]]; then
-			check_libs "$check_libs"
+		if [[ -n $_check_libs ]]; then
+			check_libs "$_check_libs"
 		else
 			yellow_text "No check_libs for $kernel_key"
 		fi
