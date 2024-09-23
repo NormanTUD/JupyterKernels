@@ -272,7 +272,7 @@
 
 		for l in $MODS; do
 			if [[ $failed -gt 0 ]]; then
-				yellow_text "Skipping $l because an earlier test has already failed"
+				yellow_text "\nSkipping $l because an earlier test has already failed\n"
 			else
 				yellow_text "Trying to import $l...\n"
 
