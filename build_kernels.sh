@@ -343,7 +343,7 @@ echo '========================================================='
 " > $kernel_start_file
 
 		if [[ -e "$kernel_start_file" ]]; then
-			green_text "$kernel_start_file succesfully created"
+			green_text "$kernel_start_file successfully created"
 		else
 			red_text "$kernel_start_file could not be created"
 		fi
