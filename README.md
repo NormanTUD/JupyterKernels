@@ -75,3 +75,7 @@ The `tests`-key is a list of tests that has to be implemented in the `build_kern
 ### `pip_dependencies`:
 
 References to a key of the `pip_module_groups`. Installs those modules in the order of the elements in the `pip_module_groups`.
+
+### `test_script`:
+
+A bash script that is executed. If it exits with anything other than exit-code 0, it will count as failed.
