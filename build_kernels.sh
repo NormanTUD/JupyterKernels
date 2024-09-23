@@ -225,8 +225,8 @@
 		green_reset_line "➤Installing $TO_INSTALL"
 		green_reset_line "➤Installing $ELEM"
 
-		pip3 install $TO_INSTALL 2>/dev/null >/dev/null || {
-			red_text "\n❌Could not install $TO_INSTALL.\n"
+		pip3 install $TO_INSTALL 2>&1 > "${TO_INSTALL}_pip.log" || {
+			red_text "\n❌Could not install $TO_INSTALL. Check ${TO_INSTALL}_pip.log for more details\n"
 			exit 30
 		}
 
@@ -247,8 +247,8 @@
 			if ! echo "$FROZEN" | grep "$ELEM" 2>/dev/null >/dev/null; then
 				PBAR=$(generate_progress_bar $i $MAXMODNR)
 				green_reset_line "$PBAR➤Installing $ELEM ($(($i+1))/$MAXMODNR)"
-				pip3 -q install $ELEM 2>/dev/null >/dev/null || {
-					red_text "\n❌Could not install $ELEM.\n"
+				pip3 install $ELEM 2>&1 > "${ELEM}_pip.log" || {
+					red_text "\n❌Could not install $ELEM. Check ${ELEM}_pip.log for more details.\n"
 					exit 30
 				}
 
