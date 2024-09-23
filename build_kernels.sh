@@ -429,9 +429,11 @@ echo '========================================================='
 
 		yellow_text "\n➤Installing kernel $kernel_key ($kernel_name) to $kernel_dir...\n"
 
-		for ml_dependency_group in $kernel_ml_dependencies; do
-			module_load $ml_dependency_group
-		done
+		if [[ "$kernel_ml_dependencies" != "null" ]]; then
+			for ml_dependency_group in $kernel_ml_dependencies; do
+				module_load $ml_dependency_group
+			done
+		fi
 
 		if [[ "$kernel_modules_load_by_cluster_dependencies" != "null" ]]; then
 			for ml_dependency_group in $kernel_modules_load_by_cluster_dependencies; do
