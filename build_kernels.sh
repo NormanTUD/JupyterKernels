@@ -1,72 +1,52 @@
 #!/bin/bash
 
-function displaytime {
-        set +x
-        local T=$1
-                local D=$((T/60/60/24))
-                local H=$((T/60/60%24))
-                local M=$((T/60%60))
-                local S=$((T%60))
-                (( $D > 0 )) && printf '%d days ' $D
-                (( $H > 0 )) && printf '%d hours ' $H
-                (( $M > 0 )) && printf '%d minutes ' $M
-                (( $D > 0 || $H > 0 || $M > 0 )) && printf 'and '
-                printf '%d seconds\n' $S
-}
-
-function calltracer {
-	LINE_AND_FUNCTION=$(caller)
-	echo ""
-	caller
-	echo "Runtime (calltracer): $(displaytime $SECONDS), PID: $$"
-}
-
-trap 'calltracer' ERR
-
-#default_workspace='/software/util/JupyterLab'
-default_workspace='/data/horse/ws/s4122485-jupyter_kernels'
-# Initialize variables
-CONFIG_JSON=""
-wrkspace=$default_workspace
-
-# Function to check if a file is a JSON file
-is_json_file() {
-	if [[ $1 == *.json ]]; then
-		return 0
-	else
-		return 1
-	fi
-}
-
-# Function to check if a parameter is a directory
-is_directory() {
-	if [[ -d $1 ]]; then
-		return 0
-	else
-		return 1
-	fi
-}
-
-# Process parameters
-for param in "$@"; do
-	if is_json_file "$param"; then
-		CONFIG_JSON=$(cat "$param")
-	else
-		wrkspace="$param"
-	fi
-done
-
-FROZEN=""
-
 { # Hack to prevent re-reading the file while it is still running
-	ORIGINAL_PWD=$(pwd)
-
-	mkdir -p $wrkspace || {
-		echo "Cannot create $wrkspace"
-		exit 123
+	function displaytime {
+		set +x
+		local T=$1
+			local D=$((T/60/60/24))
+			local H=$((T/60/60%24))
+			local M=$((T/60%60))
+			local S=$((T%60))
+			(( $D > 0 )) && printf '%d days ' $D
+			(( $H > 0 )) && printf '%d hours ' $H
+			(( $M > 0 )) && printf '%d minutes ' $M
+			(( $D > 0 || $H > 0 || $M > 0 )) && printf 'and '
+			printf '%d seconds\n' $S
 	}
 
-	export LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH
+	function calltracer {
+		LINE_AND_FUNCTION=$(caller)
+		echo ""
+		caller
+		echo "Runtime (calltracer): $(displaytime $SECONDS), PID: $$"
+	}
+
+	trap 'calltracer' ERR
+
+	#default_workspace='/software/util/JupyterLab'
+	default_workspace='/data/horse/ws/s4122485-jupyter_kernels'
+	# Initialize variables
+	CONFIG_JSON=""
+	wrkspace=$default_workspace
+
+	# Function to check if a file is a JSON file
+	is_json_file() {
+		if [[ $1 == *.json ]]; then
+			return 0
+		else
+			return 1
+		fi
+	}
+
+	# Function to check if a parameter is a directory
+	is_directory() {
+		if [[ -d $1 ]]; then
+			return 0
+		else
+			return 1
+		fi
+	}
 
 	function join_by {
 		local d=${1-} f=${2-}
@@ -128,6 +108,33 @@ FROZEN=""
 	function yellow_text {
 		echoerr "\e\033[0;33m$1\e[0m"
 	}
+
+	# Process parameters
+	for param in "$@"; do
+		if is_json_file "$param"; then
+			CONFIG_JSON=$(cat "$param")
+		else
+			wrkspace="$param"
+		fi
+	done
+
+
+
+	FROZEN=""
+
+	ORIGINAL_PWD=$(pwd)
+
+	mkdir -p $wrkspace || {
+		echo "Cannot create $wrkspace"
+		exit 123
+	}
+
+	export LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH
+
+	if [[ -z $CONFIG_JSON ]]; then
+		red_text "config-json-file not found\n"
+		exit 1
+	fi
 
 	if [[ ! -e jq ]]; then
 		red_text "\njq not found. Please install it, e.g. via apt-get install jq or download it using \n"
