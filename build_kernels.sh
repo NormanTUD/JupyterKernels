@@ -436,7 +436,7 @@ echo '========================================================='
 
 		kernel_dir="$wrkspace/$cluster_name/share/$kernel_key"
 
-		yellow_text "\n➤Installing kernel $kernel_key ($kernel_name)...\n"
+		yellow_text "\n➤Installing kernel $kernel_key ($kernel_name) to $kernel_dir...\n"
 
 		for ml_dependency_group in $kernel_ml_dependencies; do
 			module_load $ml_dependency_group
