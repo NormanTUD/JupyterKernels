@@ -12,15 +12,15 @@
     "torchvision": {
       "pip_complex": {
 	"alpha": "torchvision",
-	"barnard": "torchvision --index-url https://download.pytorch.org/whl/cpu",
-	"romeo": "torchvision --index-url https://download.pytorch.org/whl/cpu"
+	"barnard": "torchvision",
+	"romeo": "torchvision"
       }
     },
     "torchaudio": {
       "pip_complex": {
 	"alpha": "torchaudio",
-	"barnard": "torchaudio --index-url https://download.pytorch.org/whl/cpu",
-	"romeo": "torchaudio --index-url https://download.pytorch.org/whl/cpu"
+	"barnard": "torchaudio",
+	"romeo": "torchaudio"
       }
     },
     "nvidia-cudnn-cu12": {
