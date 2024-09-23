@@ -226,7 +226,7 @@
 
 		LOGFILE="$(echo ${TO_INSTALL} | md5sum | sed -e 's# .*##')_pip.log"
 
-		pip3 --log "$LOGFILE" -qqq $TO_INSTALL || {
+		pip3 --log "$LOGFILE" -qqq install $TO_INSTALL || {
 			red_text "\n❌Could not install $TO_INSTALL. Check $LOGFILE for more details\n"
 			exit 30
 		}
