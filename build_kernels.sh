@@ -226,7 +226,7 @@
 
 		LOGFILE="$(echo ${TO_INSTALL} | md5sum | sed -e 's# .*##')_pip.log"
 
-		pip3 --log "$LOGFILE" -qqq install $TO_INSTALL || {
+		pip3 --log "$LOGFILE" -qqq install $TO_INSTALL 2>/dev/null >/dev/null || {
 			red_text "\n❌Could not install $TO_INSTALL. Check $LOGFILE for more details\n"
 			exit 30
 		}
@@ -250,7 +250,7 @@
 			if ! echo "$FROZEN" | grep "$ELEM" 2>/dev/null >/dev/null; then
 				PBAR=$(generate_progress_bar $i $MAXMODNR)
 				green_reset_line "$PBAR➤Installing $ELEM ($(($i+1))/$MAXMODNR)"
-				pip3 --log "${ELEM}_pip.log" -qqq install $ELEM  || {
+				pip3 --log "${ELEM}_pip.log" -qqq install $ELEM 2>/dev/null >/dev/null || {
 					red_text "\n❌Could not install $ELEM. Check ${ELEM}_pip.log for more details.\n"
 					exit 30
 				}
@@ -431,8 +431,8 @@ echo '========================================================='
 		kernel_name=$(echo "$kernel_entry" | ./jq -r '.value.name')
 		kernel_ml_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.module_load | join(" ")')
 		kernel_pip_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.pip_dependencies | join(" ")' 2>/dev/null)
-		_check_libs=$(echo "$kernel_entry" | ./jq -r '.value.check_libs' 2>/dev/null)
-		test_script=$(echo "$kernel_entry" | ./jq -r '.value.test_script' 2>/dev/null)
+		kernel_check_libs=$(echo "$kernel_entry" | ./jq -r '.value.check_libs' 2>/dev/null)
+		kernel_test_script=$(echo "$kernel_entry" | ./jq -r '.value.test_script' 2>/dev/null)
 
 		kernel_dir="$wrkspace/$cluster_name/share/$kernel_key"
 
@@ -497,23 +497,23 @@ echo '========================================================='
 		create_start_kernel_sh "$kernel_key" "$kernel_name" "$current_load $kernel_ml_dependencies"
 		create_kernel_json "$kernel_key" "$kernel_name"
 
-		if [[ -n $_check_libs ]]; then
-			check_libs "$_check_libs"
+		if [[ -n $kernel_check_libs ]]; then
+			check_libs "$kernel_check_libs"
 		else
 			yellow_text "No check_libs for $kernel_key"
 		fi
 
-		if [[ -n $test_script ]]; then
-			yellow_text "Checking test_script '$test_script'...\n"
-			eval "$test_script"
+		if [[ -n $kernel_test_script ]]; then
+			yellow_text "Checking kernel_test_script '$kernel_test_script'...\n"
+			eval "$kernel_test_script"
 			exit_code=$?
 			if [[ $exit_code -eq 0 ]]; then
-				green_text "Testscript '$test_script' for $kernel_key successful\n"
+				green_text "Testscript '$kernel_test_script' for $kernel_key successful\n"
 			else
-				red_text "Testscript '$test_script' for $kernel_key failed with exit code $exit_code\n"
+				red_text "Testscript '$kernel_test_script' for $kernel_key failed with exit code $exit_code\n"
 			fi
 		else
-			yellow_text "No test_script found (\$test_script: $test_script)...\n"
+			yellow_text "No kernel_test_script found (\$kernel_test_script: $kernel_test_script)...\n"
 		fi
 
 		deactivate
