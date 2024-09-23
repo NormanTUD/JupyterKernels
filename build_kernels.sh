@@ -271,13 +271,19 @@
 		failed=0
 
 		for l in $MODS; do
-			echo "import $l" | python3
-			exit_code=$?
+			if [[ $failed -gt 0 ]]; then
+				yellow_text "Skipping $l because an earlier test has already failed"
+			else
+				yellow_text "Trying to import $l...\n"
 
-			if [[ $exit_code -ne 0 ]]; then
-				red_text "\n-> echo 'import $l' | python3 <- failed\n"
+				echo "import $l" | python3
+				exit_code=$?
 
-				failed=$(($failed+1))
+				if [[ $exit_code -ne 0 ]]; then
+					red_text "\n-> echo 'import $l' | python3 <- failed\n"
+
+					failed=$(($failed+1))
+				fi
 			fi
 		done
 
