@@ -6,7 +6,7 @@
   },
   "pip_module_groups": {
     "base_pks": "setuptools wheel ipykernel ipywidgets beautifulsoup4 scrapy nbformat==5.0.2 matplotlib plotly seaborn",
-    "sci_pks": "ipykernel numpy scipy sympy dask mpi4py ipyparallel netcdf4",
+    "sci_pks": "ipykernel numpy scipy sympy pandarallel dask mpi4py ipyparallel netcdf4 xarray[complete]",
     "ml_libs": "ray scikit-learn nltk",
     "tensorflow": "tensorflow==2.17.0",
     "torchvision_torchaudio": {
@@ -27,14 +27,14 @@
       "name": "TensorFlow (Machine Learning)",
       "module_load": ["TensorFlow/2.11.0-CUDA-11.7.0"],
       "pip_dependencies": ["base_pks", "sci_pks", "ml_libs"],
-      "check_libs": "bs4 scrapy matplotlib plotly seaborn numpy scipy sympy dask mpi4py ipyparallel netCDF4 sklearn nltk",
+      "check_libs": "bs4 scrapy matplotlib plotly seaborn numpy scipy sympy dask mpi4py ipyparallel netCDF4 sklearn nltk tensorflow",
       "test_script": "true"
     },
     "pytorch": {
       "name": "PyTorch (Machine Learning)",
       "module_load": ["PyTorch/1.13.1"],
       "pip_dependencies": ["base_pks", "sci_pks", "ml_libs", "torchvision_torchaudio"],
-      "check_libs": "bs4 scrapy matplotlib plotly seaborn numpy scipy sympy dask mpi4py ipyparallel netCDF4 sklearn nltk",
+      "check_libs": "bs4 scrapy matplotlib plotly seaborn numpy scipy sympy dask mpi4py ipyparallel netCDF4 sklearn nltk torch torchvision torchaudio",
       "test_script": "true"
     }
   }
