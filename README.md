@@ -44,7 +44,7 @@ You can specify the install requirements with a simple JSON file.
       "module_load": ["PyTorch/1.13.1"],
       "pip_dependencies": ["base_pks", "sci_pks", "ml_libs", "torchvision_torchaudio"],
       "check_libs": "bs4 scrapy matplotlib plotly seaborn numpy scipy sympy dask mpi4py ipyparallel netCDF4 sklearn nltk torch torchvision torchaudio",
-      "test_script": "false"
+      "test_script": "true"
     }
   }
 }
