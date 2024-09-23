@@ -283,8 +283,8 @@ def check_libs(libnames):
         libname = libnames[x]
         try:
             import_module(libname)
-        except:
-            print(\"\\n\" + libname + ' - failed')
+        except Exception as e:
+            print(\"\\n\" + libname + f' - failed ({e})')
             ok = False
         else:
             mods_ok.append(libname)
@@ -311,6 +311,8 @@ sys.exit(check_libs(libnames))
 		_module_list="$3"
 
 		opt_dir="$wrkspace/$cluster_name/opt/"
+
+		opt_dir=$(echo "$opt_dir" | sed -e 's#//#/#g')
 
 		mkdir -p $opt_dir || {
 			red_text "\nCannot create $opt_dir\n"
