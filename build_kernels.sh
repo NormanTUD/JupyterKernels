@@ -226,7 +226,7 @@
 
 		LOGFILE="$(echo ${TO_INSTALL} | md5sum | sed -e 's# .*##')_pip.log"
 
-		pip3 install -qqq $TO_INSTALL 2>&1 > $LOGFILE || {
+		pip3 --log "$LOGFILE" -qqq $TO_INSTALL || {
 			red_text "\n❌Could not install $TO_INSTALL. Check $LOGFILE for more details\n"
 			exit 30
 		}
@@ -250,7 +250,7 @@
 			if ! echo "$FROZEN" | grep "$ELEM" 2>/dev/null >/dev/null; then
 				PBAR=$(generate_progress_bar $i $MAXMODNR)
 				green_reset_line "$PBAR➤Installing $ELEM ($(($i+1))/$MAXMODNR)"
-				pip3 install -qqq $ELEM 2>&1 > "${ELEM}_pip.log" || {
+				pip3 --log "${ELEM}_pip.log" -qqq install $ELEM  || {
 					red_text "\n❌Could not install $ELEM. Check ${ELEM}_pip.log for more details.\n"
 					exit 30
 				}
