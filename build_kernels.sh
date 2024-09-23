@@ -459,11 +459,9 @@ echo '========================================================='
 
 	green_reset_line "Modules resetted"
 
-	same_modules_everywhere=$(echo "$CONFIG_JSON" | ./jq -r '.same_modules_everywhere')
-
 	current_cluster_load=$(echo "$CONFIG_JSON" | ./jq -r --arg cluster_name "$cluster_name" '.modules_by_cluster[$cluster_name]')
 
-	current_load="$current_cluster_load $same_modules_everywhere"
+	current_load="$current_cluster_load"
 
 	green_reset_line "➤Loading modules for $cluster_name..."
 

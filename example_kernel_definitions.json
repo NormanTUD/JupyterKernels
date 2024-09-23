@@ -1,9 +1,8 @@
 {
-  "same_modules_everywhere": "",
   "modules_by_cluster": {
     "barnard": "release/23.10",
-    "alpha": "release/23.10  GCC/11.3.0  OpenMPI/4.1.4 Python/3.10.4",
-    "romeo": "release/23.10  GCC/11.3.0  OpenMPI/4.1.4 Python/3.10.4"
+    "alpha": "release/23.10 GCC/11.3.0 OpenMPI/4.1.4 Python/3.10.4",
+    "romeo": "release/23.10 GCC/11.3.0 OpenMPI/4.1.4 Python/3.10.4"
   },
   "pip_module_groups": {
     "ml_libs": "pybrain ray theano scikit-learn nltk",
@@ -27,7 +26,7 @@
     "tensorflow": {
       "name": "TensorFlow (Machine Learning)",
       "tests": ["check_tensorflow"],
-      "module_load":  ["TensorFlow/2.11.0-CUDA-11.7.0"],
+      "module_load": ["TensorFlow/2.11.0-CUDA-11.7.0"],
       "pip_dependencies": ["base_pks", "sci_pks", "ml_libs"]
     },
     "pytorch": {
