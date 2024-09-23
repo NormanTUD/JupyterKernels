@@ -226,7 +226,7 @@
 
 		LOGFILE="$(echo ${TO_INSTALL} | md5sum | sed -e 's# .*##')_pip.log"
 
-		pip3 install $TO_INSTALL 2>&1 > $LOGFILE || {
+		pip3 install -q $TO_INSTALL 2>&1 > $LOGFILE || {
 			red_text "\n❌Could not install $TO_INSTALL. Check $LOGFILE for more details\n"
 			exit 30
 		}
@@ -250,7 +250,7 @@
 			if ! echo "$FROZEN" | grep "$ELEM" 2>/dev/null >/dev/null; then
 				PBAR=$(generate_progress_bar $i $MAXMODNR)
 				green_reset_line "$PBAR➤Installing $ELEM ($(($i+1))/$MAXMODNR)"
-				pip3 install $ELEM 2>&1 > "${ELEM}_pip.log" || {
+				pip3 install -q $ELEM 2>&1 > "${ELEM}_pip.log" || {
 					red_text "\n❌Could not install $ELEM. Check ${ELEM}_pip.log for more details.\n"
 					exit 30
 				}
@@ -299,9 +299,9 @@ sys.exit(check_libs(libnames))
 " | python3 2>/dev/null
 		exit_code=$?
 		if [[ $exit_code -eq 0 ]]; then
-			green_text "\ncheck_libs($MODS) successful"
+			green_text "\ncheck_libs($MODS) successful\n"
 		else
-			red_text "\ncheck_libs($MODS) failed"
+			red_text "\ncheck_libs($MODS) failed\n"
 		fi
 	}
 
@@ -488,7 +488,7 @@ echo '========================================================='
 		kernel_tests=$(echo "$kernel_entry" | ./jq -r '.value.tests | join(" ")')
 		kernel_ml_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.module_load | join(" ")')
 		kernel_pip_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.pip_dependencies | join(" ")' 2>/dev/null)
-		test_script=$(echo "$kernel_entry" | ./jq -r '.value.test_script | join(" ")' 2>/dev/null)
+		test_script=$(echo "$kernel_entry" | ./jq -r '.value.test_script' 2>/dev/null)
 
 		kernel_dir="$wrkspace/$cluster_name/share/$kernel_key"
 
@@ -562,6 +562,7 @@ echo '========================================================='
 		done
 
 		if [[ -n $test_script ]]; then
+			yellow_text "Checking $test_script..."
 			eval "$test_script"
 			exit_code=$?
 			if [[ $exit_code -eq 0 ]]; then
@@ -569,6 +570,8 @@ echo '========================================================='
 			else
 				red "Test for $kernel_key failed with exit code $exit_code"
 			fi
+		else
+			yellow_text "No test_script found (\$test_script: $test_script)..."
 		fi
 
 		deactivate
