@@ -27,13 +27,15 @@
       "name": "TensorFlow (Machine Learning)",
       "tests": ["check_tensorflow"],
       "module_load": ["TensorFlow/2.11.0-CUDA-11.7.0"],
-      "pip_dependencies": ["base_pks", "sci_pks", "ml_libs"]
+      "pip_dependencies": ["base_pks", "sci_pks", "ml_libs"],
+      "test_script": "true"
     },
     "pytorch": {
       "name": "PyTorch (Machine Learning)",
       "tests": ["check_torchv2"],
       "module_load": ["PyTorch/1.13.1"],
-      "pip_dependencies": ["base_pks", "sci_pks", "ml_libs", "torchvision_torchaudio"]
+      "pip_dependencies": ["base_pks", "sci_pks", "ml_libs", "torchvision_torchaudio"],
+      "test_script": "false"
     }
   }
 }

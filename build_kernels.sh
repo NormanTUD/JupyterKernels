@@ -475,6 +475,7 @@ echo '========================================================='
 		kernel_tests=$(echo "$kernel_entry" | ./jq -r '.value.tests | join(" ")')
 		kernel_ml_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.module_load | join(" ")')
 		kernel_pip_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.pip_dependencies | join(" ")' 2>/dev/null)
+		test_script=$(echo "$kernel_entry" | ./jq -r '.value.test_script | join(" ")' 2>/dev/null)
 
 		kernel_dir="$wrkspace/$cluster_name/share/$kernel_key"
 
@@ -546,6 +547,16 @@ echo '========================================================='
 				red_text "\n$kernel_key tests failed\n"
 			fi
 		done
+
+		if [[ -n $test_script ]]; then
+			eval "$test_script"
+			exit_code=$?
+			if [[ $exit_code -eq 0 ]]; then
+				green_text "Test for $kernel_key successful"
+			else
+				red "Test for $kernel_key failed with exit code $exit_code"
+			fi
+		fi
 
 		deactivate
 		echo ""
