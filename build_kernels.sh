@@ -223,12 +223,13 @@
 		TO_INSTALL="$1"
 
 		green_reset_line "➤Installing $TO_INSTALL"
-		green_reset_line "➤Installing $ELEM"
 
 		pip3 install $TO_INSTALL 2>&1 > "${TO_INSTALL}_pip.log" || {
 			red_text "\n❌Could not install $TO_INSTALL. Check ${TO_INSTALL}_pip.log for more details\n"
 			exit 30
 		}
+
+		rm "${TO_INSTALL}_pip.log"
 
 		FROZEN=$(pip list --format=freeze)
 		green_reset_line "✅Module $TO_INSTALL installed."
@@ -251,6 +252,8 @@
 					red_text "\n❌Could not install $ELEM. Check ${ELEM}_pip.log for more details.\n"
 					exit 30
 				}
+
+				rm "${ELEM}_pip.log"
 
 				FROZEN=$(pip list --format=freeze)
 			fi
