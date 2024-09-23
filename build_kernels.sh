@@ -125,7 +125,7 @@
 	ORIGINAL_PWD=$(pwd)
 
 	mkdir -p $workspace 2>/dev/null || {
-		red_text "Cannot create workspace $workspace"
+		red_text "Cannot create workspace $workspace\n"
 		exit 123
 	}
 
