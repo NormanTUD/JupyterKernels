@@ -132,11 +132,11 @@
 		ec=$1
 		echo "build_kernels.sh - Build Jupyter Kernels from JSON definition files"
 		echo "Parameters:"
-		echo "path/to/config.json                            Path to your config file"
-		echo "path/to/workdir                                Path to work dir"
-		echo "--debug                                        Show debug output"
-		echo "--disable_taurus_check                         Allow to run on other systems than taurus"
-		echo "--help                                         This help"
+		echo "  path/to/config.json                            Path to your config file"
+		echo "  path/to/workdir                                Path to work dir"
+		echo "  --debug                                        Show debug output"
+		echo "  --disable_taurus_check                         Allow to run on other systems than taurus"
+		echo "  --help                                         This help"
 
 		exit $ec
 	}
