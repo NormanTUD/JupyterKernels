@@ -434,32 +434,35 @@ echo '========================================================='
 		exit 7
 	fi
 
-	if command -v module; then
+	if command -v module 2>/dev/null >/dev/null; then
 		green_reset_line "Resetting modules..."
 
 		module reset >/dev/null 2>/dev/null || {
 			red_text "\nFailed to reset modules\n"
 			exit 4
 		}
+		green_reset_line "Modules resetted"
 	else
 		yellow_text "module could not be found. Is lmod installed?"
 	fi
 
-	green_reset_line "Modules resetted"
 
-	current_cluster_load=$(echo "$CONFIG_JSON" | ./jq -r --arg cluster_name "$cluster_name" '.modules_by_cluster[$cluster_name]' 2>/dev/null)
 
-	current_load="$current_cluster_load"
+	if command -v module 2>/dev/null >/dev/null; then
+		current_cluster_load=$(echo "$CONFIG_JSON" | ./jq -r --arg cluster_name "$cluster_name" '.modules_by_cluster[$cluster_name]' 2>/dev/null)
+		debug_var_if_empty "current_cluster_load"
+		current_load="$current_cluster_load"
+		green_reset_line "➤Loading modules for $cluster_name..."
 
-	green_reset_line "➤Loading modules for $cluster_name..."
-
-	module_load "$current_load"
+		module_load "$current_load"
+	fi
 
 	green_text "\nPython version: $(python3 --version)"
 
 	kernel_entries=$(echo "$CONFIG_JSON" | ./jq -c '.kernels | to_entries[]')
 
 	echo "$kernel_entries" | while IFS= read -r kernel_entry; do
+		set +e
 		kernel_key=$(echo "$kernel_entry" | ./jq -r '.key' 2>/dev/null)
 		kernel_name=$(echo "$kernel_entry" | ./jq -r '.value.name' 2>/dev/null)
 		kernel_ml_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.module_load | join(" ")' 2>/dev/null)
@@ -467,6 +470,7 @@ echo '========================================================='
 		kernel_pip_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.pip_dependencies | join(" ")' 2>/dev/null)
 		kernel_check_libs=$(echo "$kernel_entry" | ./jq -r '.value.check_libs' 2>/dev/null)
 		kernel_test_script=$(echo "$kernel_entry" | ./jq -r '.value.test_script' 2>/dev/null)
+		set -e
 
 		debug_var_if_empty "kernel_key"
 		debug_var_if_empty "kernel_name"
