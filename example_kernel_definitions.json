@@ -12,7 +12,7 @@
     "torchvision": {
       "pip_complex": {
 	"alpha": "torchvision",
-	"barnard": "torchvision" --index-url https://download.pytorch.org/whl/cpu,
+	"barnard": "torchvision --index-url https://download.pytorch.org/whl/cpu",
 	"romeo": "torchvision --index-url https://download.pytorch.org/whl/cpu"
       }
     },
