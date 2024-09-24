@@ -434,12 +434,16 @@ echo '========================================================='
 		exit 7
 	fi
 
-	green_reset_line "Resetting modules..."
+	if command -v module; then
+		green_reset_line "Resetting modules..."
 
-	module reset >/dev/null 2>/dev/null || {
-		red_text "\nFailed to reset modules\n"
-		exit 4
-	}
+		module reset >/dev/null 2>/dev/null || {
+			red_text "\nFailed to reset modules\n"
+			exit 4
+		}
+	else
+		yellow_text "module could not be found. Is lmod installed?"
+	fi
 
 	green_reset_line "Modules resetted"
 
