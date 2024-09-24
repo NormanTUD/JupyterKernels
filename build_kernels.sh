@@ -437,7 +437,7 @@ echo '========================================================='
 	green_reset_line "Resetting modules..."
 
 	module reset >/dev/null 2>/dev/null || {
-		red_text "Failed to reset modules\n"
+		red_text "\nFailed to reset modules\n"
 		exit 4
 	}
 
