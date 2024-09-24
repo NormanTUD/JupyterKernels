@@ -123,7 +123,7 @@
 		if [[ $DEBUG -eq 1 ]]; then
 			var=$(eval "echo \$$varname")
 			if [[ -z $var ]]; then
-				debug "Variable \$$varname was emty when it shouldn't be!"
+				debug "Variable \$$varname was empty"
 			fi
 		fi
 	}
