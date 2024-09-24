@@ -316,12 +316,20 @@
 
 				ERROR=$(echo "import $l" | python3 2>&1)
 				exit_code=$?
+				FAILED_MODULES=()
 
 				if [[ $exit_code -ne 0 ]]; then
 					red_text "\n-> echo 'import $l' | python3 <- failed\n"
 					red_text "$ERROR"
 
 					failed=$(($failed+1))
+					FAILED_MODULES+=("$l")
+				fi
+				
+				if [[ $failed -eq 0 ]]; then
+					green_reset_line "All of these modules were imported successfully: $MODS"
+				else
+					red_reset_line "The following modules failed to load: $(join_by , ${FAILED_MODULES[@]})"
 				fi
 			fi
 		done
