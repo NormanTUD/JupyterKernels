@@ -569,6 +569,7 @@ echo '========================================================='
 				green_text "Testscript '$kernel_test_script' for $kernel_key successful\n"
 			else
 				red_text "Testscript '$kernel_test_script' for $kernel_key failed with exit code $exit_code\n"
+				exit 199
 			fi
 		else
 			yellow_text "No kernel_test_script found (\$kernel_test_script: $kernel_test_script)...\n"
