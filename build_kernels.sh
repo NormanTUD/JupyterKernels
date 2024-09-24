@@ -24,6 +24,8 @@
 
 	trap 'calltracer' ERR
 
+	DEBUG=0
+	DISABLE_TAURUS_CHECK=0
 	#default_workspace='/software/util/JupyterLab'
 	default_workspace='/data/horse/ws/s4122485-jupyter_kernels'
 	# Initialize variables
@@ -109,9 +111,45 @@
 		echoerr "\e\033[0;33m$1\e[0m"
 	}
 
+	function debug {
+		msg=$1
+		if [[ $DEBUG -eq 1 ]]; then
+			yellow_text "$msg\n"
+		fi
+	}
+
+	function debug_var_if_empty {
+		varname=$1
+		if [[ $DEBUG -eq 1 ]]; then
+			var=$(eval "echo \$$varname")
+			if [[ -z $var ]]; then
+				debug "Variable \$$varname was emty when it shouldn't be!"
+			fi
+		fi
+	}
+
+	function _help {
+		ec=$1
+		echo "build_kernels.sh - Build Jupyter Kernels from JSON definition files"
+		echo "Parameters:"
+		echo "path/to/config.json                            Path to your config file"
+		echo "path/to/workdir                                Path to work dir"
+		echo "--debug                                        Show debug output"
+		echo "--disable_taurus_check                         Allow to run on other systems than taurus"
+		echo "--help                                         This help"
+
+		exit $ec
+	}
+
 	# Process parameters
 	for param in "$@"; do
-		if is_json_file "$param"; then
+		if [[ "$param" == "--debug" ]]; then
+			DEBUG=1
+		elif [[ "$param" == "--help" ]]; then
+			_help 0
+		elif [[ "$param" == "--disable_taurus_check" ]]; then
+			DISABLE_TAURUS_CHECK=1
+		elif is_json_file "$param"; then
 			CONFIG_JSON=$(cat "$param")
 		else
 			workspace="$param"
@@ -363,24 +401,25 @@ echo '========================================================='
 
 	set -e
 
-	if ! echo "$hostnamed" | grep "hpc.tu-dresden.de" 2>/dev/null >/dev/null; then
-		red_text "You must run this on the clusters of the HPC system of the TU Dresden.\n"
-		exit 1
-	fi
+	if [[ $DISABLE_TAURUS_CHECK -eq 0 ]]; then
+		if ! echo "$hostnamed" | grep "hpc.tu-dresden.de" 2>/dev/null >/dev/null; then
+			red_text "You must run this on the clusters of the HPC system of the TU Dresden.\n"
+			exit 1
+		fi
 
-	if [[ -z $LMOD_CMD ]]; then
-		red_text "\$LMOD_CMD is not defined. Cannot run this script without module/lmod\n"
-		exit 2
-	fi
+		if [[ -z $LMOD_CMD ]]; then
+			red_text "\$LMOD_CMD is not defined. Cannot run this script without module/lmod\n"
+			exit 2
+		fi
 
-	if [[ ! -e $LMOD_CMD ]]; then
-		red_text "\$LMOD_CMD ($LMOD_CMD) file cannot be found. Cannot run this script without module/lmod\n"
-		exit 3
+		if [[ ! -e $LMOD_CMD ]]; then
+			red_text "\$LMOD_CMD ($LMOD_CMD) file cannot be found. Cannot run this script without module/lmod\n"
+			exit 3
+		fi
 	fi
 
 	cluster_name=$(basename -s .hpc.tu-dresden.de $hostnamed)
 	green_text "Detected cluster: $cluster_name\n"
-	#; sleep 1
 
 
 	if [[ ! -d "$workspace" ]]; then
@@ -424,6 +463,14 @@ echo '========================================================='
 		kernel_pip_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.pip_dependencies | join(" ")' 2>/dev/null)
 		kernel_check_libs=$(echo "$kernel_entry" | ./jq -r '.value.check_libs' 2>/dev/null)
 		kernel_test_script=$(echo "$kernel_entry" | ./jq -r '.value.test_script' 2>/dev/null)
+
+		debug_var_if_empty "kernel_key"
+		debug_var_if_empty "kernel_name"
+		debug_var_if_empty "kernel_ml_dependencies"
+		debug_var_if_empty "kernel_modules_load_by_cluster_dependencies"
+		debug_var_if_empty "kernel_pip_dependencies"
+		debug_var_if_empty "kernel_check_libs"
+		debug_var_if_empty "kernel_test_script"
 
 		kernel_dir="$workspace/$cluster_name/share/$kernel_key"
 
