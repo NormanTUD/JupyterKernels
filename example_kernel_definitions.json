@@ -38,7 +38,7 @@
 	      "barnard": "TensorFlow/2.9.1"
       },
       "pip_dependencies": ["base_pks", "sci_pks", "ml_libs"],
-      "check_libs": "bs4 scrapy matplotlib plotly seaborn numpy scipy sympy dask mpi4py ipyparallel netCDF4 sklearn nltk tensorflow",
+      "check_libs": "bs4 asdf aaaaaa scrapy matplotlib plotly seaborn numpy scipy sympy dask mpi4py ipyparallel netCDF4 sklearn nltk tensorflow",
       "test_script": "true"
     },
     "pytorch": {
