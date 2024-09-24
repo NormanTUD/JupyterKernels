@@ -1,7 +1,7 @@
 {
 			"display_name": "TensorFlow (Machine Learning)",
 			"argv": [
-				"/data/horse/ws/s4122485-jupyter_kernels/romeo/opt/start-tensorflow-kernel.sh",
+				"x/local/opt/start-tensorflow-kernel.sh",
 				"{connection_file}"
 			],
 			"env": {},

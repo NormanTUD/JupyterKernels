@@ -114,7 +114,7 @@
 	function debug {
 		msg=$1
 		if [[ $DEBUG -eq 1 ]]; then
-			yellow_text "$msg\n"
+			yellow_text "\n$msg\n"
 		fi
 	}
 
