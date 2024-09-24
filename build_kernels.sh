@@ -248,7 +248,7 @@
 			PBAR=$(generate_progress_bar $i $MAXMODNR)
 			green_reset_line "$PBAR➤Loading module: $module ($(($i+1))/$MAXMODNR)"
 			module load $module >/dev/null 2>/dev/null || {
-				red_text "❌Failed to load $module"
+				red_text "\n❌Failed to load $module"
 				exit 4
 			}
 			i=$((i+1))
@@ -314,11 +314,12 @@
 			else
 				green_reset_line "Trying to import $l..."
 
-				echo "import $l" | python3
+				ERROR=$(echo "import $l" | python3 2>&1)
 				exit_code=$?
 
 				if [[ $exit_code -ne 0 ]]; then
 					red_text "\n-> echo 'import $l' | python3 <- failed\n"
+					red_text "$ERROR"
 
 					failed=$(($failed+1))
 				fi
