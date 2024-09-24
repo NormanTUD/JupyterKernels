@@ -328,7 +328,7 @@
 		if [[ $failed -eq 0 ]]; then
 			green_reset_line "All of these modules were imported successfully: $MODS"
 		else
-			red_reset_line "The following modules failed to load: $(join_by , ${FAILED_MODULES[@]})"
+			red_reset_line "The following modules failed to load: $(join_by ', ' ${FAILED_MODULES[@]})"
 
 			exit 198
 		fi
