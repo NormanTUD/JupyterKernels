@@ -307,32 +307,29 @@
 	function check_libs(){
 		MODS="$1"
 		failed=0
+		FAILED_MODULES=()
 
 		for l in $MODS; do
-			if [[ $failed -gt 0 ]]; then
-				yellow_text "\nSkipping $l because an earlier test has already failed\n"
-			else
-				green_reset_line "Trying to import $l..."
+			green_reset_line "Trying to import $l..."
 
-				ERROR=$(echo "import $l" | python3 2>&1)
-				exit_code=$?
-				FAILED_MODULES=()
+			ERROR=$(echo "import $l" | python3 2>&1)
+			exit_code=$?
 
-				if [[ $exit_code -ne 0 ]]; then
-					red_text "\n-> echo 'import $l' | python3 <- failed\n"
-					red_text "$ERROR"
+			if [[ $exit_code -ne 0 ]]; then
+				red_text "\n-> echo 'import $l' | python3 <- failed\n"
+				red_text "$ERROR"
 
-					failed=$(($failed+1))
-					FAILED_MODULES+=("$l")
-				fi
-				
-				if [[ $failed -eq 0 ]]; then
-					green_reset_line "All of these modules were imported successfully: $MODS"
-				else
-					red_reset_line "The following modules failed to load: $(join_by , ${FAILED_MODULES[@]})"
-				fi
+				failed=$(($failed+1))
+				FAILED_MODULES+=("$l")
 			fi
+
 		done
+		
+		if [[ $failed -eq 0 ]]; then
+			green_reset_line "All of these modules were imported successfully: $MODS"
+		else
+			red_reset_line "The following modules failed to load: $(join_by , ${FAILED_MODULES[@]})"
+		fi
 
 		echo ""
 
