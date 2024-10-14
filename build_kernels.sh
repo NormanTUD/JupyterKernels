@@ -27,7 +27,8 @@
 	DEBUG=0
 	DISABLE_TAURUS_CHECK=0
 	#default_workspace='/software/util/JupyterLab'
-	default_workspace='/data/horse/ws/s4122485-jupyter_kernels'
+	#default_workspace='/data/horse/ws/s4122485-jupyter_kernels'
+	default_workspace="$(pwd)"
 	# Initialize variables
 	CONFIG_JSON=""
 	workspace=$default_workspace
