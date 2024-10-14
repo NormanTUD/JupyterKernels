@@ -366,7 +366,7 @@ echo '========================================================='
 echo 'Starting ${_name}...'
 
 module reset
-module load ${_module_list}
+module load ${_module_list} ${_modules_list}
 
 PYVENV_PATH=$workspace/$cluster_name/share/$shortname
 
@@ -377,7 +377,7 @@ python \\
   -f \${CONNFILE}
 
 echo '========================================================='
-" > $kernel_start_file
+" | sed -e 's#\s*$##' > $kernel_start_file
 
 		if [[ -e "$kernel_start_file" ]]; then
 			green_text "$kernel_start_file successfully created"
