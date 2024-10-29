@@ -491,6 +491,10 @@ echo '========================================================='
 		debug_var_if_empty "kernel_check_libs"
 		debug_var_if_empty "kernel_test_script"
 
+		if [[ $module_load_cluster == "null" ]]; then
+			module_load_cluster=""
+		fi
+
 		kernel_dir="$workspace/$cluster_name/share/$kernel_key"
 
 		yellow_text "\n➤Installing kernel $kernel_key ($kernel_name) to $kernel_dir...\n"
