@@ -343,6 +343,7 @@
 		_name="$2"
 		_module_list="$3"
 		_modules_list="$4"
+		_modules_load="$5"
 
 		opt_dir="$workspace/$cluster_name/opt/"
 
@@ -365,7 +366,7 @@ echo '========================================================='
 echo 'Starting ${_name}...'
 
 module reset
-module load ${_module_list} ${_modules_list}
+module load ${_module_list} ${_modules_list} ${_modules_load}
 
 PYVENV_PATH=$workspace/$cluster_name/share/$shortname
 
@@ -474,6 +475,7 @@ echo '========================================================='
 		kernel_key=$(echo "$kernel_entry" | ./jq -r '.key' 2>/dev/null)
 		kernel_name=$(echo "$kernel_entry" | ./jq -r '.value.name' 2>/dev/null)
 		kernel_ml_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.module_load | join(" ")' 2>/dev/null)
+		modules_load=$(echo "$kernel_entry" | ./jq -r ".value.modules_load.$partition | join(' ')" 2>/dev/null)
 		kernel_modules_load_by_cluster_dependencies=$(echo "$kernel_entry" | ./jq -r ".value.modules_load[\"$cluster_name\"]" 2>/dev/null) 
 		kernel_pip_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.pip_dependencies | join(" ")' 2>/dev/null)
 		kernel_check_libs=$(echo "$kernel_entry" | ./jq -r '.value.check_libs' 2>/dev/null)
@@ -484,6 +486,7 @@ echo '========================================================='
 		debug_var_if_empty "kernel_name"
 		debug_var_if_empty "kernel_ml_dependencies"
 		debug_var_if_empty "kernel_modules_load_by_cluster_dependencies"
+		debug_var_if_empty "modules_load"
 		debug_var_if_empty "kernel_pip_dependencies"
 		debug_var_if_empty "kernel_check_libs"
 		debug_var_if_empty "kernel_test_script"
@@ -556,7 +559,7 @@ echo '========================================================='
 			echo ""
 		done
 
-		create_start_kernel_sh "$kernel_key" "$kernel_name" "$current_load" "$kernel_ml_dependencies" "$kernel_modules_load_by_cluster_dependencies"
+		create_start_kernel_sh "$kernel_key" "$kernel_name" "$current_load" "$kernel_ml_dependencies" "$kernel_modules_load_by_cluster_dependencies" "$modules_load"
 		create_kernel_json "$kernel_key" "$kernel_name"
 
 		if [[ -n $kernel_check_libs ]]; then
