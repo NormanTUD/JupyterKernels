@@ -32,7 +32,7 @@
   "kernels": {
     "tensorflow": {
       "name": "TensorFlow (Machine Learning)",
-      "modules_load": {
+      "module_load_cluster": {
 	      "alpha": "TensorFlow/2.11.0-CUDA-11.7.0",
 	      "romeo": "TensorFlow/2.11.0-CUDA-11.7.0",
 	      "barnard": "TensorFlow/2.9.1"
