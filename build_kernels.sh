@@ -475,7 +475,7 @@ echo '========================================================='
 		kernel_key=$(echo "$kernel_entry" | ./jq -r '.key' 2>/dev/null)
 		kernel_name=$(echo "$kernel_entry" | ./jq -r '.value.name' 2>/dev/null)
 		kernel_ml_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.module_load | join(" ")' 2>/dev/null)
-		modules_load=$(echo "$kernel_entry" | ./jq -r ".value.modules_load.$partition | join(' ')" 2>/dev/null)
+		modules_load=$(echo "$kernel_entry" | ./jq -r ".value.modules_load.$cluster_name | join(' ')" 2>/dev/null)
 		kernel_modules_load_by_cluster_dependencies=$(echo "$kernel_entry" | ./jq -r ".value.modules_load[\"$cluster_name\"]" 2>/dev/null) 
 		kernel_pip_dependencies=$(echo "$kernel_entry" | ./jq -r '.value.pip_dependencies | join(" ")' 2>/dev/null)
 		kernel_check_libs=$(echo "$kernel_entry" | ./jq -r '.value.check_libs' 2>/dev/null)
