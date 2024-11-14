@@ -356,6 +356,20 @@
 
 		kernel_start_file="$opt_dir/start-${shortname}-kernel.sh"
 
+		_whole_module_list=""
+		module_variables=("${_module_list}" "${_modules_list}" "${_module_load_cluster}")
+
+		for module_var in "${module_variables[@]}"; do
+			if [[ -n "$module_var" && "$module_var" != "null" && "$module_var" != "" ]]; then
+				_whole_module_list="${_whole_module_list} ${module_var}"
+			fi
+		done
+
+		_mod_load_command=""
+		if [[ -n $_whole_module_list ]]; then
+			_mod_load_command="module load ${_whole_module_list}"
+		fi
+
 		echo "#!/bin/bash
 
 CONNFILE=\${1}
@@ -366,7 +380,7 @@ echo '========================================================='
 echo 'Starting ${_name}...'
 
 module reset
-module load ${_module_list} ${_modules_list} ${_module_load_cluster}
+$_mod_load_command
 
 PYVENV_PATH=$workspace/$cluster_name/share/$shortname
 
